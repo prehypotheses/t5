@@ -27,8 +27,8 @@ class Config:
         self.hyperspace_key = 'architecture/t5/hyperspace.json'
 
         # Prefixes
-        self.source = 'data/tokens'
-        self.destination = 'artefacts/t5'
+        self.source = 'data/tokens/T5'
+        self.destination = 'artefacts/T5'
 
         # For arguments JSON
         self.checkpoint = 'google-t5/t5-small'
