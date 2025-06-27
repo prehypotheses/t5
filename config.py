@@ -19,9 +19,12 @@ class Config:
         # Directories
         self.data_ = os.path.join(os.getcwd(), 'data')
         self.warehouse = os.path.join(os.getcwd(), 'warehouse')
+        self.artefacts_ = os.path.join(self.warehouse, 'artefacts')
 
         # Keys, etc
         self.s3_parameters_key = 's3_parameters.yaml'
+        self.arguments_key = 'architecture/t5/arguments.json'
+        self.hyperspace_key = 'architecture/t5/hyperspace.json'
 
         # Prefixes
         self.source = 'data/tokens'
