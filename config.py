@@ -31,4 +31,4 @@ class Config:
         self.destination = 'artefacts/T5'
 
         # For arguments JSON
-        self.checkpoint = 'google-t5/t5-small'
+        # self.checkpoint = 'google-t5/t5-small'
