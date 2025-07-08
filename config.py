@@ -29,5 +29,3 @@ class Config:
         # Prefixes
         self.source = 'data/tokens/T5'
         self.destination = 'artefacts/T5'
-
-        self.local = os.path.join(self.data_, 'tokens', 'T5')
