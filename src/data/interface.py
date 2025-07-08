@@ -29,7 +29,7 @@ class Interface:
         dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source
         self.__data =  datasets.load_from_disk(dataset_path=dataset_path)
 
-    def __tags(self) -> typing.Tuple[dict, dict]:
+    def tags(self) -> typing.Tuple[dict, dict]:
         """
 
         :return:<br>
@@ -43,12 +43,10 @@ class Interface:
 
         return id2label, label2id
 
-    def exc(self) -> mr.Master:
+    def data(self) -> datasets.DatasetDict:
         """
 
         :return:
         """
 
-        id2label, label2id = self.__tags()
-
-        return mr.Master(id2label=id2label, label2id=label2id, data=self.__data)
+        return self.__data
