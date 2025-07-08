@@ -13,12 +13,11 @@ class Interface:
     Reads the raw data.
     """
 
-    def __init__(self, s3_parameters: s3p, local: bool = True):
+    def __init__(self, s3_parameters: s3p):
         """
 
         :param s3_parameters: The overarching S3 parameters settings of this
                               project, e.g., region code name, buckets, etc.<br>
-        :param local: Load the data set from a local path?
         """
 
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
@@ -27,8 +26,7 @@ class Interface:
         self.__configurations = config.Config()
 
         # The data
-        dataset_path = self.__configurations.local if local else (
-                's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source)
+        dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source
         self.__data =  datasets.load_from_disk(dataset_path=dataset_path)
 
     def __tags(self) -> typing.Tuple[dict, dict]:
