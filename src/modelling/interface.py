@@ -4,6 +4,7 @@ import logging
 import src.data.interface
 import src.elements.master as mr
 import src.elements.s3_parameters as s3p
+import ray
 
 
 class Interface:
@@ -27,3 +28,6 @@ class Interface:
         logging.info(self.__master.label2id)
         logging.info(self.__master.data)
         logging.info(self.__master.data['train'].features)
+
+        train = ray.data.from_huggingface(self.__master.data['train'])
+        logging.info(train)
