@@ -10,6 +10,7 @@ import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
 import src.modelling.args
 import src.modelling.metrics
+import src.modelling.tuning
 
 
 class Interface:
@@ -62,7 +63,15 @@ class Interface:
 
         args = src.modelling.args.Args(arguments=self.__arguments).__call__()
 
-        transformers.trainer.Trainer(
+        trainer = transformers.trainer.Trainer(
             model_init=self.__model_init, args=args, train_dataset=train_dataset, eval_dataset=eval_dataset,
             compute_metrics=self.__metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
+
+        tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
+
+        trainer.hyperparameter_search(hp_space=lambda _: tuning.hp_space())
+
+
+
+
