@@ -11,6 +11,9 @@ import ray
 
 
 class Interface:
+    """
+    Interface
+    """
 
     def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
         """
@@ -24,9 +27,14 @@ class Interface:
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
+        # For the tags, id2label & label2id, and the datasets.DatasetDict
         self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
 
     def model_init(self):
+        """
+
+        :return:
+        """
 
         id2label, label2id = self.__bytes.tags()
 
@@ -46,6 +54,3 @@ class Interface:
         data = self.__bytes.data()
         train = ray.data.from_huggingface(data['train'])
         validation = ray.data.from_huggingface(data['validation'])
-
-
-
