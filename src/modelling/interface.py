@@ -64,4 +64,5 @@ class Interface:
 
         transformers.trainer.Trainer(
             model_init=self.__model_init, args=args, train_dataset=train_dataset, eval_dataset=eval_dataset,
-            compute_metrics=self.__metrics.exc)
+            compute_metrics=self.__metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
+                early_stopping_patience=self.__arguments.early_stopping_patience)])
