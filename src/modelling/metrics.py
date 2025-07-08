@@ -1,7 +1,7 @@
 
 import collections
 
-import transformers
+import logging
 import numpy as np
 import evaluate
 import typing
@@ -72,12 +72,14 @@ class Metrics:
 
         return dict(collections.ChainMap(*metrics_per_class, aggregates))
 
-    def exc(self, bucket: transformers.trainer_utils.PredictionOutput):
+    def exc(self, bucket):
         """
 
         :param bucket:
         :return:
         """
+
+        logging.info(bucket)
 
         # Predictions
         predictions = bucket.predictions
