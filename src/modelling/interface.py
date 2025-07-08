@@ -1,9 +1,10 @@
-
+"""Module interface.py"""
 import logging
 import transformers
 
 import src.data.interface
 import src.modelling.args
+import src.modelling.metrics
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
@@ -29,18 +30,21 @@ class Interface:
 
         # For the tags, id2label & label2id, and the datasets.DatasetDict
         self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
+        self.__id2label, self.__label2id = self.__bytes.tags()
 
-    def model_init(self):
+        # Metrics
+        self.__metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
+
+    def __model_init(self):
         """
 
         :return:
         """
 
-        id2label, label2id = self.__bytes.tags()
-
         config = transformers.AutoConfig.from_pretrained(
             self.__arguments.pretrained_model_name,
-            **{'num_labels': len(id2label), 'label2id': label2id, 'id2label': id2label,   'dense_act_fn': 'gelu'})
+            **{'num_labels': len(self.__id2label), 'label2id': self.__label2id, 'id2label': self.__id2label,
+               'dense_act_fn': 'gelu'})
 
         return transformers.T5ForTokenClassification.from_pretrained(
             self.__arguments.pretrained_model_name, config=config)
@@ -52,7 +56,11 @@ class Interface:
         """
 
         data = self.__bytes.data()
-        train = ray.data.from_huggingface(data['train'])
-        validation = ray.data.from_huggingface(data['validation'])
+        train_dataset = ray.data.from_huggingface(data['train'])
+        eval_dataset = ray.data.from_huggingface(data['validation'])
 
         args = src.modelling.args.Args(arguments=self.__arguments).__call__()
+
+        transformers.trainer.Trainer(
+            model_init=self.__model_init, args=args, train_dataset=train_dataset, eval_dataset=eval_dataset,
+            compute_metrics=self.__metrics.exc)
