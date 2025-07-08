@@ -1,15 +1,29 @@
+"""Module args.py"""
 import os
+
 import transformers
 
 import src.elements.arguments as ag
 
+
 class Args:
+    """
+    Args
+    """
 
     def __init__(self, arguments: ag.Arguments):
+        """
+
+        :param arguments:
+        """
 
         self.__arguments = arguments
 
     def __call__(self) -> transformers.TrainingArguments:
+        """
+
+        :return:
+        """
 
         args = transformers.TrainingArguments(
             output_dir=self.__arguments.model_output_directory,
@@ -35,4 +49,3 @@ class Args:
             push_to_hub=False)
 
         return args
-
