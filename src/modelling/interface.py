@@ -1,5 +1,6 @@
 
 import logging
+import transformers
 
 import src.data.interface
 import src.elements.master as mr
@@ -23,17 +24,28 @@ class Interface:
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
+        self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
+
+    def model_init(self):
+
+        id2label, label2id = self.__bytes.tags()
+
+        config = transformers.AutoConfig.from_pretrained(
+            self.__arguments.pretrained_model_name,
+            **{'num_labels': len(id2label), 'label2id': label2id, 'id2label': id2label,   'dense_act_fn': 'gelu'})
+
+        return transformers.T5ForTokenClassification.from_pretrained(
+            self.__arguments.pretrained_model_name, config=config)
+
     def exc(self):
         """
 
         :return:
         """
 
-        master: mr.Master = src.data.interface.Interface(
-            s3_parameters=self.__s3_parameters).exc()
-
-        train = ray.data.from_huggingface(master.data['train'])
-        validation = ray.data.from_huggingface(master.data['validation'])
+        data = self.__bytes.data()
+        train = ray.data.from_huggingface(data['train'])
+        validation = ray.data.from_huggingface(data['validation'])
 
 
 
