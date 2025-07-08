@@ -3,7 +3,7 @@ import logging
 import transformers
 
 import src.data.interface
-import src.elements.master as mr
+import src.modelling.args
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
@@ -54,3 +54,5 @@ class Interface:
         data = self.__bytes.data()
         train = ray.data.from_huggingface(data['train'])
         validation = ray.data.from_huggingface(data['validation'])
+
+        args = src.modelling.args.Args(arguments=self.__arguments).__call__()
