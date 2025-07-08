@@ -1,10 +1,10 @@
-
+"""Module metrics.py"""
 import collections
-
 import logging
-import numpy as np
-import evaluate
 import typing
+
+import evaluate
+import numpy as np
 
 
 class Metrics:
