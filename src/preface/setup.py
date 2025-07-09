@@ -5,7 +5,6 @@ import config
 import src.elements.s3_parameters as s3p
 import src.elements.service as sr
 import src.functions.cache
-import src.functions.directories
 import src.s3.bucket
 import src.s3.keys
 import src.s3.prefix
