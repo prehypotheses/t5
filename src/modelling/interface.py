@@ -57,19 +57,24 @@ class Interface:
         :return:
         """
 
+        # Data
         data = self.__bytes.data()
         train_dataset = ray.data.from_huggingface(data['train'])
         eval_dataset = ray.data.from_huggingface(data['validation'])
 
+        # Training Arguments
         args = src.modelling.args.Args(arguments=self.__arguments).__call__()
 
+        # The training object
         trainer = transformers.trainer.Trainer(
             model_init=self.__model_init, args=args, train_dataset=train_dataset, eval_dataset=eval_dataset,
             compute_metrics=self.__metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
 
+        # The tuning objects for model training/development
         tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
 
+        # Hence, hyperparameter search via ...
         trainer.hyperparameter_search(
             hp_space=lambda _: tuning.hp_space(), compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
