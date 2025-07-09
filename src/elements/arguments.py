@@ -43,7 +43,13 @@ class Arguments(typing.NamedTuple):
     task : <b>str</b> The type of task the model is being trained for<br>
     pretrained_model_name : <b>str</b> The name of the pre-trained model that will be fine-tuned<br>
     architecture : <b>str</b> A name that identifies the underlying pre-trained model.<br>
-    model_output_directory: <b>str</b>
+    model_output_directory: <b>str</b>The
+        <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments.output_dir">
+        local parent directory for</a> predictions, checkpoints,
+        <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments.logging_dir">
+        logs</a>, etc.<br>
+    storage_path: <b>str</b> The <a href="https://docs.ray.io/en/latest/train/user-guides/persistent-storage.html">
+        persistent storage point for checkpoints</a>.<br>
     """
 
     MAX_LENGTH: int
@@ -70,3 +76,4 @@ class Arguments(typing.NamedTuple):
     pretrained_model_name: str
     architecture: str
     model_output_directory: str
+    storage_path: str
