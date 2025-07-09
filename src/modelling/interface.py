@@ -3,7 +3,6 @@ import logging
 
 import ray
 import transformers
-import ray.train.huggingface.transformers as rtht
 
 import src.data.interface
 import src.elements.arguments as ag
@@ -12,8 +11,8 @@ import src.elements.s3_parameters as s3p
 import src.modelling.args
 import src.modelling.check
 import src.modelling.metrics
-import src.modelling.tuning
 import src.modelling.tokenizer
+import src.modelling.tuning
 
 
 class Interface:
@@ -81,7 +80,7 @@ class Interface:
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
 
         # https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics
-        trainer.add_callback(rtht.RayTrainReportCallback())
+        # trainer.add_callback(rtht.RayTrainReportCallback())
         # trainer = rtht.prepare_trainer(trainer=trainer)
 
         # The tuning objects for model training/development
