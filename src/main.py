@@ -17,7 +17,8 @@ def main():
     logger.info('Starting: %s', datetime.datetime.now().isoformat(timespec='microseconds'))
 
     # Modelling
-    best = src.modelling.interface.Interface(s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).exc()
+    best = src.modelling.interface.Interface(
+        s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).__call__()
     logger.info(best.__dir__())
     logger.info(best.hyperparameters)
     logger.info(best.run_summary)
