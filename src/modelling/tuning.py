@@ -1,5 +1,5 @@
 """Module tuning.py"""
-
+import logging
 import ray
 import ray.tune
 import ray.tune.schedulers as rts
@@ -24,6 +24,10 @@ class Tuning:
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
+        self.__space = {"per_device_train_batch_size": self.__arguments.TRAIN_BATCH_SIZE,
+                        "per_device_eval_batch_size": self.__arguments.VALID_BATCH_SIZE,
+                        "num_train_epochs": ray.tune.choice([5, 7, 9])}
+
     @staticmethod
     def compute_objective(metric):
         """
@@ -34,15 +38,16 @@ class Tuning:
 
         return metric['eval_loss']
 
-    def hp_space(self):
+    def hp_space(self, trial):
         """
 
+        :param trial: A placeholder
         :return:
         """
 
-        return {"per_device_train_batch_size": self.__arguments.TRAIN_BATCH_SIZE,
-                "per_device_eval_batch_size": self.__arguments.VALID_BATCH_SIZE,
-                "num_train_epochs": ray.tune.choice([5, 7, 9])}
+        logging.info(trial)
+
+        return self.__space
 
     def scheduler(self):
         """
