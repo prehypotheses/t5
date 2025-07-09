@@ -77,10 +77,12 @@ class Interface:
         tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
 
         # Hence, hyperparameter search via ...
-        trainer.hyperparameter_search(
+        best = trainer.hyperparameter_search(
             hp_space=lambda _: tuning.hp_space(), compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
             resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
             storage_path=os.path.join(self.__arguments.model_output_directory, 'ray'),
             scheduler=tuning.scheduler(), checkpoint_config=checkpoint_config, verbose=0,
             progress_reporter=tuning.reporting, log_to_file=True)
+
+        return best
