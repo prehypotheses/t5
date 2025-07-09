@@ -11,6 +11,8 @@ class CTRC(ttc.TrainerCallback):
 
     "... Ray Train’s default RayTrainReportCallback is [insufficient] ... implement a callback ...".  For example,
     this "... implementation ... collects [the] latest metrics and reports on checkpoint save."
+
+    https://docs.ray.io/en/latest/train/user-guides/checkpoints.html
     """
 
     def __init__(self):
