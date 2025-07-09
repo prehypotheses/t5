@@ -5,6 +5,9 @@ import os
 import sys
 
 import boto3
+import torch
+import ray
+import warnings
 
 
 def main():
@@ -15,6 +18,13 @@ def main():
 
     logger: logging.Logger = logging.getLogger(__name__)
     logger.info('Starting: %s', datetime.datetime.now().isoformat(timespec='microseconds'))
+
+    # Device Selection: Setting a graphics processing unit as the default device
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    logger.info('Device: %s', device)
+
+    # Ray
+    ray.init(dashboard_host='172.17.0.2', dashboard_port=8265)
 
     # Modelling
     best = src.modelling.interface.Interface(
@@ -34,10 +44,20 @@ if __name__ == '__main__':
     sys.path.append(root)
     sys.path.append(os.path.join(root, 'src'))
 
+    warnings.filterwarnings(
+        "ignore", message="promote has been superseded by promote_options='default'.",
+        category=FutureWarning, module="awswrangler")
+
     # Logging
     logging.basicConfig(level=logging.INFO,
                         format='\n\n%(message)s\n%(asctime)s.%(msecs)03d\n',
                         datefmt='%Y-%m-%d %H:%M:%S')
+
+    # Activate graphics processing units
+    os.environ['CUDA_VISIBLE_DEVICES']='0'
+    os.environ['TOKENIZERS_PARALLELISM']='true'
+    os.environ['RAY_USAGE_STATS_ENABLED']='0'
+    os.environ['HF_HOME']='/tmp'
 
     # Classes
     import src.elements.arguments as ag
