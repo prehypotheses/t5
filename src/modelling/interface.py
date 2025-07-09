@@ -76,6 +76,7 @@ class Interface:
 
         # https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics
         trainer.add_callback(rtht.RayTrainReportCallback())
+        trainer = rtht.prepare_trainer(trainer=trainer)
 
         # The tuning objects for model training/development
         tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
