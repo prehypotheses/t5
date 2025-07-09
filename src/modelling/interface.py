@@ -3,6 +3,7 @@ import logging
 
 import ray
 import transformers
+import ray.train.huggingface.transformers as rtht
 
 import src.data.interface
 import src.elements.arguments as ag
@@ -80,7 +81,7 @@ class Interface:
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
 
         # https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics
-        # trainer.add_callback(rtht.RayTrainReportCallback())
+        trainer.add_callback(rtht.RayTrainReportCallback())
         # trainer = rtht.prepare_trainer(trainer=trainer)
 
         # The tuning objects for model training/development
@@ -91,7 +92,8 @@ class Interface:
             hp_space=tuning.hp_space, compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
             name='hyperparameters', resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
-            storage_path=self.__arguments.storage_path, scheduler=tuning.scheduler(), reuse_actors=True,
+            storage_path=self.__arguments.storage_path,
+            search_alg=tuning.algorithm(), scheduler=tuning.scheduler(), reuse_actors=True,
             checkpoint_config=checkpoint_config,
             verbose=0, progress_reporter=tuning.reporting, log_to_file=True)
 
