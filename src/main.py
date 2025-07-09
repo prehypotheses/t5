@@ -16,13 +16,9 @@ def main():
     logger: logging.Logger = logging.getLogger(__name__)
     logger.info('Starting: %s', datetime.datetime.now().isoformat(timespec='microseconds'))
 
-    # Background
-    logger.info(s3_parameters)
-    logger.info(arguments)
-    logger.info(hyperspace)
-
     # Modelling
-    src.modelling.interface.Interface(s3_parameters=s3_parameters).exc()
+    best = src.modelling.interface.Interface(s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).exc()
+    logger.info(best)
 
     # Cache
     src.functions.cache.Cache().exc()
