@@ -11,6 +11,7 @@ import src.elements.s3_parameters as s3p
 import src.modelling.args
 import src.modelling.metrics
 import src.modelling.tuning
+import src.modelling.check
 
 
 class Interface:
@@ -34,9 +35,6 @@ class Interface:
         self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
         self.__id2label, self.__label2id = self.__bytes.tags()
 
-        # Metrics
-        self.__metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
-
     def __model_init(self):
         """
 
@@ -57,6 +55,9 @@ class Interface:
         :return:
         """
 
+        metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
+        checkpoint_config = src.modelling.check.Check().__call__()
+
         # Data
         data = self.__bytes.data()
         train_dataset = ray.data.from_huggingface(data['train'])
@@ -68,7 +69,7 @@ class Interface:
         # The training object
         trainer = transformers.trainer.Trainer(
             model_init=self.__model_init, args=args, train_dataset=train_dataset, eval_dataset=eval_dataset,
-            compute_metrics=self.__metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
+            compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
 
         # The tuning objects for model training/development
@@ -79,7 +80,7 @@ class Interface:
             hp_space=lambda _: tuning.hp_space(), compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
             resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
-            scheduler=tuning.scheduler())
+            scheduler=tuning.scheduler(), checkpoint_config=checkpoint_config)
 
 
 
