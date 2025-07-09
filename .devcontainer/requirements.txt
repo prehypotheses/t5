@@ -1,5 +1,4 @@
-transformers[torch]>=4.52.3
-torch
+transformers>=4.52.3
 accelerate
 gradio
 ray[data,train,tune,serve]
