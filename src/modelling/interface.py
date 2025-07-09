@@ -83,7 +83,7 @@ class Interface:
 
         # Hence, hyperparameter search via ...
         best = trainer.hyperparameter_search(
-            hp_space=lambda _: tuning.hp_space(), compute_objective=tuning.compute_objective,
+            hp_space=tuning.hp_space, compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
             name='hyperparameters', resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
             storage_path=self.__arguments.storage_path, scheduler=tuning.scheduler(),
