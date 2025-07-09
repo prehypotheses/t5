@@ -66,7 +66,7 @@ class Interface:
         eval_dataset = ray.data.from_huggingface(data['validation'])
 
         # Training Arguments
-        args = src.modelling.args.Args(arguments=self.__arguments).__call__()
+        args = src.modelling.args.Args(arguments=self.__arguments, n_instances=data['train'].shape[0]).__call__()
 
         # The training object
         trainer = transformers.trainer.Trainer(
