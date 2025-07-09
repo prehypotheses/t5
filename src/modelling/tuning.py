@@ -42,7 +42,7 @@ class Tuning:
 
         return {"per_device_train_batch_size": self.__arguments.TRAIN_BATCH_SIZE,
                 "per_device_eval_batch_size": self.__arguments.VALID_BATCH_SIZE,
-                "num_train_epochs": ray.tune.choice([9, 11, 13])}
+                "num_train_epochs": ray.tune.choice([5, 7, 9])}
 
     def scheduler(self):
         """
