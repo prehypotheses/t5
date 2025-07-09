@@ -12,6 +12,7 @@ import src.modelling.args
 import src.modelling.check
 import src.modelling.metrics
 import src.modelling.tuning
+import src.modelling.tokenizer
 
 
 class Interface:
@@ -57,6 +58,7 @@ class Interface:
 
         metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
         checkpoint_config = src.modelling.check.Check().__call__()
+        tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
 
         # Data
         data = self.__bytes.data()
@@ -66,9 +68,14 @@ class Interface:
         # Training Arguments
         args = src.modelling.args.Args(arguments=self.__arguments, n_instances=data['train'].num_rows).__call__()
 
+        # Data Collator
+        data_collator: transformers.DataCollatorForTokenClassification = (
+            transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
+
         # The training object
         trainer = transformers.trainer.Trainer(
-            model_init=self.__model_init, args=args, train_dataset=train_dataset, eval_dataset=eval_dataset,
+            model_init=self.__model_init, args=args, data_collator=data_collator,
+            train_dataset=train_dataset, eval_dataset=eval_dataset,
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
 
@@ -84,7 +91,7 @@ class Interface:
             hp_space=tuning.hp_space, compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
             name='hyperparameters', resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
-            storage_path=self.__arguments.storage_path, scheduler=tuning.scheduler(),
+            storage_path=self.__arguments.storage_path, scheduler=tuning.scheduler(), reuse_actors=True,
             checkpoint_config=checkpoint_config,
             verbose=0, progress_reporter=tuning.reporting, log_to_file=True)
 
