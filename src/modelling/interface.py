@@ -70,7 +70,11 @@ class Interface:
 
         tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
 
-        trainer.hyperparameter_search(hp_space=lambda _: tuning.hp_space())
+        trainer.hyperparameter_search(
+            hp_space=lambda _: tuning.hp_space(), compute_objective=tuning.compute_objective,
+            n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
+            resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
+            scheduler=tuning.scheduler())
 
 
 
