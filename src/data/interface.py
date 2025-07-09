@@ -1,11 +1,11 @@
 """Module interface.py"""
 import typing
+import warnings
 
 import datasets
 
 import config
 import src.elements.s3_parameters as s3p
-
 import src.functions.directories
 
 
@@ -30,6 +30,8 @@ class Interface:
 
         # The data
         dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source
+        warnings.filterwarnings("ignore", message="promote has been superseded by promote_options='default'.",
+                                category=FutureWarning, module="awswrangler")
         self.__data =  datasets.load_from_disk(dataset_path=dataset_path)
 
     def tags(self) -> typing.Tuple[dict, dict]:
