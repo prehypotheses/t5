@@ -27,8 +27,9 @@ def main():
     ray.init(dashboard_host='172.17.0.2', dashboard_port=8265)
 
     # Modelling
-    best = src.modelling.interface.Interface(
-        s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).__call__()
+    modelling = src.modelling.interface.Interface(
+        s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace)
+    best = modelling()
     logger.info(best.__dir__())
     logger.info(best.hyperparameters)
     logger.info(best.run_summary)
