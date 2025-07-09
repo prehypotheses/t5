@@ -48,10 +48,15 @@ class Setup:
 
         if len(keys) > 0:
             objects = [{'Key' : key} for key in keys]
-            state = instance.delete(objects=objects)
-            return bool(state)
+            state = bool(instance.delete(objects=objects))
+        else:
+            state = True
 
-        return True
+        if not state:
+            src.functions.cache.Cache().exc()
+            sys.exit('Unable to set up an Amazon S3 (Simple Storage Service) section.')
+
+        return state
 
     def __s3(self) -> bool:
         """
@@ -76,8 +81,4 @@ class Setup:
         :return:
         """
 
-        if self.__s3():
-            return True
-
-        src.functions.cache.Cache().exc()
-        sys.exit('Unable to set up an Amazon S3 (Simple Storage Service) section.')
+        return self.__s3()
