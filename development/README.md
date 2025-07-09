@@ -10,6 +10,13 @@
 
 <br>
 
+### Beware
+
+The hyperparameter_search() method of Trainer does not support the <a href="https://pypi.org/project/bayesian-optimization/" target="_blank">`bayesian_optimization` library</a>
+
+
+<br>
+
 ### Remote Development
 
 For this Python project/template, the remote development environment requires
