@@ -1,19 +1,18 @@
 """Module interface.py"""
 import logging
-import os
 
 import ray
-import transformers
 import ray.train.huggingface.transformers as rtht
+import transformers
 
 import src.data.interface
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
 import src.modelling.args
+import src.modelling.check
 import src.modelling.metrics
 import src.modelling.tuning
-import src.modelling.check
 
 
 class Interface:
@@ -51,7 +50,7 @@ class Interface:
         return transformers.T5ForTokenClassification.from_pretrained(
             self.__arguments.pretrained_model_name, config=config)
 
-    def exc(self):
+    def __call__(self):
         """
 
         :return:
@@ -66,7 +65,7 @@ class Interface:
         eval_dataset = ray.data.from_huggingface(data['validation'])
 
         # Training Arguments
-        args = src.modelling.args.Args(arguments=self.__arguments, n_instances=data['train'].shape[0]).__call__()
+        args = src.modelling.args.Args(arguments=self.__arguments, n_instances=data['train'].num_rows).__call__()
 
         # The training object
         trainer = transformers.trainer.Trainer(
