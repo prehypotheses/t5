@@ -27,8 +27,9 @@ class Interface:
 
         self.__configurations = config.Config()
 
-    def __arguments(self, connector: boto3.session.Session, s3_parameters: s3p.S3Parameters) -> ag.Arguments:
+    def __arguments(self, connector: boto3.session.Session) -> ag.Arguments:
         """
+        dictionary['storage_path'] = 's3://' + s3_parameters.internal + '/' + self.__configurations.destination
 
         :param connector:
         :return:
@@ -40,7 +41,7 @@ class Interface:
         # Set up the model output directory parameter
         model_output_directory = os.path.join(self.__configurations.artefacts_, dictionary['architecture'])
         dictionary['model_output_directory'] = model_output_directory
-        dictionary['storage_path'] = 's3://' + s3_parameters.internal + '/' + self.__configurations.destination
+        dictionary['storage_path'] = model_output_directory + os.sep + 'ray'
 
         return ag.Arguments(**dictionary)
 
@@ -77,5 +78,5 @@ class Interface:
         # Setting up the cloud storage area
         src.preface.setup.Setup(service=service, s3_parameters=s3_parameters).exc()
 
-        return (connector, s3_parameters, service, self.__arguments(connector=connector, s3_parameters=s3_parameters),
+        return (connector, s3_parameters, service, self.__arguments(connector=connector),
                 self.__hyperspace(connector=connector))
