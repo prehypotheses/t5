@@ -11,19 +11,24 @@ class Args:
     Args
     """
 
-    def __init__(self, arguments: ag.Arguments):
+    def __init__(self, arguments: ag.Arguments, n_instances: int):
         """
 
         :param arguments:
+        :param n_instances: The number of training data instances
         """
 
         self.__arguments = arguments
+        self.__n_instances = n_instances
 
     def __call__(self) -> transformers.TrainingArguments:
         """
 
         :return:
         """
+
+        max_steps_per_epoch = self.__n_instances // (self.__arguments.TRAIN_BATCH_SIZE * self.__arguments.N_GPU)
+        max_steps = int(max_steps_per_epoch * self.__arguments.EPOCHS)
 
         args = transformers.TrainingArguments(
             output_dir=self.__arguments.model_output_directory,
@@ -35,7 +40,7 @@ class Args:
             per_device_train_batch_size=self.__arguments.TRAIN_BATCH_SIZE,
             per_device_eval_batch_size=self.__arguments.VALID_BATCH_SIZE,
             num_train_epochs=self.__arguments.EPOCHS,
-            max_steps=-1,
+            max_steps=max_steps,
             warmup_steps=0,
             use_cpu=False,
             seed=5,
