@@ -86,7 +86,7 @@ class Interface:
             hp_space=lambda _: tuning.hp_space(), compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
             name='hyperparameters', resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
-            storage_path=os.path.join(self.__arguments.model_output_directory, 'ray'), scheduler=tuning.scheduler(),
+            storage_path=self.__arguments.storage_path, scheduler=tuning.scheduler(),
             checkpoint_config=checkpoint_config,
             verbose=0, progress_reporter=tuning.reporting, log_to_file=True)
 
