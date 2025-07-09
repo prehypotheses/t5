@@ -14,12 +14,13 @@ class Interface:
     Reads the raw data.
     """
 
-    def __init__(self, s3_parameters: s3p, persist: bool = True):
+    def __init__(self, s3_parameters: s3p, persist: bool = False, local: bool = True):
         """
 
         :param s3_parameters: The overarching S3 parameters settings of this
                               project, e.g., region code name, buckets, etc.<br>
         :param persist: Save a copy of the downloaded data?
+        :param local: Load a locally saved copy?
         """
 
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
@@ -29,7 +30,8 @@ class Interface:
         self.__configurations = config.Config()
 
         # The data
-        dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source
+        dataset_path = self.__configurations.tokens_ if local else (
+                's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source)
         self.__data =  datasets.load_from_disk(dataset_path=dataset_path)
 
     def tags(self) -> typing.Tuple[dict, dict]:
