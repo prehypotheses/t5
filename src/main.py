@@ -5,9 +5,8 @@ import os
 import sys
 
 import boto3
-import torch
 import ray
-import warnings
+import torch
 
 
 def main():
@@ -21,7 +20,7 @@ def main():
 
     # Device Selection: Setting a graphics processing unit as the default device
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    logger.info('Device: %s', device)
+    logger.info('device: %s', device)
 
     # Ray
     ray.init(dashboard_host='172.17.0.2', dashboard_port=8265)
@@ -44,10 +43,6 @@ if __name__ == '__main__':
     root = os.getcwd()
     sys.path.append(root)
     sys.path.append(os.path.join(root, 'src'))
-
-    warnings.filterwarnings(
-        "ignore", message="promote has been superseded by promote_options='default'.",
-        category=FutureWarning, module="awswrangler")
 
     # Logging
     logging.basicConfig(level=logging.INFO,
