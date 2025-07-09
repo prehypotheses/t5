@@ -21,7 +21,7 @@ class Config:
         self.data_ = os.path.join(os.getcwd(), 'data')
         self.warehouse = os.path.join(os.getcwd(), 'warehouse')
         self.artefacts_ = os.path.join(self.warehouse, 'artefacts')
-        self.temporary_ = os.path.join(self.data_, 'tokens', 'T5')
+        self.tokens_ = os.path.join(self.data_, 'tokens', 'T5')
 
         # Prefixes
         today = datetime.datetime.now().strftime('%Y-%m-%d')
