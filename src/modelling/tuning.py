@@ -4,7 +4,7 @@ import logging
 import ray
 import ray.tune
 import ray.tune.schedulers as rts
-import ray.tune.search.optuna as pta
+import ray.tune.search.bayesopt as bpt
 
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
@@ -53,24 +53,6 @@ class Tuning:
 
         return self.space
 
-    def optuna_hp_space(self, trial):
-        """
-
-        :param trial:
-        :return:
-        """
-
-        return {
-            "learning_rate": trial.suggest_float(
-                "learning_rate", min(self.__hyperspace.learning_rate_distribution),
-                max(self.__hyperspace.learning_rate_distribution), log=True),
-            "weight_decay": trial.suggest_float(
-                "weight_decay", min(self.__hyperspace.weight_decay_distribution),
-                max(self.__hyperspace.weight_decay_distribution), log=True),
-            "per_device_train_batch_size": trial.suggest_categorical(
-                "per_device_train_batch_size", self.__hyperspace.per_device_train_batch_size),
-        }
-
     @staticmethod
     def scheduler() ->  rts.AsyncHyperBandScheduler:
         """
@@ -91,15 +73,13 @@ class Tuning:
         return rts.ASHAScheduler(
             time_attr='training_iteration', metric='eval_loss', mode='min')
 
-    @staticmethod
-    def algorithm() -> pta.OptunaSearch:
+    def algorithm(self) -> bpt.BayesOptSearch:
         """
-        ray.tune.search.optuna.OptunaSearch(metric='eval_loss', mode='min')
 
         :return:
         """
 
-        return pta.OptunaSearch(metric='eval_loss', mode='min')
+        return bpt.BayesOptSearch(metric='eval_loss', mode='min')
 
     @staticmethod
     def reporting():
