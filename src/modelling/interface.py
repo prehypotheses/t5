@@ -89,9 +89,9 @@ class Interface:
         # Hence, hyperparameter search via ...
         # Re-design: https://github.com/huggingface/transformers/blob/main/docs/source/en/hpo_train.md
         best = trainer.hyperparameter_search(
-            compute_objective=tuning.compute_objective,
+            hp_space=tuning.ray_hp_space, compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
-            name='hyperparameters', config=tuning.hp_space,
+            name='hyperparameters',
             resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
             storage_path=self.__arguments.storage_path,
             search_alg=tuning.algorithm(), scheduler=tuning.scheduler(), reuse_actors=True,
