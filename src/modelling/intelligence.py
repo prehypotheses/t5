@@ -1,19 +1,22 @@
-import transformers
-import ray
+"""Module intelligence.py"""
 import os
 
+import ray
 import ray.train.huggingface.transformers as rtht
-
-import src.modelling.tokenizer
-import src.modelling.metrics
+import transformers
 
 import src.data.interface
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
+import src.modelling.metrics
+import src.modelling.tokenizer
 
 
 class Intelligence:
+    """
+
+    """
 
     def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
         """
@@ -46,6 +49,11 @@ class Intelligence:
             self.__arguments.pretrained_model_name, config=config)
 
     def train_func(self, config: dict):
+        """
+
+        :param config:
+        :return:
+        """
 
         tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
         model = self.__model()
