@@ -12,13 +12,9 @@
 
 ### Beware
 
-For some learning rate schedulers, the number of steps - `TrainingArguments(..., max_steps=)` -  needs to be known in advance.  At present, it is quite possible that the hyperparameter_search() method of Trainer and the <a href="https://pypi.org/project/bayesian-optimization/" target="_blank">`bayesian_optimization` library</a> are incompatible.
+In brief.  For some learning rate schedulers, the number of steps - `TrainingArguments(..., max_steps=)` -  needs to be known in advance.  At present, it is quite possible that the hyperparameter_search() method of Trainer and the <a href="https://pypi.org/project/bayesian-optimization/" target="_blank">bayesian optimization library</a> are incompatible.  For the latest _`backend`_ $\bot$ _`hyperparameter space`_ set up visit the <a href="https://github.com/huggingface/transformers/blob/main/docs/source/en/hpo_train.md" target="_blank">latest hyperparameter opt page</a>.
 
-For the latest _`backend`_ $\bot$ _`hyperparameter space`_ set up visit the <a href="https://github.com/huggingface/transformers/blob/main/docs/source/en/hpo_train.md" target="_blank">latest hyperparameter opt page</a>.
-
-For checkpoints visit (a) [checkpoints](https://docs.ray.io/en/latest/train/user-guides/checkpoints.html), (b) [checkpoints](https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics).
-
-For (a) [distributed training](https://docs.ray.io/en/latest/train/getting-started-transformers.html), (b) [hyperparameter opt](https://docs.ray.io/en/latest/tune/examples/pbt_transformers.html), [alongside huggingface.co hyperparameter search](https://huggingface.co/docs/transformers/v4.53.1/en/hpo_train), [ray.tune.run](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.run.html), [TrainingArguments](https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments), [tune results](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.Result.html), (c) [Optuna Search](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.search.optuna.OptunaSearch.html).
+For checkpoints visit (a) [checkpoints](https://docs.ray.io/en/latest/train/user-guides/checkpoints.html), (b) [checkpoints](https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics).  Additionally, explore (a) [distributed training](https://docs.ray.io/en/latest/train/getting-started-transformers.html), (b) [hyperparameter opt](https://docs.ray.io/en/latest/tune/examples/pbt_transformers.html), [alongside huggingface.co hyperparameter search](https://huggingface.co/docs/transformers/v4.53.1/en/hpo_train), [ray.tune.run](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.run.html), [TrainingArguments](https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments), [tune results](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.Result.html), (c) [Optuna Search](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.search.optuna.OptunaSearch.html).
 
 [Fine Tuning](https://docs.ray.io/en/latest/train/examples/transformers/huggingface_text_classification.html)
 
