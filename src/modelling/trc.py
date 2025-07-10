@@ -1,11 +1,11 @@
-"""Module ctrc.py"""
+"""Module trc.py"""
 import ray.train
 import transformers
 import transformers.trainer_callback as ttc
 
 
 # noinspection SpellCheckingInspection
-class CTRC(ttc.TrainerCallback):
+class TRC(ttc.TrainerCallback):
     """
     CustomTrainReportCallback.  If<br>
 
