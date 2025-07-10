@@ -1,5 +1,6 @@
 import transformers
 import ray
+import os
 
 import src.modelling.tokenizer
 import src.modelling.metrics
@@ -42,7 +43,7 @@ class Intelligence:
         return transformers.T5ForTokenClassification.from_pretrained(
             self.__arguments.pretrained_model_name, config=config)
 
-    def train_func(self, config):
+    def train_func(self, config: dict):
 
         tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
         model = self.__model()
@@ -53,7 +54,29 @@ class Intelligence:
         train_dataset = ray.data.from_huggingface(data['train'])
         eval_dataset = ray.data.from_huggingface(data['validation'])
 
+        # Steps
+        t_batch = config.get('per_device_train_batch_size', self.__arguments.TRAIN_BATCH_SIZE)
+        max_steps_per_epoch = data['train'].num_rows // (t_batch * self.__arguments.N_GPU)
+        max_steps = int(max_steps_per_epoch * self.__arguments.EPOCHS)
+
+        # Training Arguments
+        args = transformers.TrainingArguments(
+            output_dir=self.__arguments.model_output_directory, report_to='tensorboard', eval_strategy='epoch',
+            save_strategy='epoch', learning_rate=config.get('learning_rate', self.__arguments.LEARNING_RATE),
+            weight_decay=config.get('weight_decay', self.__arguments.WEIGHT_DECAY), per_device_train_batch_size=t_batch,
+            per_device_eval_batch_size=self.__arguments.VALID_BATCH_SIZE, num_train_epochs=self.__arguments.EPOCHS,
+            max_steps=max_steps, warmup_steps=0, use_cpu=False, seed=5,
+            save_total_limit=self.__arguments.save_total_limit, skip_memory_metrics=True,
+            metric_for_best_model='eval_loss', greater_is_better=False, load_best_model_at_end=True,
+            logging_dir=os.path.join(self.__arguments.model_output_directory, 'logs'), fp16=True, push_to_hub=False)
+
         # Data Collator
         data_collator: transformers.DataCollatorForTokenClassification = (
             transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
 
+        # The training object
+        trainer = transformers.trainer.Trainer(
+            model=model, args=args, data_collator=data_collator,
+            train_dataset=train_dataset, eval_dataset=eval_dataset,
+            compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
+                early_stopping_patience=self.__arguments.early_stopping_patience)])
