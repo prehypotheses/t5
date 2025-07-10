@@ -87,10 +87,12 @@ class Interface:
         tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
 
         # Hence, hyperparameter search via ...
+        # Re-design: https://github.com/huggingface/transformers/blob/main/docs/source/en/hpo_train.md
         best = trainer.hyperparameter_search(
-            hp_space=tuning.hp_space, compute_objective=tuning.compute_objective,
+            compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
-            name='hyperparameters', resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
+            name='hyperparameters', config=tuning.hp_space,
+            resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
             storage_path=self.__arguments.storage_path,
             search_alg=tuning.algorithm(), scheduler=tuning.scheduler(), reuse_actors=True,
             checkpoint_config=checkpoint_config,
