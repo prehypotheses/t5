@@ -89,7 +89,7 @@ class Tuning:
     @staticmethod
     def algorithm() -> pta.OptunaSearch:
         """
-        ray.tune.search.optuna.OptunaSearch(metric='eval_loss', mode='min')
+        ray.tune.search.optuna.OptunaSearch(spae=, metric='eval_loss', mode='min')
 
         :return:
         """
