@@ -54,6 +54,11 @@ class Tuning:
         return self.space
 
     def optuna_hp_space(self, trial):
+        """
+
+        :param trial:
+        :return:
+        """
 
         return {
             "learning_rate": trial.suggest_float(
