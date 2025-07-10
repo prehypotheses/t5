@@ -1,16 +1,20 @@
-import ray.train.torch
+"""Module steps.py"""
 import ray.train
+import ray.train.torch
 import ray.tune
 
-import src.modelling.check
-import src.modelling.intelligence
-import src.modelling.tuning
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
+import src.modelling.check
+import src.modelling.intelligence
+import src.modelling.tuning
 
 
 class Steps:
+    """
+
+    """
 
     def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
         """
@@ -26,7 +30,7 @@ class Steps:
 
     def exc(self):
         """
-        {'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU}
+
         :return:
         """
 
@@ -45,13 +49,12 @@ class Steps:
             run_config=ray.train.RunConfig(checkpoint_config=checkpoint_config)
         )
 
-        ray.tune.Tuner(
+        tuner = ray.tune.Tuner(
             trainer,
-            param_space={"train_loop_config": tuning.space}
+            param_space={"train_loop_config": tuning.space},
+            tune_config=ray.tune.TuneConfig(metric='eval_loss', mode='min', scheduler=tuning.scheduler())
         )
 
+        grid = tuner.fit()
 
-
-
-
-
+        return grid
