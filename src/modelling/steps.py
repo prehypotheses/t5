@@ -53,7 +53,7 @@ class Steps:
             trainer,
             param_space={"train_loop_config": tuning.space},
             tune_config=ray.tune.TuneConfig(
-                metric='eval_loss', mode='min', search_alg=tuning.algorithm(), scheduler=tuning.scheduler())
+                metric='eval_loss', mode='min', scheduler=tuning.scheduler())
         )
 
         grid = tuner.fit()
