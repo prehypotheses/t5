@@ -1,5 +1,6 @@
 import ray.train.torch
 import ray.train
+import ray.tune
 
 import src.modelling.check
 import src.modelling.intelligence
@@ -32,10 +33,16 @@ class Steps:
 
         checkpoint_config = src.modelling.check.Check().__call__()
 
-        trainer = ray.train.torch.TorchTrainer(
+        trainer: ray.train.torch.TorchTrainer = ray.train.torch.TorchTrainer(
             intelligence.train_func,
             scaling_config=ray.train.ScalingConfig(
                 resources_per_worker={'CPU': self.__arguments.N_CPU, 'GPU': self.__arguments.N_GPU},
                 use_gpu=True, num_workers=self.__arguments.N_GPU),
             run_config=ray.train.RunConfig(checkpoint_config=checkpoint_config)
         )
+
+        ray.tune.Tuner(
+            trainer
+        )
+
+
