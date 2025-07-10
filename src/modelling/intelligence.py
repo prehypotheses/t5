@@ -18,21 +18,22 @@ class Intelligence:
 
     """
 
-    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
+    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace,
+                 id2label: dict, label2id: dict):
         """
 
         :param s3_parameters:
         :param arguments:
         :param hyperspace:
+        :param id2label:
+        :param label2id:
         """
 
         self.__s3_parameters = s3_parameters
         self.__arguments = arguments
         self.__hyperspace = hyperspace
-
-        # For the tags, id2label & label2id, and the datasets.DatasetDict
-        self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
-        self.__id2label, self.__label2id = self.__bytes.tags()
+        self.__id2label = id2label
+        self.__label2id = label2id
 
     def __model(self):
         """
@@ -59,14 +60,13 @@ class Intelligence:
         model = self.__model()
         metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
 
-        # Data
-        data = self.__bytes.data()
-        train_dataset = ray.data.from_huggingface(data['train'])
-        eval_dataset = ray.data.from_huggingface(data['validation'])
+        # The data
+        train_dataset = ray.train.get_dataset_shard('train')
+        eval_dataset = ray.train.get_dataset_shard('eval')
 
         # Steps
         t_batch = config.get('per_device_train_batch_size', self.__arguments.TRAIN_BATCH_SIZE)
-        max_steps_per_epoch = data['train'].num_rows // (t_batch * self.__arguments.N_GPU)
+        max_steps_per_epoch = self.__arguments.N_INSTANCES // (t_batch * self.__arguments.N_GPU)
         max_steps = int(max_steps_per_epoch * self.__arguments.EPOCHS)
 
         # Training Arguments
