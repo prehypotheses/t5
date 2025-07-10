@@ -4,9 +4,11 @@ import ray.tune
 
 import src.modelling.check
 import src.modelling.intelligence
+import src.modelling.tuning
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
+
 
 class Steps:
 
@@ -33,6 +35,8 @@ class Steps:
 
         checkpoint_config = src.modelling.check.Check().__call__()
 
+        tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
+
         trainer: ray.train.torch.TorchTrainer = ray.train.torch.TorchTrainer(
             intelligence.train_func,
             scaling_config=ray.train.ScalingConfig(
@@ -42,7 +46,12 @@ class Steps:
         )
 
         ray.tune.Tuner(
-            trainer
+            trainer,
+            param_space={"train_loop_config": tuning.space}
         )
+
+
+
+
 
 
