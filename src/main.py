@@ -27,7 +27,7 @@ def main():
 
     # Grid
     grid = src.modelling.steps.Steps(s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).exc()
-    logger.info(grid.get_dataframe().sort_values(by='eval_loss'))
+    logger.info(grid.get_dataframe())
     logger.info(grid.get_best_result())
 
     # Cache
