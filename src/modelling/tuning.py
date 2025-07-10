@@ -25,7 +25,7 @@ class Tuning:
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
-        self.__space = {
+        self.space = {
             'learning_rate': ray.tune.uniform(lower=min(self.__hyperspace.learning_rate_distribution),
                                               upper=max(self.__hyperspace.learning_rate_distribution)),
             'weight_decay': ray.tune.uniform(lower=min(self.__hyperspace.weight_decay_distribution),
@@ -51,7 +51,7 @@ class Tuning:
 
         logging.info(trial)
 
-        return self.__space
+        return self.space
 
     def optuna_hp_space(self, trial):
 
