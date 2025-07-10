@@ -2,6 +2,7 @@ import transformers
 import ray
 
 import src.modelling.tokenizer
+import src.modelling.metrics
 
 import src.data.interface
 import src.elements.arguments as ag
@@ -41,12 +42,18 @@ class Intelligence:
         return transformers.T5ForTokenClassification.from_pretrained(
             self.__arguments.pretrained_model_name, config=config)
 
-    def train_func(self):
+    def train_func(self, config):
 
         tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
         model = self.__model()
+        metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
 
         # Data
         data = self.__bytes.data()
         train_dataset = ray.data.from_huggingface(data['train'])
         eval_dataset = ray.data.from_huggingface(data['validation'])
+
+        # Data Collator
+        data_collator: transformers.DataCollatorForTokenClassification = (
+            transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
+
