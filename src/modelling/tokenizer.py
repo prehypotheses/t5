@@ -29,4 +29,4 @@ class Tokenizer:
         # Tokenizer
         return transformers.AutoTokenizer.from_pretrained(
             pretrained_model_name_or_path=self.__arguments.pretrained_model_name,
-            clean_up_tokenization_spaces=True)
+            clean_up_tokenization_spaces=True, use_fast=True)
