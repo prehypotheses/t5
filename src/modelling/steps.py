@@ -45,7 +45,7 @@ class Steps:
         validation = ray.data.from_huggingface(data['validation'])
 
         # Update self.__arguments
-        self.__arguments._replace(N_INSTANCES=data['train'].num_rows)
+        self.__arguments = self.__arguments._replace(N_INSTANCES=data['train'].num_rows)
 
         # transformers.trainer.Trainer
         id2label, label2id = self.__bytes.tags()
