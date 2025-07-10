@@ -7,7 +7,7 @@ import transformers.trainer_callback as ttc
 # noinspection SpellCheckingInspection
 class TRC(ttc.TrainerCallback):
     """
-    CustomTrainReportCallback.  If<br>
+    A custom callback.  If<br>
 
     "... Ray Train’s default RayTrainReportCallback is [insufficient] ... implement a callback ...".  For example,
     this "... implementation ... collects [the] latest metrics and reports on checkpoint save."
