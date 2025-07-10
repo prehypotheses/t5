@@ -1,3 +1,5 @@
+import transformers
+import ray
 
 import src.modelling.tokenizer
 
@@ -25,6 +27,26 @@ class Intelligence:
         self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
         self.__id2label, self.__label2id = self.__bytes.tags()
 
+    def __model(self):
+        """
+
+        :return:
+        """
+
+        config = transformers.AutoConfig.from_pretrained(
+            self.__arguments.pretrained_model_name,
+            **{'num_labels': len(self.__id2label), 'label2id': self.__label2id, 'id2label': self.__id2label,
+               'dense_act_fn': 'gelu'})
+
+        return transformers.T5ForTokenClassification.from_pretrained(
+            self.__arguments.pretrained_model_name, config=config)
+
     def train_func(self):
 
         tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
+        model = self.__model()
+
+        # Data
+        data = self.__bytes.data()
+        train_dataset = ray.data.from_huggingface(data['train'])
+        eval_dataset = ray.data.from_huggingface(data['validation'])
