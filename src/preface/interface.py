@@ -41,7 +41,7 @@ class Interface:
         # Set up the model output directory parameter
         model_output_directory = os.path.join(self.__configurations.artefacts_, dictionary['architecture'])
         dictionary['model_output_directory'] = model_output_directory
-        dictionary['storage_path'] = model_output_directory + os.sep + 'ray'
+        dictionary['storage_path'] = model_output_directory + os.sep + 'compute'
 
         return ag.Arguments(**dictionary)
 
