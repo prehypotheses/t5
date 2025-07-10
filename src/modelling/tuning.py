@@ -26,12 +26,10 @@ class Tuning:
         self.__hyperspace = hyperspace
 
         self.__space = {
-            'learning_rate': ray.tune.uniform(
-                lower=min(self.__hyperspace.learning_rate_distribution),
-                upper=max(self.__hyperspace.learning_rate_distribution)),
-            'weight_decay': ray.tune.uniform(
-                lower=min(self.__hyperspace.weight_decay_distribution),
-                upper=max(self.__hyperspace.weight_decay_distribution)),
+            'learning_rate': ray.tune.uniform(lower=min(self.__hyperspace.learning_rate_distribution),
+                                              upper=max(self.__hyperspace.learning_rate_distribution)),
+            'weight_decay': ray.tune.uniform(lower=min(self.__hyperspace.weight_decay_distribution),
+                                             upper=max(self.__hyperspace.weight_decay_distribution)),
             'per_device_train_batch_size': ray.tune.choice(self.__hyperspace.per_device_train_batch_size)}
 
     @staticmethod
@@ -54,6 +52,19 @@ class Tuning:
         logging.info(trial)
 
         return self.__space
+
+    def optuna_hp_space(self, trial):
+
+        return {
+            "learning_rate": trial.suggest_float(
+                "learning_rate", min(self.__hyperspace.learning_rate_distribution),
+                max(self.__hyperspace.learning_rate_distribution), log=True),
+            "weight_decay": trial.suggest_float(
+                "weight_decay", min(self.__hyperspace.weight_decay_distribution),
+                max(self.__hyperspace.weight_decay_distribution), log=True),
+            "per_device_train_batch_size": trial.suggest_categorical(
+                "per_device_train_batch_size", self.__hyperspace.per_device_train_batch_size),
+        }
 
     @staticmethod
     def scheduler() ->  rts.AsyncHyperBandScheduler:
