@@ -2,6 +2,8 @@ import transformers
 import ray
 import os
 
+import ray.train.huggingface.transformers as rtht
+
 import src.modelling.tokenizer
 import src.modelling.metrics
 
@@ -80,3 +82,9 @@ class Intelligence:
             train_dataset=train_dataset, eval_dataset=eval_dataset,
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
+
+        # https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics
+        trainer.add_callback(rtht.RayTrainReportCallback())
+        trainer = rtht.prepare_trainer(trainer=trainer)
+
+        trainer.train()
