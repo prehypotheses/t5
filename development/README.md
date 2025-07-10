@@ -14,6 +14,8 @@
 
 At present, it is quite possible that the hyperparameter_search() method of Trainer and the <a href="https://pypi.org/project/bayesian-optimization/" target="_blank">`bayesian_optimization` library</a> are incompatible.
 
+For the latest _`backend`_ $\bot$ _`hyperparameter space`_ set up visit the <a href="https://github.com/huggingface/transformers/blob/main/docs/source/en/hpo_train.md" target="_blank">latest hyperparameter opt page</a>.
+
 <br>
 
 ### Remote Development
