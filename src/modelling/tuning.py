@@ -44,7 +44,7 @@ class Tuning:
 
         return metric['eval_loss']
 
-    def hp_space(self, trial):
+    def ray_hp_space(self, trial):
         """
 
         :param trial: A placeholder
