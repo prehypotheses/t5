@@ -12,8 +12,7 @@
 
 ### Beware
 
-The hyperparameter_search() method of Trainer does not support the <a href="https://pypi.org/project/bayesian-optimization/" target="_blank">`bayesian_optimization` library</a>
-
+At present, it is quite possible that the hyperparameter_search() method of Trainer and the <a href="https://pypi.org/project/bayesian-optimization/" target="_blank">`bayesian_optimization` library</a> are incompatible.
 
 <br>
 
