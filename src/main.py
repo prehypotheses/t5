@@ -25,14 +25,10 @@ def main():
     # Ray
     ray.init(dashboard_host='172.17.0.2', dashboard_port=8265)
 
-    # Modelling
-    modelling = src.modelling.interface.Interface(
-        s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace)
-    best = modelling()
-    logger.info(best.__dir__())
-    logger.info(best.hyperparameters)
-    logger.info(best.run_summary)
-    logging.info(best)
+    # Grid
+    grid = src.modelling.steps.Steps(s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).exc()
+    logger.info(grid.get_dataframe().sort_values(by='eval_loss'))
+    logger.info(grid.get_best_result())
 
     # Cache
     src.functions.cache.Cache().exc()
@@ -61,7 +57,7 @@ if __name__ == '__main__':
     import src.elements.s3_parameters as s3p
     import src.elements.service as sr
     import src.functions.cache
-    import src.modelling.interface
+    import src.modelling.steps
     import src.preface.interface
 
     connector: boto3.session.Session
