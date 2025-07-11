@@ -2,7 +2,6 @@
 import logging
 import os
 
-import ray
 import transformers
 
 import src.data.interface
@@ -52,30 +51,30 @@ class Structures:
         return transformers.T5ForTokenClassification.from_pretrained(
             self.__arguments.pretrained_model_name, config=config)
 
-    def train_func(self, config: dict) -> transformers.trainer.Trainer:
+    def train_func(self) -> transformers.trainer_utils.BestRun:
         """
 
         :return:
         """
 
         metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
+        checkpoint_config = src.modelling.check.Check().__call__()
 
         # Data
         data = self.__bytes.data()
-        train_dataset = ray.data.from_huggingface(data['train'])
-        eval_dataset = ray.data.from_huggingface(data['validation'])
+        # train_dataset = ray.data.from_huggingface(data['train'])
+        # eval_dataset = ray.data.from_huggingface(data['validation'])
 
         # Training Arguments
-        t_batch = config.get('per_device_train_batch_size', self.__arguments.TRAIN_BATCH_SIZE)
-        max_steps_per_epoch = self.__arguments.N_INSTANCES // (t_batch * self.__arguments.N_GPU)
+        max_steps_per_epoch = self.__arguments.N_INSTANCES // (self.__arguments.TRAIN_BATCH_SIZE * self.__arguments.N_GPU)
         max_steps = int(max_steps_per_epoch * self.__arguments.EPOCHS)
 
         args = transformers.TrainingArguments(
             output_dir=self.__arguments.model_output_directory, report_to='tensorboard',
             eval_strategy='epoch', save_strategy='epoch',
-            learning_rate=config.get('learning_rate', self.__arguments.LEARNING_RATE),
-            weight_decay=config.get('weight_decay', self.__arguments.WEIGHT_DECAY),
-            per_device_train_batch_size=t_batch,
+            learning_rate=self.__arguments.LEARNING_RATE,
+            weight_decay=self.__arguments.WEIGHT_DECAY,
+            per_device_train_batch_size=self.__arguments.TRAIN_BATCH_SIZE,
             per_device_eval_batch_size=self.__arguments.VALID_BATCH_SIZE,
             num_train_epochs=self.__arguments.EPOCHS, max_steps=max_steps,
             warmup_steps=0, use_cpu=False, seed=5,
@@ -86,7 +85,7 @@ class Structures:
         # The training object
         trainer = transformers.trainer.Trainer(
             model_init=self.__model_init, args=args,
-            train_dataset=train_dataset, eval_dataset=eval_dataset,
+            train_dataset=data['train'], eval_dataset=data['validation'],
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
 
@@ -94,4 +93,18 @@ class Structures:
         # trainer.add_callback(rtht.RayTrainReportCallback())
         # trainer = rtht.prepare_trainer(trainer=trainer)
 
-        return trainer.train()
+        # The tuning objects for model training/development
+        tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
+
+        # Hence, hyperparameter search via ...
+        # Re-design: https://github.com/huggingface/transformers/blob/main/docs/source/en/hpo_train.md
+        best: transformers.trainer_utils.BestRun = trainer.hyperparameter_search(
+            hp_space=tuning.ray_hp_space, compute_objective=tuning.compute_objective,
+            n_trials=self.__arguments.N_TRIALS, direction=['minimize', 'minimize', 'maximize'], backend='ray',
+            resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
+            storage_path=self.__arguments.storage_path,
+            scheduler=tuning.scheduler(), reuse_actors=True,
+            checkpoint_config=checkpoint_config,
+            verbose=0, progress_reporter=tuning.reporting, log_to_file=True)
+
+        return best
