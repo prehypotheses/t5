@@ -32,7 +32,7 @@ class Interface:
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
-        # For the tags, id2label & label2id, and the datasets.DatasetDict
+        # For the tags & data (datasets.DatasetDict)
         self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
         self.__id2label, self.__label2id = self.__bytes.tags()
 
