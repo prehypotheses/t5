@@ -8,7 +8,7 @@ import boto3
 import ray
 import torch
 
-
+# noinspection DuplicatedCode
 def main():
     """
 
@@ -33,7 +33,7 @@ def main():
     # Cache
     src.functions.cache.Cache().exc()
 
-
+# noinspection DuplicatedCode
 if __name__ == '__main__':
 
     root = os.getcwd()
