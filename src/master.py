@@ -27,11 +27,7 @@ def main():
     ray.init(dashboard_host='172.17.0.2', dashboard_port=8265)
 
     # Best
-    best = src.modelling.layer.Layer(s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).exc()
-    logger.info(best)
-    logger.info(best.hyperparameters)
-    logger.info(best.run_summary)
-    logger.info(best.__dir__())
+    src.modelling.layer.Layer(s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).exc()
 
     # Cache
     src.functions.cache.Cache().exc()
