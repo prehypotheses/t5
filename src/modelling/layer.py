@@ -14,6 +14,9 @@ import src.modelling.tuning
 
 # noinspection DuplicatedCode
 class Layer:
+    """
+    Layer
+    """
 
     def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
         """
@@ -28,6 +31,10 @@ class Layer:
         self.__hyperspace = hyperspace
 
     def exc(self):
+        """
+        
+        :return:
+        """
 
         checkpoint_config = src.modelling.check.Check().__call__()
 
