@@ -15,6 +15,7 @@ import src.modelling.tokenizer
 import src.modelling.tuning
 
 
+# noinspection DuplicatedCode
 class Interface:
     """
     Interface
@@ -58,7 +59,7 @@ class Interface:
 
         metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
         checkpoint_config = src.modelling.check.Check().__call__()
-        tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
+        # tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
 
         # Data
         data = self.__bytes.data()
