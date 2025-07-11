@@ -97,7 +97,6 @@ class Structures:
         tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
 
         # Hence, hyperparameter search via ...
-        # Re-design: https://github.com/huggingface/transformers/blob/main/docs/source/en/hpo_train.md
         best: transformers.trainer_utils.BestRun = trainer.hyperparameter_search(
             hp_space=tuning.ray_hp_space, compute_objective=tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction=['minimize', 'minimize', 'maximize'], backend='ray',
