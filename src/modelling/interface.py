@@ -69,12 +69,12 @@ class Interface:
         args = src.modelling.args.Args(arguments=self.__arguments, n_instances=data['train'].num_rows).__call__()
 
         # Data Collator
-        data_collator: transformers.DataCollatorForTokenClassification = (
-            transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
+        # data_collator: transformers.DataCollatorForTokenClassification = (
+        #     transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
 
         # The training object
         trainer = transformers.trainer.Trainer(
-            model_init=self.__model_init, args=args, data_collator=data_collator,
+            model_init=self.__model_init, args=args,
             train_dataset=train_dataset, eval_dataset=eval_dataset,
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
