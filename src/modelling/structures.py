@@ -90,4 +90,8 @@ class Interface:
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
 
+        # https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics
+        # trainer.add_callback(rtht.RayTrainReportCallback())
+        # trainer = rtht.prepare_trainer(trainer=trainer)
+
         return trainer.train()
