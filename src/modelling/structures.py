@@ -22,22 +22,21 @@ class Structures:
     Interface
     """
 
-    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace,
-                 id2label: dict, label2id: dict):
+    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
         """
 
         :param s3_parameters:
         :param arguments:
         :param hyperspace:
-        :param id2label:
-        :param label2id:
         """
 
         self.__s3_parameters = s3_parameters
         self.__arguments = arguments
         self.__hyperspace = hyperspace
-        self.__id2label = id2label
-        self.__label2id = label2id
+
+        # For the tags, and the datasets.DatasetDict
+        self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
+        self.__id2label, self.__label2id = self.__bytes.tags()
 
     def __model_init(self):
         """
@@ -53,7 +52,7 @@ class Structures:
         return transformers.T5ForTokenClassification.from_pretrained(
             self.__arguments.pretrained_model_name, config=config)
 
-    def train_func(self, config: dict):
+    def train_func(self, config: dict) -> transformers.trainer.Trainer:
         """
 
         :return:
@@ -61,9 +60,10 @@ class Structures:
 
         metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
 
-        # The data
-        train_dataset = ray.train.get_dataset_shard('train')
-        eval_dataset = ray.train.get_dataset_shard('eval')
+        # Data
+        data = self.__bytes.data()
+        train_dataset = ray.data.from_huggingface(data['train'])
+        eval_dataset = ray.data.from_huggingface(data['validation'])
 
         # Training Arguments
         t_batch = config.get('per_device_train_batch_size', self.__arguments.TRAIN_BATCH_SIZE)
