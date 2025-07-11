@@ -81,12 +81,12 @@ class Intelligence:
             logging_dir=os.path.join(self.__arguments.model_output_directory, 'logs'), fp16=True, push_to_hub=False)
 
         # Data Collator
-        data_collator: transformers.DataCollatorForTokenClassification = (
-            transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
+        # data_collator: transformers.DataCollatorForTokenClassification = (
+        #     transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
 
-        # The training object
+        # The huggingface.co trainer object
         trainer = transformers.trainer.Trainer(
-            model=model, args=args, data_collator=data_collator,
+            model=model, args=args,
             train_dataset=train_dataset, eval_dataset=eval_dataset,
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
