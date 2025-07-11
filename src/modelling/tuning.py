@@ -89,7 +89,7 @@ class Tuning:
         """
 
         return rts.ASHAScheduler(
-            time_attr='training_iteration')
+            time_attr='training_iteration', metric='eval_loss', mode='min')
 
     @staticmethod
     def algorithm() -> pta.OptunaSearch:
