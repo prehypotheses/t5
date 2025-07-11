@@ -60,7 +60,8 @@ class Steps:
             scaling_config=ray.train.ScalingConfig(
                 resources_per_worker={'CPU': self.__arguments.N_CPU, 'GPU': self.__arguments.N_GPU},
                 use_gpu=True, num_workers=self.__arguments.N_GPU),
-            run_config=ray.train.RunConfig(checkpoint_config=checkpoint_config),
+            run_config=ray.train.RunConfig(
+                storage_path=self.__arguments.storage_path, checkpoint_config=checkpoint_config, name='investigation'),
             datasets={'train': train, 'eval': validation}
         )
 
