@@ -68,6 +68,9 @@ class Structures:
         # train_dataset = ray.data.from_huggingface(data['train'])
         # eval_dataset = ray.data.from_huggingface(data['validation'])
 
+        # Update self.__arguments
+        self.__arguments = self.__arguments._replace(N_INSTANCES=data['train'].num_rows)
+
         # Training Arguments
         max_steps_per_epoch = self.__arguments.N_INSTANCES // (self.__arguments.TRAIN_BATCH_SIZE * self.__arguments.N_GPU)
         max_steps = int(max_steps_per_epoch * self.__arguments.EPOCHS)
