@@ -37,6 +37,9 @@ class Structures:
         self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
         self.__id2label, self.__label2id = self.__bytes.tags()
 
+        # The tuning objects for model training/development
+        self.__tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
+
     def __model_init(self):
         """
 
@@ -93,17 +96,16 @@ class Structures:
         # trainer.add_callback(rtht.RayTrainReportCallback())
         # trainer = rtht.prepare_trainer(trainer=trainer)
 
-        # The tuning objects for model training/development
-        tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
+
 
         # Hence, hyperparameter search via ...
         best: transformers.trainer_utils.BestRun = trainer.hyperparameter_search(
-            hp_space=tuning.ray_hp_space, compute_objective=tuning.compute_objective,
+            hp_space=self.__tuning.ray_hp_space, compute_objective=self.__tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction=['minimize', 'minimize', 'maximize'], backend='ray',
             resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
             storage_path=self.__arguments.storage_path,
-            scheduler=tuning.scheduler(), reuse_actors=True,
+            scheduler=self.__tuning.scheduler(), reuse_actors=True,
             checkpoint_config=checkpoint_config,
-            verbose=0, progress_reporter=tuning.reporting, log_to_file=True)
+            verbose=0, progress_reporter=self.__tuning.reporting, log_to_file=True)
 
         return best
