@@ -96,8 +96,6 @@ class Structures:
         # trainer.add_callback(rtht.RayTrainReportCallback())
         # trainer = rtht.prepare_trainer(trainer=trainer)
 
-
-
         # Hence, hyperparameter search via ...
         best: transformers.trainer_utils.BestRun = trainer.hyperparameter_search(
             hp_space=self.__tuning.ray_hp_space, compute_objective=self.__tuning.compute_objective,
