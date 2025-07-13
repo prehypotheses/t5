@@ -1,6 +1,5 @@
 """Module structures.py"""
 import logging
-import os
 
 import transformers
 
@@ -69,21 +68,7 @@ class Structures:
         self.__arguments = self.__arguments._replace(N_INSTANCES=self.__data['train'].num_rows)
 
         # Training Arguments
-        max_steps_per_epoch = self.__arguments.N_INSTANCES // (self.__arguments.TRAIN_BATCH_SIZE * self.__arguments.N_GPU)
-        max_steps = int(max_steps_per_epoch * self.__arguments.EPOCHS)
-
-        args = transformers.TrainingArguments(
-            output_dir=self.__arguments.model_output_directory, report_to='tensorboard',
-            eval_strategy='epoch', save_strategy='epoch',
-            learning_rate=self.__arguments.LEARNING_RATE,
-            weight_decay=self.__arguments.WEIGHT_DECAY,
-            per_device_train_batch_size=self.__arguments.TRAIN_BATCH_SIZE,
-            per_device_eval_batch_size=self.__arguments.VALID_BATCH_SIZE,
-            num_train_epochs=self.__arguments.EPOCHS, max_steps=max_steps,
-            warmup_steps=0, use_cpu=False, seed=5,
-            save_total_limit=self.__arguments.save_total_limit, skip_memory_metrics=True,
-            metric_for_best_model='eval_loss', greater_is_better=False, load_best_model_at_end=True,
-            logging_dir=os.path.join(self.__arguments.model_output_directory, 'logs'), fp16=True, push_to_hub=False)
+        args = src.modelling.args.Args(arguments=self.__arguments, n_instances=self.__data['train'].num_rows).__call__()
 
         # Data Collator
         data_collator: transformers.DataCollatorForTokenClassification = (
@@ -95,10 +80,6 @@ class Structures:
             train_dataset=self.__data['train'], eval_dataset=self.__data['validation'],
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
-
-        # https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics
-        # trainer.add_callback(rtht.RayTrainReportCallback())
-        # trainer = rtht.prepare_trainer(trainer=trainer)
 
         # Hence, hyperparameter search via ...
         best: transformers.trainer_utils.BestRun = trainer.hyperparameter_search(
