@@ -64,5 +64,10 @@ class Layer:
             model_output_directory=os.path.join(self.__section, 'optimal'),
             EPOCHS=2*self.__arguments.EPOCHS, save_total_limit=1)
 
+        # Model
         model: transformers.Trainer = src.modelling.convergence.Convergence(
-            s3_parameters=self.__s3_parameters, arguments=self.__arguments, hyperspace=self.__hyperspace).__call__()
+            s3_parameters=self.__s3_parameters, arguments=self.__arguments,
+            hyperspace=self.__hyperspace, pieces=self.__pieces).__call__()
+
+        # Save
+        model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, 'model'))
