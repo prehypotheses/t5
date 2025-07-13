@@ -1,7 +1,7 @@
 """Module convergence.py"""
 import logging
 
-import ray
+import ray.train.huggingface.transformers as rtht
 import transformers
 
 import src.data.interface
@@ -58,44 +58,30 @@ class Convergence:
         """
 
         metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
-        checkpoint_config = src.modelling.check.Check().__call__()
-        # tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
+        tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
 
         # Data
         data = self.__bytes.data()
-        train_dataset = ray.data.from_huggingface(data['train'])
-        eval_dataset = ray.data.from_huggingface(data['validation'])
+
 
         # Training Arguments
         args = src.modelling.args.Args(arguments=self.__arguments, n_instances=data['train'].num_rows).__call__()
 
         # Data Collator
-        # data_collator: transformers.DataCollatorForTokenClassification = (
-        #     transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
+        data_collator: transformers.DataCollatorForTokenClassification = (
+            transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
 
         # The training object
         trainer = transformers.trainer.Trainer(
-            model_init=self.__model_init, args=args,
-            train_dataset=train_dataset, eval_dataset=eval_dataset,
+            model_init=self.__model_init, args=args, data_collator=data_collator,
+            train_dataset=data['train'], eval_dataset=data['validation'],
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
 
         # https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics
-        # trainer.add_callback(rtht.RayTrainReportCallback())
-        # trainer = rtht.prepare_trainer(trainer=trainer)
+        trainer.add_callback(rtht.RayTrainReportCallback())
+        trainer = rtht.prepare_trainer(trainer=trainer)
 
-        # The tuning objects for model training/development
-        tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
+        trainer.train()
 
-        # Hence, hyperparameter search via ...
-        # Re-design: https://github.com/huggingface/transformers/blob/main/docs/source/en/hpo_train.md
-        best = trainer.hyperparameter_search(
-            hp_space=tuning.ray_hp_space, compute_objective=tuning.compute_objective,
-            n_trials=self.__arguments.N_TRIALS, direction=['minimize', 'minimize', 'maximize'], backend='ray',
-            resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
-            storage_path=self.__arguments.storage_path,
-            scheduler=tuning.scheduler(), reuse_actors=True,
-            checkpoint_config=checkpoint_config,
-            verbose=0, progress_reporter=tuning.reporting, log_to_file=True)
-
-        return best
+        return trainer
