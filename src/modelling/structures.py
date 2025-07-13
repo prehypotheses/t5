@@ -65,8 +65,6 @@ class Structures:
 
         # Data
         data = self.__bytes.data()
-        # train_dataset = ray.data.from_huggingface(data['train'])
-        # eval_dataset = ray.data.from_huggingface(data['validation'])
 
         # Update self.__arguments
         self.__arguments = self.__arguments._replace(N_INSTANCES=data['train'].num_rows)
