@@ -70,25 +70,27 @@ class Tuning:
                 "per_device_train_batch_size", self.__hyperspace.per_device_train_batch_size),
         }
 
-    @staticmethod
-    def scheduler() ->  rts.AsyncHyperBandScheduler:
+    def scheduler(self):
         """
         https://docs.ray.io/en/latest/tune/api/doc/ray.tune.schedulers.PopulationBasedTraining.html<br>
         https://docs.ray.io/en/latest/tune/api/doc/ray.tune.schedulers.AsyncHyperBandScheduler.html
 
-        return rts.PopulationBasedTraining(
-            time_attr='training_iteration',
-            metric='eval_loss', mode='min',
-            perturbation_interval=self.__arguments.perturbation_interval,
-            hyperparam_mutations=self.__space,
-            quantile_fraction=self.__arguments.quantile_fraction,
-            resample_probability=self.__arguments.resample_probability)
-
         :return:
         """
 
-        return rts.ASHAScheduler(
-            time_attr='training_iteration', metric='eval_loss', mode='min')
+        match self.__arguments.scheduler:
+            case 'ASHAScheduler':
+                return rts.ASHAScheduler(
+                    time_attr='training_iteration', metric='eval_loss', mode='min')
+            case 'PopulationBasedTraining':
+                return rts.PopulationBasedTraining(
+                    time_attr='training_iteration', metric='eval_loss', mode='min',
+                    perturbation_interval=self.__arguments.perturbation_interval,
+                    hyperparam_mutations=self.space,
+                    quantile_fraction=self.__arguments.quantile_fraction,
+                    resample_probability=self.__arguments.resample_probability)
+            case _:
+                raise ValueError('Undefined Scheduler')
 
     @staticmethod
     def reporting():
