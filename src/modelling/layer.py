@@ -52,5 +52,5 @@ class Layer:
         # Additionally, prepare the artefacts storage area for the best model, vis-à-vis best hyperparameters
         # set, and save a checkpoint at the optimal training point only by setting save_total_limit = 1.
         self.__arguments = self.__arguments._replace(
-            model_output_directory=os.path.join(self.__section, 'prime'),
+            model_output_directory=os.path.join(self.__section, 'optimal'),
             EPOCHS=2*self.__arguments.EPOCHS, save_total_limit=1)
