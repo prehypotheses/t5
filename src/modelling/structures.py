@@ -88,6 +88,10 @@ class Structures:
             metric_for_best_model='eval_loss', greater_is_better=False, load_best_model_at_end=True,
             logging_dir=os.path.join(self.__arguments.model_output_directory, 'logs'), fp16=True, push_to_hub=False)
 
+        # Data Collator
+        # data_collator: transformers.DataCollatorForTokenClassification = (
+        #     transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
+
         # The training object
         trainer = transformers.trainer.Trainer(
             model_init=self.__model_init, args=args,
