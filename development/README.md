@@ -16,7 +16,11 @@ In brief.  For some learning rate schedulers, the number of steps - `TrainingArg
 
 For checkpoints visit (a) [checkpoints](https://docs.ray.io/en/latest/train/user-guides/checkpoints.html), (b) [checkpoints](https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics).  Additionally, explore (a) [distributed training](https://docs.ray.io/en/latest/train/getting-started-transformers.html), (b) [hyperparameter opt](https://docs.ray.io/en/latest/tune/examples/pbt_transformers.html), [alongside huggingface.co hyperparameter search](https://huggingface.co/docs/transformers/v4.53.1/en/hpo_train), [ray.tune.run](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.run.html), [TrainingArguments](https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments), [tune results](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.Result.html), (c) [Optuna Search](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.search.optuna.OptunaSearch.html).
 
-[Fine Tuning](https://docs.ray.io/en/latest/train/examples/transformers/huggingface_text_classification.html)
+* [Checkpoints](https://huggingface.co/docs/transformers/main/en/trainer#checkpoints)
+* [Collator](https://huggingface.co/docs/transformers/main_classes/data_collator#transformers.DataCollatorForTokenClassification)
+* [Fine-Tuning](https://docs.ray.io/en/latest/train/examples/transformers/huggingface_text_classification.html)
+* [Training, Fine-Tuning](https://colab.research.google.com/github/huggingface/notebooks/blob/main/transformers_doc/en/training.ipynb)
+* [Token Classification](https://colab.research.google.com/github/huggingface/notebooks/blob/main/examples/token_classification.ipynb)
 
 <br>
 
