@@ -1,4 +1,4 @@
-"""Module interface.py"""
+"""Module convergence.py"""
 import logging
 
 import ray
@@ -16,7 +16,7 @@ import src.modelling.tuning
 
 
 # noinspection DuplicatedCode
-class Interface:
+class Convergence:
     """
     Interface
     """
