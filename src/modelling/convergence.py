@@ -21,12 +21,14 @@ class Convergence:
     Interface
     """
 
-    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace, pieces: src.data.interface.Interface):
+    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace,
+                 pieces: src.data.interface.Interface):
         """
 
         :param s3_parameters:
         :param arguments:
         :param hyperspace:
+        :param pieces:
         """
 
         self.__s3_parameters = s3_parameters
