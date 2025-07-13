@@ -21,7 +21,7 @@ class Structures:
     Interface
     """
 
-    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
+    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace, pieces: src.data.interface.Interface):
         """
 
         :param s3_parameters:
@@ -34,8 +34,8 @@ class Structures:
         self.__hyperspace = hyperspace
 
         # For the tags, and the datasets.DatasetDict
-        self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
-        self.__id2label, self.__label2id = self.__bytes.tags()
+        self.__data = pieces.data()
+        self.__id2label, self.__label2id = pieces.tags()
 
         # The tuning objects for model training/development
         self.__tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
@@ -65,11 +65,8 @@ class Structures:
         checkpoint_config = src.modelling.check.Check().__call__()
         tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
 
-        # Data
-        data = self.__bytes.data()
-
         # Update self.__arguments
-        self.__arguments = self.__arguments._replace(N_INSTANCES=data['train'].num_rows)
+        self.__arguments = self.__arguments._replace(N_INSTANCES=self.__data['train'].num_rows)
 
         # Training Arguments
         max_steps_per_epoch = self.__arguments.N_INSTANCES // (self.__arguments.TRAIN_BATCH_SIZE * self.__arguments.N_GPU)
@@ -95,7 +92,7 @@ class Structures:
         # The training object
         trainer = transformers.trainer.Trainer(
             model_init=self.__model_init, args=args, data_collator=data_collator,
-            train_dataset=data['train'], eval_dataset=data['validation'],
+            train_dataset=self.__data['train'], eval_dataset=self.__data['validation'],
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
 
