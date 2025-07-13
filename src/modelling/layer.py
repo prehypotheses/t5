@@ -2,6 +2,7 @@
 import logging
 import os
 
+import src.data.interface
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
@@ -25,6 +26,9 @@ class Layer:
         self.__s3_parameters = s3_parameters
         self.__arguments = arguments
         self.__hyperspace = hyperspace
+
+        # Data
+        self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
 
         # Storage Section
         self.__section = self.__arguments.model_output_directory
