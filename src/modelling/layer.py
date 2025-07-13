@@ -38,3 +38,9 @@ class Layer:
         logging.info(best.hyperparameters)
         logging.info(best.run_summary)
         logging.info(best.__dir__())
+
+        # Hence, update the modelling variables
+        self.__arguments = self.__arguments._replace(
+            LEARNING_RATE=best.hyperparameters.get('learning_rate'),
+            WEIGHT_DECAY=best.hyperparameters.get('weight_decay'),
+            TRAIN_BATCH_SIZE=best.hyperparameters.get('per_device_train_batch_size'))
