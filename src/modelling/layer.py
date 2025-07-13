@@ -28,7 +28,7 @@ class Layer:
         self.__hyperspace = hyperspace
 
         # Data
-        self.__bytes = src.data.interface.Interface(s3_parameters=s3_parameters)
+        self.__pieces = src.data.interface.Interface(s3_parameters=s3_parameters)
 
         # Storage Section
         self.__section = self.__arguments.model_output_directory
@@ -40,7 +40,8 @@ class Layer:
         """
 
         best = src.modelling.structures.Structures(
-            s3_parameters=self.__s3_parameters, arguments=self.__arguments, hyperspace=self.__hyperspace).train_func()
+            s3_parameters=self.__s3_parameters, arguments=self.__arguments,
+            hyperspace=self.__hyperspace, pieces=self.__pieces).train_func()
 
         logging.info(best)
         logging.info(best.hyperparameters)
