@@ -56,6 +56,7 @@ class Structures:
 
     def train_func(self) -> transformers.trainer_utils.BestRun:
         """
+        tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
 
         :return:
         """
