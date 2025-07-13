@@ -56,13 +56,14 @@ class Structures:
 
     def train_func(self) -> transformers.trainer_utils.BestRun:
         """
-        tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
+
 
         :return:
         """
 
         metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
         checkpoint_config = src.modelling.check.Check().__call__()
+        tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
 
         # Data
         data = self.__bytes.data()
@@ -88,12 +89,12 @@ class Structures:
             logging_dir=os.path.join(self.__arguments.model_output_directory, 'logs'), fp16=True, push_to_hub=False)
 
         # Data Collator
-        # data_collator: transformers.DataCollatorForTokenClassification = (
-        #     transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
+        data_collator: transformers.DataCollatorForTokenClassification = (
+            transformers.DataCollatorForTokenClassification(tokenizer=tokenizer))
 
         # The training object
         trainer = transformers.trainer.Trainer(
-            model_init=self.__model_init, args=args,
+            model_init=self.__model_init, args=args, data_collator=data_collator,
             train_dataset=data['train'], eval_dataset=data['validation'],
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
