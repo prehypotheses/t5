@@ -56,7 +56,6 @@ class Structures:
     def train_func(self) -> transformers.trainer_utils.BestRun:
         """
 
-
         :return:
         """
 
