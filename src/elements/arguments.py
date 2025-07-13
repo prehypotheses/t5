@@ -43,6 +43,12 @@ class Arguments(typing.NamedTuple):
     task : <b>str</b> The type of task the model is being trained for<br>
     pretrained_model_name : <b>str</b> The name of the pre-trained model that will be fine-tuned<br>
     architecture : <b>str</b> A name that identifies the underlying pre-trained model.<br>
+    scheduler: <b>str</b> The name of the scheduler to use during hyperparameter search, e.g.,
+        <a href="https://docs.ray.io/en/latest/tune/api/schedulers.html?#asha-tune-schedulers-ashascheduler">ASHAScheduler</a>,
+        <a href="https://docs.ray.io/en/latest/tune/api/schedulers.html?#population-based-training-tune-schedulers-populationbasedtraining">
+        PopulationBasedTraining</a>.<br>
+    seed: <b>int</b> A seed for algorithms.<br>
+    fraction: <b>float</b>  The fraction of the train, validation, and test data sets that an experiment should use.<br>
     model_output_directory: <b>str</b>The
         <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments.output_dir">
         local parent directory for</a> predictions, checkpoints,
@@ -76,5 +82,7 @@ class Arguments(typing.NamedTuple):
     pretrained_model_name: str
     architecture: str
     scheduler: str
+    seed: int
+    fraction: float
     model_output_directory: str
     storage_path: str
