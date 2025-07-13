@@ -4,7 +4,6 @@ import logging
 import ray
 import ray.tune
 import ray.tune.schedulers as rts
-import ray.tune.search.optuna as pta
 
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
@@ -90,15 +89,6 @@ class Tuning:
 
         return rts.ASHAScheduler(
             time_attr='training_iteration', metric='eval_loss', mode='min')
-
-    @staticmethod
-    def algorithm() -> pta.OptunaSearch:
-        """
-
-        :return:
-        """
-
-        return pta.OptunaSearch(metric='eval_loss', mode='min')
 
     @staticmethod
     def reporting():
