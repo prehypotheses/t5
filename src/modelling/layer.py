@@ -2,12 +2,16 @@
 import logging
 import os
 
+import transformers
+
 import src.data.interface
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
 
 import src.modelling.structures
+import src.modelling.convergence
+
 
 # noinspection DuplicatedCode
 class Layer:
@@ -59,3 +63,6 @@ class Layer:
         self.__arguments = self.__arguments._replace(
             model_output_directory=os.path.join(self.__section, 'optimal'),
             EPOCHS=2*self.__arguments.EPOCHS, save_total_limit=1)
+
+        model: transformers.Trainer = src.modelling.convergence.Convergence(
+            s3_parameters=self.__s3_parameters, arguments=self.__arguments, hyperspace=self.__hyperspace).__call__()
