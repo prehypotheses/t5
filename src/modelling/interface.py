@@ -14,7 +14,7 @@ import src.modelling.convergence
 
 
 # noinspection DuplicatedCode
-class Layer:
+class Interface:
     """
     Layer
     """
