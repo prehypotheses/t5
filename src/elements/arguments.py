@@ -75,5 +75,6 @@ class Arguments(typing.NamedTuple):
     task: str
     pretrained_model_name: str
     architecture: str
+    scheduler: str
     model_output_directory: str
     storage_path: str
