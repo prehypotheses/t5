@@ -1,7 +1,6 @@
 """Module convergence.py"""
 import logging
 
-import ray.train.huggingface.transformers as rtht
 import transformers
 
 import src.data.interface
@@ -75,10 +74,6 @@ class Convergence:
             train_dataset=self.__data['train'], eval_dataset=self.__data['validation'],
             compute_metrics=metrics.exc, callbacks=[transformers.EarlyStoppingCallback(
                 early_stopping_patience=self.__arguments.early_stopping_patience)])
-
-        # https://docs.ray.io/en/latest/train/getting-started-transformers.html#report-checkpoints-and-metrics
-        trainer.add_callback(rtht.RayTrainReportCallback())
-        trainer = rtht.prepare_trainer(trainer=trainer)
 
         trainer.train()
 
