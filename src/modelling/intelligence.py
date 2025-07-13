@@ -56,7 +56,7 @@ class Intelligence:
         :return:
         """
 
-        tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
+        # tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
         model = self.__model()
         metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
 
