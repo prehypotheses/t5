@@ -1,14 +1,14 @@
 """Module interface.py"""
-import typing
+import logging
 import warnings
 
 import datasets
 
 import config
-import src.elements.arguments as ag
-import src.elements.s3_parameters as s3p
-import src.elements.master as mr
 import src.data.tags
+import src.elements.arguments as ag
+import src.elements.master as mr
+import src.elements.s3_parameters as s3p
 
 
 class Interface:
@@ -16,18 +16,16 @@ class Interface:
     Reads the raw data.
     """
 
-    def __init__(self, s3_parameters: s3p, arguments: ag.Arguments, persist: bool = True):
+    def __init__(self, s3_parameters: s3p, arguments: ag.Arguments):
         """
 
         :param s3_parameters: The overarching S3 parameters settings of this
                               project, e.g., region code name, buckets, etc.<br>
         :param arguments: Refer to src.elements.arguments
-        :param persist: Save a copy of the downloaded data?
         """
 
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
         self.__arguments = arguments
-        self.__persist = persist
 
         # Configurations
         self.__configurations = config.Config()
@@ -60,14 +58,17 @@ class Interface:
 
         return data
 
-    def __persist_(self, excerpt: datasets.DatasetDict):
+    def __persist(self, excerpt: datasets.DatasetDict) -> None:
         """
 
-        :param excerpt:
+        :param excerpt: The data for model development & evaluation
         :return:
         """
 
-        excerpt.save_to_disk(self.__configurations.data_)
+        dataset_dict_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.destination + '/data'
+        excerpt.save_to_disk(dataset_dict_path=dataset_dict_path)
+
+        logging.info('The data tokens for T5 have been written to prefix: %s', self.__configurations.destination + '/data')
 
     def exc(self) -> mr.Master:
         """
@@ -80,8 +81,7 @@ class Interface:
         excerpt = self.__filter(data=data) if self.__arguments.fraction < 1 else data
 
         # Persist
-        if self.__persist:
-            self.__persist_(excerpt=excerpt)
+        self.__persist(excerpt=excerpt)
 
         # Tags
         id2label, label2id = src.data.tags.Tags().exc(feed=excerpt['train'])
