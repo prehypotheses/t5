@@ -5,6 +5,7 @@ import config
 import src.elements.s3_parameters as s3p
 import src.elements.service as sr
 import src.functions.cache
+import src.functions.directories
 import src.s3.bucket
 import src.s3.keys
 import src.s3.prefix
@@ -31,7 +32,7 @@ class Setup:
         self.__bucket_name = self.__s3_parameters.internal
 
         # Configurations, etc.
-        self.__destination = config.Config().destination
+        self.__configurations = config.Config()
 
     def __clear_prefix(self) -> bool:
         """
@@ -43,7 +44,7 @@ class Setup:
         instance = src.s3.prefix.Prefix(service=self.__service, bucket_name=self.__bucket_name)
 
         # Get the keys therein
-        keys: list[str] = instance.objects(prefix=self.__destination)
+        keys: list[str] = instance.objects(prefix=self.__configurations.destination)
 
         if len(keys) > 0:
             objects = [{'Key' : key} for key in keys]
@@ -74,10 +75,21 @@ class Setup:
 
         return bucket.create()
 
+    def __local(self) -> bool:
+        """
+
+        :return:
+        """
+
+        directories = src.functions.directories.Directories()
+        directories.cleanup(self.__configurations.data_)
+
+        return directories.create(self.__configurations.data_)
+
     def exc(self) -> bool:
         """
 
         :return:
         """
 
-        return self.__s3()
+        return self.__s3() & self.__local()
