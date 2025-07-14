@@ -41,13 +41,14 @@ class Interface:
         :return:
         """
 
+        logging.info(self.__s3_parameters.path_internal_artefacts)
+
         # Tokenization
         master = src.modelling.tokenization.Tokenization(arguments=self.__arguments).exc(master=master)
 
         # Best: Hyperparameters
         best = src.modelling.architecture.Architecture(
-            s3_parameters=self.__s3_parameters, arguments=self.__arguments,
-            hyperspace=self.__hyperspace, master=master).train_func()
+            arguments=self.__arguments, hyperspace=self.__hyperspace, master=master).train_func()
         logging.info(best)
 
         # Hence, update the modelling variables
@@ -64,8 +65,7 @@ class Interface:
 
         # Model
         model: transformers.Trainer = src.modelling.convergence.Convergence(
-            s3_parameters=self.__s3_parameters, arguments=self.__arguments,
-            hyperspace=self.__hyperspace, master=master).__call__()
+            arguments=self.__arguments, master=master).__call__()
 
         # Save
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, 'model'))
