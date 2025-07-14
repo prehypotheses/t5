@@ -10,8 +10,7 @@ import src.elements.master as mr
 import src.elements.s3_parameters as s3p
 import src.modelling.convergence
 import src.modelling.structures
-import src.modelling.tokenizer
-import src.modelling.mappings
+import src.modelling.tokenization
 
 
 # noinspection DuplicatedCode
@@ -42,15 +41,9 @@ class Interface:
         :return:
         """
 
-        tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
-        mappings = src.modelling.mappings.Mappings(tokenizer=tokenizer, _id2label=master.id2label)
-        try:
-            packets = master.data.map(mappings.exc, batched=True)
-        except RuntimeError as err:
-            raise err from err
-        master = master._replace(data=packets)
-        logging.info(master.data)
-        logging.info(master.data['train'])
+        master = src.modelling.tokenization.Tokenization(arguments=self.__arguments).exc(master=master)
+        logging.info(master.data.column_names)
+
 
         '''
         # Best: Hyperparameters
