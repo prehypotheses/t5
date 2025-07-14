@@ -28,11 +28,21 @@ class Interface:
         # Configurations
         self.__configurations = config.Config()
 
+        # A datasets.DatasetDict consisting of `train`, `validation`, & `test` datasets.Dataset objects.
+        self.__data: datasets.DatasetDict =  self.__get_data()
+
+    def __get_data(self):
+
         # The data
         dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source
         warnings.filterwarnings("ignore", message="promote has been superseded by promote_options='default'.",
                                 category=FutureWarning, module="awswrangler")
-        self.__data: datasets.DatasetDict =  datasets.load_from_disk(dataset_path=dataset_path)
+
+        data = datasets.load_from_disk(dataset_path=dataset_path)
+
+        return data
+
+
 
     def tags(self) -> typing.Tuple[dict, dict]:
         """
