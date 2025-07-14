@@ -48,6 +48,7 @@ class Interface:
         best = src.modelling.structures.Structures(
             s3_parameters=self.__s3_parameters, arguments=self.__arguments,
             hyperspace=self.__hyperspace, master=master).train_func()
+        logging.info(best)
 
         # Hence, update the modelling variables
         self.__arguments = self.__arguments._replace(
