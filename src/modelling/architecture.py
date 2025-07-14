@@ -80,7 +80,7 @@ class Architecture:
         # Hence, hyperparameter search via ...
         best: transformers.trainer_utils.BestRun = trainer.hyperparameter_search(
             hp_space=self.__tuning.ray_hp_space, compute_objective=self.__tuning.compute_objective,
-            n_trials=self.__arguments.N_TRIALS, direction=['minimize', 'minimize', 'maximize'], backend='ray',
+            n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
             resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
             storage_path=self.__arguments.storage_path,
             scheduler=self.__tuning.scheduler(), reuse_actors=True,
