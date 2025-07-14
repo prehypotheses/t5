@@ -32,7 +32,7 @@ class Interface:
         self.__hyperspace = hyperspace
 
         # Storage Section
-        self.__section = self.__arguments.model_output_directory
+        self.__initial = self.__arguments.model_output_directory
 
     def exc(self, master: mr.Master):
         """
@@ -59,7 +59,7 @@ class Interface:
         # Additionally, prepare the artefacts storage area for the best model, vis-à-vis best hyperparameters
         # set, and save a checkpoint at the optimal training point only by setting save_total_limit = 1.
         self.__arguments = self.__arguments._replace(
-            model_output_directory=os.path.join(self.__section, 'optimal'),
+            model_output_directory=os.path.join(self.__initial, 'optimal'),
             EPOCHS=2*self.__arguments.EPOCHS, save_total_limit=1)
 
         # Model
