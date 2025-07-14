@@ -7,7 +7,8 @@ import datasets
 import config
 import src.elements.arguments as ag
 import src.elements.s3_parameters as s3p
-import src.functions.directories
+import src.elements.master as mr
+import src.data.tags
 
 
 class Interface:
@@ -15,7 +16,7 @@ class Interface:
     Reads the raw data.
     """
 
-    def __init__(self, s3_parameters: s3p, arguments: ag.Arguments, persist: bool = False):
+    def __init__(self, s3_parameters: s3p, arguments: ag.Arguments, persist: bool = True):
         """
 
         :param s3_parameters: The overarching S3 parameters settings of this
@@ -31,56 +32,58 @@ class Interface:
         # Configurations
         self.__configurations = config.Config()
 
-        # A datasets.DatasetDict consisting of `train`, `validation`, & `test` datasets.Dataset objects.
-        self.__data: datasets.DatasetDict =  self.__get_data()
-
-    def __get_data(self):
+    def __get_data(self) -> datasets.DatasetDict:
         """
 
         :return:
         """
 
         # The data
-        dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source
+        dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__arguments.raw_
         warnings.filterwarnings("ignore", message="promote has been superseded by promote_options='default'.",
                                 category=FutureWarning, module="awswrangler")
 
-        data = datasets.load_from_disk(dataset_path=dataset_path)
+        return datasets.load_from_disk(dataset_path=dataset_path)
 
-        if self.__arguments.fraction < 1:
-            excerpt = data.copy()
-            for section in ['train', 'validation', 'test']:
-                excerpt[section] = excerpt[section].shuffle(seed=self.__arguments.seed).select(
-                    range(int(self.__arguments.fraction * excerpt[section].num_rows)))
-            data = datasets.DatasetDict(excerpt)
+    def __filter(self, data: datasets.DatasetDict) -> datasets.DatasetDict:
+        """
+
+        :param data:
+        :return:
+        """
+
+        excerpt = data.copy()
+        for section in ['train', 'validation', 'test']:
+            excerpt[section] = excerpt[section].shuffle(seed=self.__arguments.seed).select(
+                range(int(self.__arguments.fraction * excerpt[section].num_rows)))
+        data = datasets.DatasetDict(excerpt)
 
         return data
 
-    def tags(self) -> typing.Tuple[dict, dict]:
+    def __persist_(self, excerpt: datasets.DatasetDict):
         """
 
-        :return:<br>
-            id2label: dict<br>
-            label2id: dict
+        :param excerpt:
+        :return:
         """
 
-        values: datasets.Sequence = self.__data['train'].features['fine_ner_tags']
-        id2label = dict(enumerate(values.feature.names))
-        label2id = {value: key for key, value in id2label.items()}
+        excerpt.save_to_disk(self.__configurations.data_)
 
-        return id2label, label2id
-
-    def data(self) -> datasets.DatasetDict:
+    def exc(self) -> mr.Master:
         """
 
         :return:
         """
 
+        # A datasets.DatasetDict consisting of `train`, `validation`, & `test` datasets.Dataset objects.
+        data = self.__get_data()
+        excerpt = self.__filter(data=data) if self.__arguments.fraction < 1 else data
+
         # Persist
         if self.__persist:
-            directories = src.functions.directories.Directories()
-            directories.cleanup(self.__configurations.tokens_)
-            directories.create(self.__configurations.tokens_)
-            self.__data.save_to_disk(self.__configurations.tokens_)
+            self.__persist_(excerpt=excerpt)
 
-        return self.__data
+        # Tags
+        id2label, label2id = src.data.tags.Tags().exc(feed=excerpt['train'])
+
+        return mr.Master(id2label=id2label, label2id=label2id, data=excerpt)
