@@ -29,7 +29,6 @@ class Interface:
 
     def __arguments(self, connector: boto3.session.Session) -> ag.Arguments:
         """
-        dictionary['storage_path'] = 's3://' + s3_parameters.internal + '/' + self.__configurations.destination
 
         :param connector:
         :return:
@@ -39,9 +38,8 @@ class Interface:
             key_name=self.__configurations.arguments_key)
 
         # Set up the model output directory parameter
-        model_output_directory = os.path.join(self.__configurations.artefacts_, dictionary['architecture'])
-        dictionary['model_output_directory'] = model_output_directory
-        dictionary['storage_path'] = model_output_directory + os.sep + 'compute'
+        dictionary['model_output_directory'] = self.__configurations.artefacts_
+        dictionary['storage_path'] = self.__configurations.artefacts_ + os.sep + 'compute'
 
         return ag.Arguments(**dictionary)
 
