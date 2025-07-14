@@ -1,9 +1,16 @@
-
+"""Module check.py"""
 import ray.tune
 
+
 class Check:
+    """
+    Creates a checkpoints configuration
+    """
 
     def __init__(self):
+        """
+        Constructor
+        """
 
         self.__num_to_keep = 5
         self.__checkpoint_score_attribute = 'training_iteration'

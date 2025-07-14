@@ -27,8 +27,12 @@ class Args:
         :return:
         """
 
-        max_steps_per_epoch = self.__n_instances // (self.__arguments.TRAIN_BATCH_SIZE * self.__arguments.N_GPU)
-        max_steps = int(max_steps_per_epoch * self.__arguments.EPOCHS)
+        match self.__arguments.scheduler:
+            case 'PopulationBasedTraining':
+                max_steps_per_epoch = self.__n_instances // (self.__arguments.TRAIN_BATCH_SIZE * self.__arguments.N_GPU)
+                max_steps = int(max_steps_per_epoch * self.__arguments.EPOCHS)
+            case _:
+                max_steps = -1
 
         args = transformers.TrainingArguments(
             output_dir=self.__arguments.model_output_directory,
@@ -43,7 +47,7 @@ class Args:
             max_steps=max_steps,
             warmup_steps=0,
             use_cpu=False,
-            seed=5,
+            seed=self.__arguments.seed,
             save_total_limit=self.__arguments.save_total_limit,
             skip_memory_metrics=True,
             metric_for_best_model='eval_loss',

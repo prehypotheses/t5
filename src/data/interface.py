@@ -1,12 +1,14 @@
 """Module interface.py"""
-import typing
+import logging
 import warnings
 
 import datasets
 
 import config
+import src.data.tags
+import src.elements.arguments as ag
+import src.elements.master as mr
 import src.elements.s3_parameters as s3p
-import src.functions.directories
 
 
 class Interface:
@@ -14,51 +16,74 @@ class Interface:
     Reads the raw data.
     """
 
-    def __init__(self, s3_parameters: s3p, persist: bool = False):
+    def __init__(self, s3_parameters: s3p, arguments: ag.Arguments):
         """
 
         :param s3_parameters: The overarching S3 parameters settings of this
                               project, e.g., region code name, buckets, etc.<br>
-        :param persist: Save a copy of the downloaded data?
+        :param arguments: Refer to src.elements.arguments
         """
 
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
-        self.__persist = persist
+        self.__arguments = arguments
 
         # Configurations
         self.__configurations = config.Config()
 
-        # The data
-        dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source
-        warnings.filterwarnings("ignore", message="promote has been superseded by promote_options='default'.",
-                                category=FutureWarning, module="awswrangler")
-        self.__data =  datasets.load_from_disk(dataset_path=dataset_path)
-
-    def tags(self) -> typing.Tuple[dict, dict]:
-        """
-
-        :return:<br>
-            id2label: dict<br>
-            label2id: dict
-        """
-
-        values: datasets.Sequence = self.__data['train'].features['fine_ner_tags']
-        id2label = dict(enumerate(values.feature.names))
-        label2id = {value: key for key, value in id2label.items()}
-
-        return id2label, label2id
-
-    def data(self) -> datasets.DatasetDict:
+    def __get_data(self) -> datasets.DatasetDict:
         """
 
         :return:
         """
 
-        # Persist
-        if self.__persist:
-            directories = src.functions.directories.Directories()
-            directories.cleanup(self.__configurations.tokens_)
-            directories.create(self.__configurations.tokens_)
-            self.__data.save_to_disk(self.__configurations.tokens_)
+        # The data
+        dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__arguments.raw_
+        warnings.filterwarnings("ignore", message="promote has been superseded by promote_options='default'.",
+                                category=FutureWarning, module="awswrangler")
 
-        return self.__data
+        return datasets.load_from_disk(dataset_path=dataset_path)
+
+    def __filter(self, data: datasets.DatasetDict) -> datasets.DatasetDict:
+        """
+
+        :param data:
+        :return:
+        """
+
+        excerpt = data.copy()
+        for section in ['train', 'validation', 'test']:
+            excerpt[section] = excerpt[section].shuffle(seed=self.__arguments.seed).select(
+                range(int(self.__arguments.fraction * excerpt[section].num_rows)))
+        data = datasets.DatasetDict(excerpt)
+
+        return data
+
+    def __persist(self, excerpt: datasets.DatasetDict) -> None:
+        """
+
+        :param excerpt: The data for model development & evaluation
+        :return:
+        """
+
+        dataset_dict_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.destination + '/data'
+        excerpt.save_to_disk(dataset_dict_path=dataset_dict_path)
+
+        logging.info('The data tokens for T5 have been written to prefix: %s', self.__configurations.destination + '/data')
+
+    def exc(self) -> mr.Master:
+        """
+
+        :return:
+        """
+
+        # A datasets.DatasetDict consisting of `train`, `validation`, & `test` datasets.Dataset objects.
+        data = self.__get_data()
+        excerpt = self.__filter(data=data) if self.__arguments.fraction < 1 else data
+
+        # Persist
+        self.__persist(excerpt=excerpt)
+
+        # Tags
+        id2label, label2id = src.data.tags.Tags().exc(feed=excerpt['train'])
+
+        return mr.Master(id2label=id2label, label2id=label2id, data=excerpt)

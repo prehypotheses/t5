@@ -52,4 +52,4 @@ ENTRYPOINT ["python"]
 
 
 # CMD
-CMD ["src/main.py"]
+CMD ["src/master.py"]
