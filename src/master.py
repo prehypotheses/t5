@@ -26,8 +26,14 @@ def main():
     # Ray
     ray.init(dashboard_host='172.17.0.2', dashboard_port=8265)
 
+    # Data
+    master: mr.Master = src.data.interface.Interface(s3_parameters=s3_parameters, arguments=arguments).exc()
+    logger.info(master.id2label)
+    logger.info(master.data)
+
     # Best
-    src.modelling.interface.Interface(s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).exc()
+    src.modelling.interface.Interface(
+        s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).exc(master=master)
 
     # Cache
     src.functions.cache.Cache().exc()
@@ -51,10 +57,12 @@ if __name__ == '__main__':
     os.environ['HF_HOME']='/tmp'
 
     # Classes
+    import src.data.interface
     import src.elements.arguments as ag
     import src.elements.hyperspace as hp
     import src.elements.s3_parameters as s3p
     import src.elements.service as sr
+    import src.elements.master as mr
     import src.functions.cache
     import src.modelling.interface
     import src.preface.interface
