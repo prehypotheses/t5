@@ -82,9 +82,9 @@ class Setup:
         """
 
         directories = src.functions.directories.Directories()
-        directories.cleanup(self.__configurations.data_)
+        directories.cleanup(self.__configurations.warehouse)
 
-        return directories.create(self.__configurations.data_)
+        return directories.create(self.__configurations.artefacts_)
 
     def exc(self) -> bool:
         """
