@@ -1,12 +1,10 @@
 """Module architecture.py"""
-import logging
 
 import transformers
 
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.master as mr
-import src.elements.s3_parameters as s3p
 import src.modelling.args
 import src.modelling.check
 import src.modelling.metrics
@@ -14,22 +12,20 @@ import src.modelling.tokenizer
 import src.modelling.tuning
 
 
-# noinspection DuplicatedCode
 class Architecture:
     """
     Interface
     """
 
-    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace, master:  mr.Master):
+    def __init__(self, arguments: ag.Arguments, hyperspace: hp.Hyperspace,
+                 master:  mr.Master):
         """
 
-        :param s3_parameters:
         :param arguments:
         :param hyperspace:
         :param master:
         """
 
-        self.__s3_parameters = s3_parameters
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
@@ -41,6 +37,7 @@ class Architecture:
         # The tuning objects for model training/development
         self.__tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
 
+    # pylint: disable=R0801
     def __model_init(self):
         """
 
@@ -54,6 +51,8 @@ class Architecture:
         return transformers.T5ForTokenClassification.from_pretrained(
             self.__arguments.pretrained_model_name, config=config)
 
+    # noinspection DuplicatedCode
+    # pylint: disable=R0801
     def train_func(self) -> transformers.trainer_utils.BestRun:
         """
 
