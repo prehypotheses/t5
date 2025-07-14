@@ -1,15 +1,16 @@
-
+"""Module tokenization.py"""
 import logging
 
 import src.elements.arguments as ag
 import src.elements.master as mr
-
-import src.modelling.tokenizer
 import src.modelling.mappings
-
+import src.modelling.tokenizer
 
 
 class Tokenization:
+    """
+    Tokenization
+    """
 
     def __init__(self, arguments: ag.Arguments):
         """
