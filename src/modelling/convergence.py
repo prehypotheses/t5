@@ -47,8 +47,7 @@ class Convergence:
 
         config = transformers.AutoConfig.from_pretrained(
             self.__arguments.pretrained_model_name,
-            **{'num_labels': len(self.__id2label), 'label2id': self.__label2id, 'id2label': self.__id2label,
-               'dense_act_fn': 'gelu'})
+            **{'num_labels': len(self.__id2label), 'label2id': self.__label2id, 'id2label': self.__id2label})
 
         return transformers.T5ForTokenClassification.from_pretrained(
             self.__arguments.pretrained_model_name, config=config)
