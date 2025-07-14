@@ -49,7 +49,9 @@ class Arguments(typing.NamedTuple):
         PopulationBasedTraining</a>.<br>
     seed: <b>int</b> A seed for algorithms.<br>
     fraction: <b>float</b>  The fraction of the train, validation, and test data sets that an experiment should use.<br>
-    model_output_directory: <b>str</b>The
+    raw_: <b>str</b> The S3 (Simple Storage Service) prefix of the raw data.<br>
+    tokens_: <b>str</b> The S3 (Simple Storage Service) prefix of the tokenized data.<br>
+    model_output_directory: <b>str</b> The
         <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments.output_dir">
         local parent directory for</a> predictions, checkpoints,
         <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments.logging_dir">
@@ -84,5 +86,7 @@ class Arguments(typing.NamedTuple):
     scheduler: str
     seed: int
     fraction: float
+    raw_: str
+    tokens_: str
     model_output_directory: str
     storage_path: str
