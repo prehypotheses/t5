@@ -10,6 +10,8 @@ import src.elements.master as mr
 import src.elements.s3_parameters as s3p
 import src.modelling.convergence
 import src.modelling.structures
+import src.modelling.tokenizer
+import src.modelling.mappings
 
 
 # noinspection DuplicatedCode
@@ -40,14 +42,21 @@ class Interface:
         :return:
         """
 
+        tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
+        mappings = src.modelling.mappings.Mappings(tokenizer=tokenizer, _id2label=master.id2label)
+        try:
+            packets = master.data.map(mappings.exc, batched=True)
+        except RuntimeError as err:
+            raise err from err
+        master = master._replace(data=packets)
+        logging.info(master.data)
+        logging.info(master.data['train'])
+
+        '''
+        # Best: Hyperparameters
         best = src.modelling.structures.Structures(
             s3_parameters=self.__s3_parameters, arguments=self.__arguments,
             hyperspace=self.__hyperspace, master=master).train_func()
-
-        logging.info(best)
-        logging.info(best.hyperparameters)
-        logging.info(best.run_summary)
-        logging.info(best.__dir__())
 
         # Hence, update the modelling variables
         self.__arguments = self.__arguments._replace(
@@ -68,3 +77,4 @@ class Interface:
 
         # Save
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, 'model'))
+        '''
