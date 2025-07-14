@@ -44,18 +44,18 @@ class Arguments(typing.NamedTuple):
     pretrained_model_name : <b>str</b> The name of the pre-trained model that will be fine-tuned<br>
     architecture : <b>str</b> A name that identifies the underlying pre-trained model.<br>
     scheduler: <b>str</b> The name of the scheduler to use during hyperparameter search, e.g.,
-        <a href="https://docs.ray.io/en/latest/tune/api/schedulers.html?#asha-tune-schedulers-ashascheduler">ASHAScheduler</a>,
-        <a href="https://docs.ray.io/en/latest/tune/api/schedulers.html?#population-based-training-tune-schedulers-populationbasedtraining">
-        PopulationBasedTraining</a>.<br>
+        <a href="https://docs.ray.io/en/latest/tune/api/schedulers.html?#asha-tune-schedulers-ashascheduler">
+        ASHAScheduler</a>, <a href="https://docs.ray.io/en/latest/tune/api/schedulers.html?
+        #population-based-training-tune-schedulers-populationbasedtraining">PopulationBasedTraining</a>.<br>
     seed: <b>int</b> A seed for algorithms.<br>
     fraction: <b>float</b>  The fraction of the train, validation, and test data sets that an experiment should use.<br>
     raw_: <b>str</b> The S3 (Simple Storage Service) prefix of the raw data.<br>
     tokens_: <b>str</b> The S3 (Simple Storage Service) prefix of the tokenized data.<br>
     model_output_directory: <b>str</b> The
-        <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments.output_dir">
-        local parent directory for</a> predictions, checkpoints,
-        <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer#transformers.TrainingArguments.logging_dir">
-        logs</a>, etc.<br>
+        <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer
+        #transformers.TrainingArguments.output_dir">local parent directory for</a> predictions, checkpoints,
+        <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer
+        #transformers.TrainingArguments.logging_dir">logs</a>, etc.<br>
     storage_path: <b>str</b> The <a href="https://docs.ray.io/en/latest/train/user-guides/persistent-storage.html">
         persistent storage point for checkpoints</a>.<br>
     """
