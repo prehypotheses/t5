@@ -36,7 +36,7 @@ class Interface:
 
     def __get_data(self):
         """
-        
+
         :return:
         """
 
