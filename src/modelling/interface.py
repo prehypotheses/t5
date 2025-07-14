@@ -4,13 +4,12 @@ import os
 
 import transformers
 
-import src.data.interface
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
+import src.elements.master as mr
 import src.elements.s3_parameters as s3p
-
-import src.modelling.structures
 import src.modelling.convergence
+import src.modelling.structures
 
 
 # noinspection DuplicatedCode
@@ -31,21 +30,19 @@ class Interface:
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
-        # Data
-        self.__pieces = src.data.interface.Interface(s3_parameters=s3_parameters)
-
         # Storage Section
         self.__section = self.__arguments.model_output_directory
 
-    def exc(self):
+    def exc(self, master: mr.Master):
         """
 
+        :param master:
         :return:
         """
 
         best = src.modelling.structures.Structures(
             s3_parameters=self.__s3_parameters, arguments=self.__arguments,
-            hyperspace=self.__hyperspace, pieces=self.__pieces).train_func()
+            hyperspace=self.__hyperspace, master=master).train_func()
 
         logging.info(best)
         logging.info(best.hyperparameters)
@@ -67,7 +64,7 @@ class Interface:
         # Model
         model: transformers.Trainer = src.modelling.convergence.Convergence(
             s3_parameters=self.__s3_parameters, arguments=self.__arguments,
-            hyperspace=self.__hyperspace, pieces=self.__pieces).__call__()
+            hyperspace=self.__hyperspace, master=master).__call__()
 
         # Save
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, 'model'))
