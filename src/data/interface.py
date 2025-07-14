@@ -5,6 +5,7 @@ import warnings
 import datasets
 
 import config
+import src.elements.arguments as ag
 import src.elements.s3_parameters as s3p
 import src.functions.directories
 
@@ -14,15 +15,17 @@ class Interface:
     Reads the raw data.
     """
 
-    def __init__(self, s3_parameters: s3p, persist: bool = False):
+    def __init__(self, s3_parameters: s3p, arguments: ag.Arguments, persist: bool = False):
         """
 
         :param s3_parameters: The overarching S3 parameters settings of this
                               project, e.g., region code name, buckets, etc.<br>
+        :param arguments: Refer to src.elements.arguments
         :param persist: Save a copy of the downloaded data?
         """
 
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
+        self.__arguments = arguments
         self.__persist = persist
 
         # Configurations
@@ -32,6 +35,10 @@ class Interface:
         self.__data: datasets.DatasetDict =  self.__get_data()
 
     def __get_data(self):
+        """
+        
+        :return:
+        """
 
         # The data
         dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source
@@ -40,9 +47,14 @@ class Interface:
 
         data = datasets.load_from_disk(dataset_path=dataset_path)
 
+        if self.__arguments.fraction < 1:
+            excerpt = data.copy()
+            for section in ['train', 'validation', 'test']:
+                excerpt[section] = excerpt[section].shuffle(seed=self.__arguments.seed).select(
+                    range(int(self.__arguments.fraction * excerpt[section].num_rows)))
+            data = datasets.DatasetDict(excerpt)
+
         return data
-
-
 
     def tags(self) -> typing.Tuple[dict, dict]:
         """
