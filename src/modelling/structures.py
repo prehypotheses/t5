@@ -3,9 +3,9 @@ import logging
 
 import transformers
 
-import src.data.interface
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
+import src.elements.master as mr
 import src.elements.s3_parameters as s3p
 import src.modelling.args
 import src.modelling.check
@@ -20,12 +20,13 @@ class Structures:
     Interface
     """
 
-    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace, pieces: src.data.interface.Interface):
+    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace, master:  mr.Master):
         """
 
         :param s3_parameters:
         :param arguments:
         :param hyperspace:
+        :param master:
         """
 
         self.__s3_parameters = s3_parameters
@@ -33,8 +34,9 @@ class Structures:
         self.__hyperspace = hyperspace
 
         # For the tags, and the datasets.DatasetDict
-        self.__data = pieces.data()
-        self.__id2label, self.__label2id = pieces.tags()
+        self.__data = master.data
+        self.__id2label = master.id2label
+        self.__label2id = master.label2id
 
         # The tuning objects for model training/development
         self.__tuning = src.modelling.tuning.Tuning(arguments=self.__arguments, hyperspace=self.__hyperspace)
@@ -62,9 +64,6 @@ class Structures:
         metrics = src.modelling.metrics.Metrics(id2label=self.__id2label)
         checkpoint_config = src.modelling.check.Check().__call__()
         tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
-
-        # Update self.__arguments
-        self.__arguments = self.__arguments._replace(N_INSTANCES=self.__data['train'].num_rows)
 
         # Training Arguments
         args = src.modelling.args.Args(arguments=self.__arguments, n_instances=self.__data['train'].num_rows).__call__()
