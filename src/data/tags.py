@@ -1,9 +1,12 @@
+"""Module tags.py"""
 import typing
+
 import datasets
+
 
 class Tags:
     """
-    Tags
+    Creates the `label: identifier` & `identifier: label` dictionaries.
     """
 
     def __init__(self):
