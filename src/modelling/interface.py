@@ -9,7 +9,7 @@ import src.elements.hyperspace as hp
 import src.elements.master as mr
 import src.elements.s3_parameters as s3p
 import src.modelling.convergence
-import src.modelling.structures
+import src.modelling.architecture
 import src.modelling.tokenization
 
 
@@ -45,7 +45,7 @@ class Interface:
         master = src.modelling.tokenization.Tokenization(arguments=self.__arguments).exc(master=master)
 
         # Best: Hyperparameters
-        best = src.modelling.structures.Structures(
+        best = src.modelling.architecture.Architecture(
             s3_parameters=self.__s3_parameters, arguments=self.__arguments,
             hyperspace=self.__hyperspace, master=master).train_func()
         logging.info(best)
