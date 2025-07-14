@@ -3,9 +3,9 @@ import logging
 
 import transformers
 
-import src.data.interface
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
+import src.elements.master as mr
 import src.elements.s3_parameters as s3p
 import src.modelling.args
 import src.modelling.check
@@ -21,13 +21,13 @@ class Convergence:
     """
 
     def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace,
-                 pieces: src.data.interface.Interface):
+                 master: mr.Master):
         """
 
         :param s3_parameters:
         :param arguments:
         :param hyperspace:
-        :param pieces:
+        :param master:
         """
 
         self.__s3_parameters = s3_parameters
@@ -35,8 +35,9 @@ class Convergence:
         self.__hyperspace = hyperspace
 
         # For the tags & data (datasets.DatasetDict)
-        self.__data = pieces.data()
-        self.__id2label, self.__label2id = pieces.tags()
+        self.__data = master.data
+        self.__id2label = master.id2label
+        self.__label2id = master.label2id
 
     def __model_init(self):
         """
