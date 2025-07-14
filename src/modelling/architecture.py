@@ -1,4 +1,4 @@
-"""Module structures.py"""
+"""Module architecture.py"""
 import logging
 
 import transformers
@@ -15,7 +15,7 @@ import src.modelling.tuning
 
 
 # noinspection DuplicatedCode
-class Structures:
+class Architecture:
     """
     Interface
     """
