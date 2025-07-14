@@ -41,11 +41,9 @@ class Interface:
         :return:
         """
 
+        # Tokenization
         master = src.modelling.tokenization.Tokenization(arguments=self.__arguments).exc(master=master)
-        logging.info(master.data.column_names)
 
-
-        '''
         # Best: Hyperparameters
         best = src.modelling.structures.Structures(
             s3_parameters=self.__s3_parameters, arguments=self.__arguments,
@@ -70,4 +68,3 @@ class Interface:
 
         # Save
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, 'model'))
-        '''
