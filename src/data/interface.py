@@ -32,7 +32,7 @@ class Interface:
         dataset_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.source
         warnings.filterwarnings("ignore", message="promote has been superseded by promote_options='default'.",
                                 category=FutureWarning, module="awswrangler")
-        self.__data =  datasets.load_from_disk(dataset_path=dataset_path)
+        self.__data: datasets.DatasetDict =  datasets.load_from_disk(dataset_path=dataset_path)
 
     def tags(self) -> typing.Tuple[dict, dict]:
         """
