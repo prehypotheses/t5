@@ -21,14 +21,12 @@ class Config:
         self.data_ = os.path.join(os.getcwd(), 'data')
         self.warehouse = os.path.join(os.getcwd(), 'warehouse')
         self.artefacts_ = os.path.join(self.warehouse, 'artefacts')
-        self.tokens_ = os.path.join(self.data_, 'tokens', 'T5')
 
         # Prefixes
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
         seconds = int(time.mktime(pattern.timetuple()))
 
-        self.source = 'data/tokens/T5'
         self.destination = f'artefacts/T5/{str(seconds)}'
 
         # Keys, etc
