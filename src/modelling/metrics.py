@@ -1,10 +1,12 @@
-"""Module metrics.py"""
-import collections
-import logging
+
+import numpy as np
+import pandas as pd
+import transformers
 import typing
 
-import evaluate
-import numpy as np
+import sklearn
+
+import src.modelling.derivations
 
 
 class Metrics:
@@ -13,14 +15,15 @@ class Metrics:
     https://huggingface.co/spaces/evaluate-metric/seqeval/blob/main/seqeval.py
     """
 
-    def __init__(self, id2label: dict):
+    def __init__(self, _id2label: dict):
         """
 
-        :param id2label:
+        :param _id2label:
         """
 
-        self.__id2label = id2label
-        self.__seqeval = evaluate.load('seqeval')
+        self.__archetype = _id2label
+        self.__labels = list(_id2label.values())
+
 
     def __active(self, predictions: np.ndarray, labels: np.ndarray) -> typing.Tuple[list[list], list[list]]:
         """
@@ -31,55 +34,59 @@ class Metrics:
         """
 
         _predictions = [
-            [self.__id2label[p] for (p, l) in zip(prediction, label) if l != -100]
+            [self.__archetype[p] for (p, l) in zip(prediction, label) if l != -100]
             for prediction, label in zip(predictions, labels)
         ]
         _labels = [
-            [self.__id2label[l] for (p, l) in zip(prediction, label) if l != -100]
+            [self.__archetype[l] for (p, l) in zip(prediction, label) if l != -100]
             for prediction, label in zip(predictions, labels)
         ]
 
         return _predictions, _labels
 
-    @staticmethod
-    def __restructure(key: str, dictionary: dict):
-        """
 
-        :param key:
-        :param dictionary:
-        :return:
-        """
+    def __cases(self, _predictions, _labels):
 
-        return {f'{key}_{k}': v for k, v in dictionary.items()}
+        predictions_ = sum(_predictions, [])
+        labels_ = sum(_labels, [])
 
-    def __decompose(self, metrics: dict) -> dict:
-        """
+        matrix = sklearn.metrics.confusion_matrix(y_true=labels_, y_pred=predictions_, labels=self.__labels)
 
-        :param metrics:{<br>
-                    &nbsp; 'class<sub>1</sub>': {'metric<sub>1</sub>': value, 'metric<sub>2</sub>': value, ...},<br>
-                    &nbsp; 'class<sub>2</sub>': {'metric<sub>1</sub>': value, 'metric<sub>2</sub>': value, ...}, ...}
-        :return:
-        """
+        trace = matrix.trace()
+        tp = np.diag(matrix, k=0)
+        tn = trace - np.diag(matrix, k=0)
+        fp = np.sum(np.tril(matrix, k=-1), axis=0)
+        fn = np.sum(matrix, axis=1) - np.diag(matrix, k=0)
+        occurrences = np.sum(matrix, axis=1)
 
-        # Class level metrics
-        disaggregates = {k: v for k, v in metrics.items() if not k.startswith('overall')}
+        frame = pd.DataFrame(data={'label': self.__labels, 'tp': tp, 'fn': fn, 'fp': fp, 'tn': tn, 'N': occurrences})
+        append =  ['overall'] + frame[['tp', 'fn', 'fp', 'tn', 'N']].sum().tolist()
+        frame.loc[len(frame)] = append
 
-        # Re-structuring the dictionary of class level metrics
-        metrics_per_class = list(map(lambda x: self.__restructure(x[0], x[1]), disaggregates.items()))
+        return frame
 
-        # Overarching metrics
-        aggregates = {k: v for k, v in metrics.items() if k.startswith('overall')}
+    def __publish(self, _derivations: pd.DataFrame) -> dict:
 
-        return dict(collections.ChainMap(*metrics_per_class, aggregates))
+        m_estimates = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'fscore', 'matthews', 'b-accuracy']
+        m_labels = self.__labels
 
-    def exc(self, bucket) -> dict:
+        focus = _derivations.loc[_derivations['label'].isin(m_labels), m_estimates]
+
+        publish = focus.melt(id_vars='label', var_name='metric', value_name='score')
+        publish = publish.assign(valuation = publish['label'] + '-' + publish['metric'])
+        publish.sort_values(by='valuation', ascending=True, inplace=True)
+
+        dictionary = publish[['valuation', 'score']].set_index(
+            keys='valuation').to_dict(orient='dict')['score']
+
+        return dictionary
+
+    def exc(self, bucket: transformers.trainer_utils.PredictionOutput):
         """
 
         :param bucket:
         :return:
         """
-
-        logging.info(bucket)
 
         # Predictions
         predictions = bucket.predictions
@@ -90,10 +97,13 @@ class Metrics:
 
         # Active
         _predictions, _labels = self.__active(predictions=predictions, labels=labels)
+        print('_predictions:\n',_predictions)
+        print('_labels:\n',_labels)
 
         # Hence
-        metrics = self.__seqeval.compute(predictions=_predictions, references=_labels, zero_division=0.0)
-        decomposition = self.__decompose(metrics=metrics)
+        cases = self.__cases(_predictions=_predictions, _labels=_labels)
+        _derivations = src.modelling.derivations.Derivations(cases=cases).exc()
+        _publish = self.__publish(_derivations=_derivations)
+        print(_publish)
 
-
-        return decomposition
+        return _publish
