@@ -21,7 +21,7 @@ class Metrics:
         :param _id2label:
         """
 
-        self.__archetype = _id2label
+        self.__id2label = _id2label
         self.__labels = list(_id2label.values())
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
 
@@ -34,11 +34,11 @@ class Metrics:
         """
 
         _predictions = [
-            [self.__archetype[p] for (p, l) in zip(prediction, label) if l != -100]
+            [self.__id2label[p] for (p, l) in zip(prediction, label) if l != -100]
             for prediction, label in zip(predictions, labels)
         ]
         _labels = [
-            [self.__archetype[l] for (p, l) in zip(prediction, label) if l != -100]
+            [self.__id2label[l] for (p, l) in zip(prediction, label) if l != -100]
             for prediction, label in zip(predictions, labels)
         ]
 
