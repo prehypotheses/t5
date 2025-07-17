@@ -23,6 +23,7 @@ class Metrics:
 
         self.__archetype = _id2label
         self.__labels = list(_id2label.values())
+        self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
 
 
     def __active(self, predictions: np.ndarray, labels: np.ndarray) -> typing.Tuple[list[list], list[list]]:
@@ -70,15 +71,15 @@ class Metrics:
 
     def __publish(self, _derivations: pd.DataFrame) -> dict:
         """
-        
-        :param _derivations:
+
+        :param _derivations: A data frame of error measures & metrics
         :return:
         """
 
-        m_estimates = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'fscore', 'matthews', 'b-accuracy']
-        m_labels = self.__labels
 
-        focus = _derivations.loc[_derivations['label'].isin(m_labels), m_estimates]
+
+
+        focus = _derivations.loc[_derivations['label'].isin(self.__labels), self.__fields]
 
         publish = focus.melt(id_vars='label', var_name='metric', value_name='score')
         publish = publish.assign(valuation = publish['label'] + '-' + publish['metric'])
