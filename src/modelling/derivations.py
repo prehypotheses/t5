@@ -111,7 +111,7 @@ class Derivations:
         data.loc[:, 'specificity'] = self.specificity()
         data.loc[:, 'fnr'] = 1 - data['sensitivity']
         data.loc[:, 'fpr'] = 1 - data['specificity']
-        data.loc[:, 'fscore'] = self.fscore()
+        data.loc[:, 'f-score'] = self.fscore()
         data.loc[:, 'youden'] = self.youden()
         data.loc[:, 'matthews'] = self.matthews()
 
