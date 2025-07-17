@@ -69,6 +69,11 @@ class Metrics:
         return frame
 
     def __publish(self, _derivations: pd.DataFrame) -> dict:
+        """
+        
+        :param _derivations:
+        :return:
+        """
 
         m_estimates = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'fscore', 'matthews', 'b-accuracy']
         m_labels = self.__labels
