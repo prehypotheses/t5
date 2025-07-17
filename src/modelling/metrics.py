@@ -72,7 +72,7 @@ class Metrics:
 
         return dict(collections.ChainMap(*metrics_per_class, aggregates))
 
-    def exc(self, bucket):
+    def exc(self, bucket) -> dict:
         """
 
         :param bucket:
