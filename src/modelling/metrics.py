@@ -25,7 +25,6 @@ class Metrics:
         self.__labels = list(_id2label.values())
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
 
-
     def __active(self, predictions: np.ndarray, labels: np.ndarray) -> typing.Tuple[list[list], list[list]]:
         """
 
@@ -75,9 +74,6 @@ class Metrics:
         :param _derivations: A data frame of error measures & metrics
         :return:
         """
-
-
-
 
         focus = _derivations.loc[_derivations['label'].isin(self.__labels), self.__fields]
 
