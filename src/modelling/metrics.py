@@ -65,9 +65,6 @@ class Metrics:
 
         frame = pd.DataFrame(
             data={'label': self.__labels, 'tp': tp, 'fn': fn, 'fp': fp, 'tn': tn, 'N': np.sum(matrix, axis=1)})
-        append =  (['overall'] + frame[['tp', 'fn', 'fp']].sum().tolist() +
-                   [int(matrix.sum() - matrix.trace())] + frame[['N']].sum().tolist())
-        frame.loc[len(frame)] = append
 
         return frame
 
