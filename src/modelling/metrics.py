@@ -46,21 +46,27 @@ class Metrics:
 
 
     def __cases(self, _predictions, _labels):
+        """
+
+        :param _predictions:
+        :param _labels:
+        :return:
+        """
 
         predictions_ = sum(_predictions, [])
         labels_ = sum(_labels, [])
-
         matrix = sklearn.metrics.confusion_matrix(y_true=labels_, y_pred=predictions_, labels=self.__labels)
 
-        trace = matrix.trace()
         tp = np.diag(matrix, k=0)
-        tn = trace - np.diag(matrix, k=0)
-        fp = np.sum(np.tril(matrix, k=-1), axis=0)
+        tn = [int(matrix.sum() - matrix[:,k].sum() - matrix[k,:].sum() + matrix[k,k])
+              for k in range(matrix.shape[0])]
+        fp = np.sum(matrix, axis=0) - np.diag(matrix, k=0)
         fn = np.sum(matrix, axis=1) - np.diag(matrix, k=0)
-        occurrences = np.sum(matrix, axis=1)
 
-        frame = pd.DataFrame(data={'label': self.__labels, 'tp': tp, 'fn': fn, 'fp': fp, 'tn': tn, 'N': occurrences})
-        append =  ['overall'] + frame[['tp', 'fn', 'fp', 'tn', 'N']].sum().tolist()
+        frame = pd.DataFrame(
+            data={'label': self.__labels, 'tp': tp, 'fn': fn, 'fp': fp, 'tn': tn, 'N': np.sum(matrix, axis=1)})
+        append =  (['overall'] + frame[['tp', 'fn', 'fp']].sum().tolist() +
+                   [int(matrix.sum() - matrix.trace())] + frame[['N']].sum().tolist())
         frame.loc[len(frame)] = append
 
         return frame
