@@ -88,7 +88,7 @@ class Metrics:
     def exc(self, bucket: transformers.trainer_utils.PredictionOutput):
         """
 
-        :param bucket:
+        :param bucket: An epoch's prediction output
         :return:
         """
 
