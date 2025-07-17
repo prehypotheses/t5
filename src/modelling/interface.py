@@ -42,12 +42,12 @@ class Interface:
         :return:
         """
 
-        logging.info(self.__s3_parameters.path_internal_artefacts)
-
         # Tokenization
         master = src.modelling.tokenization.Tokenization(arguments=self.__arguments).exc(master=master)
 
         # Best: Hyperparameters
+        self.__arguments = self.__arguments._replace(
+            model_output_directory=os.path.join(self.__initial, 'hyperparameters'))
         best = src.modelling.architecture.Architecture(
             arguments=self.__arguments, hyperspace=self.__hyperspace, master=master).train_func()
         logging.info(best)
