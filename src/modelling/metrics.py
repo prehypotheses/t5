@@ -97,11 +97,10 @@ class Metrics:
 
         # Active
         _predictions, _labels = self.__active(predictions=predictions, labels=labels)
-        
+
         # Hence
         cases = self.__cases(_predictions=_predictions, _labels=_labels)
         _derivations = src.modelling.derivations.Derivations(cases=cases).exc()
         _publish = self.__publish(_derivations=_derivations)
-        print(_publish)
 
         return _publish
