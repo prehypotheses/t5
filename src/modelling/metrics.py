@@ -15,14 +15,14 @@ class Metrics:
     https://huggingface.co/spaces/evaluate-metric/seqeval/blob/main/seqeval.py
     """
 
-    def __init__(self, _id2label: dict):
+    def __init__(self, id2label: dict):
         """
 
-        :param _id2label:
+        :param id2label:
         """
 
-        self.__id2label = _id2label
-        self.__labels = list(_id2label.values())
+        self.__id2label = id2label
+        self.__labels = list(id2label.values())
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
 
     def __active(self, predictions: np.ndarray, labels: np.ndarray) -> typing.Tuple[list[list], list[list]]:
