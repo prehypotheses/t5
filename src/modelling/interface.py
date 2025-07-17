@@ -11,6 +11,7 @@ import src.elements.s3_parameters as s3p
 import src.modelling.convergence
 import src.modelling.architecture
 import src.modelling.tokenization
+import src.valuate.interface
 
 
 # noinspection DuplicatedCode
@@ -70,14 +71,11 @@ class Interface:
         # Save
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, 'model'))
 
-        '''
-        # Evaluating: vis-à-vis model & validation data
-        interface = src.valuate.interface.Interface(model=model, id2label=self.__id2label)
-
+        # Evaluating
+        interface = src.valuate.interface.Interface(model=model, id2label=master.id2label)
         interface.exc(
-            blob=yields['validating'],
+            blob=master.data['validating'],
             path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'validating'))
         interface.exc(
-            blob=yields['testing'],
+            blob=master.data['testing'],
             path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'testing'))
-        '''
