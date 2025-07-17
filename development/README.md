@@ -175,6 +175,29 @@ python -m flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 -
 
 inspects complexity.
 
+<br>
+<br>
+
+## Snippets
+
+Wherein `matrix` represents an error matrix, and each instance of frame includes true positive, true negative, false positive, and false negative fields, per label.  The snippet calculates overarching scores.
+
+Each trace value is a true positive value.  In terms of the notation $matrix_{i,j}$, $i$ denotes the true label, whilst $j$ denotes the predicted label. 
+
+```python
+import numpy
+import pandas
+
+frame = pandas.DataFrame()
+matrix = numpy.array([])
+
+tn = int(matrix.sum() - matrix.trace())
+
+append = (['overall'] + frame[['tp', 'fn', 'fp']].sum().tolist() +
+          [tn] + frame[['N']].sum().tolist())
+frame.loc[len(frame)] = append
+```
+
 
 <br>
 <br>
