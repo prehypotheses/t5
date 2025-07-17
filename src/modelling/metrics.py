@@ -1,10 +1,10 @@
+"""Module metrics"""
+import typing
 
 import numpy as np
 import pandas as pd
-import transformers
-import typing
-
 import sklearn
+import transformers
 
 import src.modelling.derivations
 
