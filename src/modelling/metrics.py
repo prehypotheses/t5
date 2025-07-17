@@ -105,6 +105,6 @@ class Metrics:
         # Hence
         cases = self.__cases(_predictions=_predictions, _labels=_labels)
         derivations = src.modelling.derivations.Derivations(cases=cases).exc()
-        _publish = self.__publish(derivations=derivations)
+        publish = self.__publish(derivations=derivations)
 
-        return _publish
+        return publish
