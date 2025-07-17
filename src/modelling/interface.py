@@ -7,9 +7,8 @@ import transformers
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.master as mr
-import src.elements.s3_parameters as s3p
-import src.modelling.convergence
 import src.modelling.architecture
+import src.modelling.convergence
 import src.modelling.tokenization
 import src.valuate.interface
 
@@ -20,15 +19,13 @@ class Interface:
     Layer
     """
 
-    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
+    def __init__(self, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
         """
 
-        :param s3_parameters:
         :param arguments:
         :param hyperspace:
         """
 
-        self.__s3_parameters = s3_parameters
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
