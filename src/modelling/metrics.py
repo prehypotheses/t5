@@ -67,14 +67,14 @@ class Metrics:
 
         return frame
 
-    def __publish(self, _derivations: pd.DataFrame) -> dict:
+    def __publish(self, derivations: pd.DataFrame) -> dict:
         """
 
-        :param _derivations: A data frame of error measures & metrics
+        :param derivations: A data frame of error measures & metrics
         :return:
         """
 
-        focus = _derivations.loc[_derivations['label'].isin(self.__labels), self.__fields]
+        focus = derivations.copy().loc[derivations['label'].isin(self.__labels), self.__fields]
 
         publish = focus.melt(id_vars='label', var_name='metric', value_name='score')
         publish = publish.assign(valuation = publish['label'] + '-' + publish['metric'])
@@ -104,7 +104,7 @@ class Metrics:
 
         # Hence
         cases = self.__cases(_predictions=_predictions, _labels=_labels)
-        _derivations = src.modelling.derivations.Derivations(cases=cases).exc()
-        _publish = self.__publish(_derivations=_derivations)
+        derivations = src.modelling.derivations.Derivations(cases=cases).exc()
+        _publish = self.__publish(derivations=derivations)
 
         return _publish
