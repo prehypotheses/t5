@@ -44,7 +44,6 @@ class Metrics:
 
         return _predictions, _labels
 
-
     def __cases(self, _predictions, _labels):
         """
 
