@@ -69,3 +69,15 @@ class Interface:
 
         # Save
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, 'model'))
+
+        '''
+        # Evaluating: vis-à-vis model & validation data
+        interface = src.valuate.interface.Interface(model=model, id2label=self.__id2label)
+
+        interface.exc(
+            blob=yields['validating'],
+            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'validating'))
+        interface.exc(
+            blob=yields['testing'],
+            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'testing'))
+        '''
