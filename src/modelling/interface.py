@@ -68,5 +68,5 @@ class Interface:
             blob=master.data['validation'],
             path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'validation'))
         interface.exc(
-            blob=master.data['testing'],
-            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'testing'))
+            blob=master.data['test'],
+            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'test'))
