@@ -1,5 +1,5 @@
 """Module architecture.py"""
-
+import os
 import transformers
 
 import src.elements.arguments as ag
@@ -64,7 +64,9 @@ class Architecture:
         tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
 
         # Training Arguments
-        args = src.modelling.args.Args(arguments=self.__arguments, n_instances=self.__data['train'].num_rows).__call__()
+        branch = 'hyperparameters'
+        args = src.modelling.args.Args(
+            arguments=self.__arguments, n_instances=self.__data['train'].num_rows).__call__(branch=branch)
 
         # Data Collator
         data_collator: transformers.DataCollatorForTokenClassification = (
@@ -81,9 +83,15 @@ class Architecture:
         best: transformers.trainer_utils.BestRun = trainer.hyperparameter_search(
             hp_space=self.__tuning.ray_hp_space, compute_objective=self.__tuning.compute_objective,
             n_trials=self.__arguments.N_TRIALS, direction='minimize', backend='ray',
+
+            # scaling configuration
             resources_per_trial={'cpu': self.__arguments.N_CPU, 'gpu': self.__arguments.N_GPU},
-            storage_path=self.__arguments.storage_path,
+
+            # tune configuration
             scheduler=self.__tuning.scheduler(), reuse_actors=True,
+
+            # run configuration
+            storage_path=os.path.join(self.__arguments.model_output_directory, branch, 'compute'),
             checkpoint_config=checkpoint_config,
             verbose=0, progress_reporter=self.__tuning.reporting, log_to_file=True)
 
