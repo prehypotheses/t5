@@ -1,6 +1,8 @@
 """Module interface.py"""
 import os
 import typing
+import datetime
+import time
 
 import boto3
 
@@ -27,8 +29,13 @@ class Interface:
 
         self.__configurations = config.Config()
 
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
+        self.__seconds = int(time.mktime(pattern.timetuple()))
+
     def __arguments(self, connector: boto3.session.Session) -> ag.Arguments:
         """
+        The storage path hosts the hyperparameter search checkpoints.
 
         :param connector:
         :return:
@@ -38,8 +45,9 @@ class Interface:
             key_name=self.__configurations.arguments_key)
 
         # Set up the model output directory parameter
-        dictionary['model_output_directory'] = self.__configurations.artefacts_
-        dictionary['storage_path'] = self.__configurations.artefacts_ + os.sep + 'compute'
+        model_output_directory = os.path.join(
+            self.__configurations.artefacts_, dictionary['architecture'].upper(), str(self.__seconds))
+        dictionary['model_output_directory'] = model_output_directory
 
         return ag.Arguments(**dictionary)
 
