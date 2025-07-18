@@ -54,7 +54,8 @@ class Convergence:
         tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
 
         # Training Arguments
-        args = src.modelling.args.Args(arguments=self.__arguments, n_instances=self.__data['train'].num_rows).__call__()
+        args = src.modelling.args.Args(
+            arguments=self.__arguments, n_instances=self.__data['train'].num_rows).__call__(branch='optimal')
 
         # Data Collator
         data_collator: transformers.DataCollatorForTokenClassification = (
