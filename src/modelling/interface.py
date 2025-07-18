@@ -65,8 +65,8 @@ class Interface:
         # Evaluating
         interface = src.valuate.interface.Interface(model=model, id2label=master.id2label)
         interface.exc(
-            blob=master.data['validating'],
-            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'validating'))
+            blob=master.data['validation'],
+            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'validation'))
         interface.exc(
             blob=master.data['testing'],
             path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'testing'))
