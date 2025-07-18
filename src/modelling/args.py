@@ -39,6 +39,7 @@ class Args:
             report_to='tensorboard',
             eval_strategy='epoch',
             save_strategy='epoch',
+            logging_strategy='epoch',
             learning_rate=self.__arguments.LEARNING_RATE,
             weight_decay=self.__arguments.WEIGHT_DECAY,
             per_device_train_batch_size=self.__arguments.TRAIN_BATCH_SIZE,
