@@ -21,7 +21,7 @@ class Args:
         self.__arguments = arguments
         self.__n_instances = n_instances
 
-    def __call__(self) -> transformers.TrainingArguments:
+    def __call__(self, branch: str) -> transformers.TrainingArguments:
         """
 
         :return:
@@ -35,10 +35,11 @@ class Args:
                 max_steps = -1
 
         args = transformers.TrainingArguments(
-            output_dir=self.__arguments.model_output_directory,
+            output_dir=os.path.join(self.__arguments.model_output_directory, branch),
             report_to='tensorboard',
             eval_strategy='epoch',
             save_strategy='epoch',
+            logging_strategy='epoch',
             learning_rate=self.__arguments.LEARNING_RATE,
             weight_decay=self.__arguments.WEIGHT_DECAY,
             per_device_train_batch_size=self.__arguments.TRAIN_BATCH_SIZE,
@@ -53,7 +54,7 @@ class Args:
             metric_for_best_model='eval_loss',
             greater_is_better=False,
             load_best_model_at_end=True,
-            logging_dir=os.path.join(self.__arguments.model_output_directory, 'logs'),
+            logging_dir=os.path.join(self.__arguments.model_output_directory, branch, 'logs'),
             fp16=True,
             push_to_hub=False)
 

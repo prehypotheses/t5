@@ -18,6 +18,7 @@ def main():
 
     logger: logging.Logger = logging.getLogger(__name__)
     logger.info('Starting: %s', datetime.datetime.now().isoformat(timespec='microseconds'))
+    logger.info(arguments)
 
     # Device Selection: Setting a graphics processing unit as the default device
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -31,8 +32,13 @@ def main():
     logger.info(master.id2label)
     logger.info(master.data)
 
-    # Best
+    # Best, etc
     src.modelling.interface.Interface(arguments=arguments, hyperspace=hyperspace).exc(master=master)
+
+    # Transfer
+    messages = src.transfer.interface.Interface(
+        service=service, s3_parameters=s3_parameters, arguments=arguments).exc()
+    logger.info(messages)
 
     # Cache
     src.functions.cache.Cache().exc()
@@ -65,6 +71,7 @@ if __name__ == '__main__':
     import src.functions.cache
     import src.modelling.interface
     import src.preface.interface
+    import src.transfer.interface
 
     connector: boto3.session.Session
     s3_parameters: s3p.S3Parameters

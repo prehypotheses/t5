@@ -20,7 +20,7 @@ For checkpoints visit (a) [checkpoints](https://docs.ray.io/en/latest/train/user
 * [Collator](https://huggingface.co/docs/transformers/main_classes/data_collator#transformers.DataCollatorForTokenClassification)
 * [Fine-Tuning](https://docs.ray.io/en/latest/train/examples/transformers/huggingface_text_classification.html)
 * [Training, Fine-Tuning](https://colab.research.google.com/github/huggingface/notebooks/blob/main/transformers_doc/en/training.ipynb)
-* [Token Classification](https://colab.research.google.com/github/huggingface/notebooks/blob/main/examples/token_classification.ipynb)
+* [Natural Language Processing](https://huggingface.co/docs/transformers/notebooks#pytorch-nlp): [Token Classification](https://colab.research.google.com/github/huggingface/notebooks/blob/main/examples/token_classification.ipynb)
 
 <br>
 

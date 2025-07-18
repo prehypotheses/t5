@@ -1,6 +1,8 @@
 """Module metrics"""
-import logging
+
 import typing
+
+import transformers
 
 import numpy as np
 import pandas as pd
@@ -85,14 +87,12 @@ class Metrics:
 
         return dictionary
 
-    def exc(self, bucket) -> dict | None:
+    def exc(self, bucket: transformers.trainer_utils.EvalPrediction) -> dict | None:
         """
 
         :param bucket: An epoch's prediction output
         :return:
         """
-
-        logging.info(type(bucket))
 
         # Predictions
         predictions = bucket.predictions
