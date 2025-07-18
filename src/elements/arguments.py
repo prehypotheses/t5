@@ -56,8 +56,6 @@ class Arguments(typing.NamedTuple):
         #transformers.TrainingArguments.output_dir">local parent directory for</a> predictions, checkpoints,
         <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer
         #transformers.TrainingArguments.logging_dir">logs</a>, etc.<br>
-    storage_path: <b>str</b> The <a href="https://docs.ray.io/en/latest/train/user-guides/persistent-storage.html">
-        persistent storage point for checkpoints</a>.<br>
     """
 
     MAX_LENGTH: int
@@ -89,4 +87,3 @@ class Arguments(typing.NamedTuple):
     raw_: str
     tokens_: str
     model_output_directory: str
-    storage_path: str
