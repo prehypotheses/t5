@@ -1,10 +1,12 @@
-"""Module metrics.py"""
-import collections
+"""Module metrics"""
 import logging
 import typing
 
-import evaluate
 import numpy as np
+import pandas as pd
+import sklearn
+
+import src.modelling.derivations
 
 
 class Metrics:
@@ -20,7 +22,8 @@ class Metrics:
         """
 
         self.__id2label = id2label
-        self.__seqeval = evaluate.load('seqeval')
+        self.__labels = list(id2label.values())
+        self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
 
     def __active(self, predictions: np.ndarray, labels: np.ndarray) -> typing.Tuple[list[list], list[list]]:
         """
@@ -41,45 +44,55 @@ class Metrics:
 
         return _predictions, _labels
 
-    @staticmethod
-    def __restructure(key: str, dictionary: dict):
+    def __cases(self, _predictions, _labels):
         """
 
-        :param key:
-        :param dictionary:
+        :param _predictions:
+        :param _labels:
         :return:
         """
 
-        return {f'{key}_{k}': v for k, v in dictionary.items()}
+        predictions_ = sum(_predictions, [])
+        labels_ = sum(_labels, [])
+        matrix = sklearn.metrics.confusion_matrix(y_true=labels_, y_pred=predictions_, labels=self.__labels)
 
-    def __decompose(self, metrics: dict) -> dict:
+        tp = np.diag(matrix, k=0)
+        tn = [int(matrix.sum() - matrix[:,k].sum() - matrix[k,:].sum() + matrix[k,k])
+              for k in range(matrix.shape[0])]
+        fp = np.sum(matrix, axis=0) - np.diag(matrix, k=0)
+        fn = np.sum(matrix, axis=1) - np.diag(matrix, k=0)
+
+        frame = pd.DataFrame(
+            data={'label': self.__labels, 'tp': tp, 'fn': fn, 'fp': fp, 'tn': tn, 'N': np.sum(matrix, axis=1)})
+
+        return frame
+
+    def __publish(self, derivations: pd.DataFrame) -> dict:
         """
 
-        :param metrics:{<br>
-                    &nbsp; 'class<sub>1</sub>': {'metric<sub>1</sub>': value, 'metric<sub>2</sub>': value, ...},<br>
-                    &nbsp; 'class<sub>2</sub>': {'metric<sub>1</sub>': value, 'metric<sub>2</sub>': value, ...}, ...}
+        :param derivations: A data frame of error measures & metrics
         :return:
         """
 
-        # Class level metrics
-        disaggregates = {k: v for k, v in metrics.items() if not k.startswith('overall')}
+        focus = derivations.copy().loc[derivations['label'].isin(self.__labels), self.__fields]
 
-        # Re-structuring the dictionary of class level metrics
-        metrics_per_class = list(map(lambda x: self.__restructure(x[0], x[1]), disaggregates.items()))
+        publish = focus.melt(id_vars='label', var_name='metric', value_name='score')
+        publish = publish.assign(valuation = publish['label'] + '-' + publish['metric'])
+        publish.sort_values(by='valuation', ascending=True, inplace=True)
 
-        # Overarching metrics
-        aggregates = {k: v for k, v in metrics.items() if k.startswith('overall')}
+        dictionary = publish[['valuation', 'score']].set_index(
+            keys='valuation').to_dict(orient='dict')['score']
 
-        return dict(collections.ChainMap(*metrics_per_class, aggregates))
+        return dictionary
 
-    def exc(self, bucket):
+    def exc(self, bucket) -> dict | None:
         """
 
-        :param bucket:
+        :param bucket: An epoch's prediction output
         :return:
         """
 
-        logging.info(bucket)
+        logging.info(type(bucket))
 
         # Predictions
         predictions = bucket.predictions
@@ -92,8 +105,8 @@ class Metrics:
         _predictions, _labels = self.__active(predictions=predictions, labels=labels)
 
         # Hence
-        metrics = self.__seqeval.compute(predictions=_predictions, references=_labels, zero_division=0.0)
-        decomposition = self.__decompose(metrics=metrics)
+        cases = self.__cases(_predictions=_predictions, _labels=_labels)
+        derivations = src.modelling.derivations.Derivations(cases=cases).exc()
+        publish = self.__publish(derivations=derivations)
 
-
-        return decomposition
+        return publish

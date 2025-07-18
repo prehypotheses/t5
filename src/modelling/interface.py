@@ -7,10 +7,10 @@ import transformers
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.master as mr
-import src.elements.s3_parameters as s3p
-import src.modelling.convergence
 import src.modelling.architecture
+import src.modelling.convergence
 import src.modelling.tokenization
+import src.valuate.interface
 
 
 # noinspection DuplicatedCode
@@ -19,15 +19,13 @@ class Interface:
     Layer
     """
 
-    def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
+    def __init__(self, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
         """
 
-        :param s3_parameters:
         :param arguments:
         :param hyperspace:
         """
 
-        self.__s3_parameters = s3_parameters
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
@@ -41,12 +39,12 @@ class Interface:
         :return:
         """
 
-        logging.info(self.__s3_parameters.path_internal_artefacts)
-
         # Tokenization
         master = src.modelling.tokenization.Tokenization(arguments=self.__arguments).exc(master=master)
 
         # Best: Hyperparameters
+        self.__arguments = self.__arguments._replace(
+            model_output_directory=os.path.join(self.__initial, 'hyperparameters'))
         best = src.modelling.architecture.Architecture(
             arguments=self.__arguments, hyperspace=self.__hyperspace, master=master).train_func()
         logging.info(best)
@@ -69,3 +67,12 @@ class Interface:
 
         # Save
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, 'model'))
+
+        # Evaluating
+        interface = src.valuate.interface.Interface(model=model, id2label=master.id2label)
+        interface.exc(
+            blob=master.data['validating'],
+            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'validating'))
+        interface.exc(
+            blob=master.data['testing'],
+            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'testing'))

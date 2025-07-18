@@ -32,8 +32,7 @@ def main():
     logger.info(master.data)
 
     # Best
-    src.modelling.interface.Interface(
-        s3_parameters=s3_parameters, arguments=arguments, hyperspace=hyperspace).exc(master=master)
+    src.modelling.interface.Interface(arguments=arguments, hyperspace=hyperspace).exc(master=master)
 
     # Cache
     src.functions.cache.Cache().exc()

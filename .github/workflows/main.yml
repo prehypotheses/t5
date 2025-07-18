@@ -54,14 +54,20 @@ jobs:
           printf "\n src/functions "
           flake8 --count --select=E9,F63,F7,F82 --show-source --statistics src/functions
           
+          printf "\n src/modelling "
+          flake8 --count --select=E9,F63,F7,F82 --show-source --statistics src/modelling
+          
           printf "\n src/preface "
           flake8 --count --select=E9,F63,F7,F82 --show-source --statistics src/preface
           
           printf "\n src/s3 "
           flake8 --count --select=E9,F63,F7,F82 --show-source --statistics src/s3
           
-          printf "\n src/modelling "
-          flake8 --count --select=E9,F63,F7,F82 --show-source --statistics src/modelling
+          printf "\n src/transfer "
+          flake8 --count --select=E9,F63,F7,F82 --show-source --statistics src/transfer
+          
+          printf "\n src/valuate "
+          flake8 --count --select=E9,F63,F7,F82 --show-source --statistics src/valuate
           
           
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
@@ -77,14 +83,20 @@ jobs:
           printf "\n src/functions "
           flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/functions
           
+          printf "\n src/modelling "
+          flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/modelling
+          
           printf "\n src/preface "
           flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/preface
           
           printf "\n src/s3 "
           flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/s3
           
-          printf "\n src/modelling "
-          flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/modelling
+          printf "\n src/transfer "
+          flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/transfer
+          
+          printf "\n src/valuate "
+          flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/valuate         
 
 
       - name: Lint with pylint
@@ -101,14 +113,20 @@ jobs:
           printf "\n Package src/functions"
           pylint --rcfile .pylintrc src/functions
           
+          printf "\n Package src/modelling"
+          pylint --rcfile .pylintrc src/modelling
+          
           printf "\n Package src/preface"
           pylint --rcfile .pylintrc src/preface
           
           printf "\n Package src/s3"
           pylint --rcfile .pylintrc src/s3
           
-          printf "\n Package src/modelling"
-          pylint --rcfile .pylintrc src/modelling
+          printf "\n Package src/transfer"
+          pylint --rcfile .pylintrc src/transfer
+          
+          printf "\n Package src/valuate"
+          pylint --rcfile .pylintrc src/valuate
 
 
       - name: Test with pytest

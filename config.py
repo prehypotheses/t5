@@ -37,3 +37,10 @@ class Config:
         self.s3_parameters_key = 's3_parameters.yaml'
         self.arguments_key = 'architecture/t5/arguments.json'
         self.hyperspace_key = 'architecture/t5/hyperspace.json'
+
+        '''
+       The metadata of the modelling artefacts
+       '''
+        self.metadata = {'description': 'The modelling artefacts of {architecture}.',
+                         'details': 'The {architecture} collection consists of (a) the checkpoints, (b) the logs ' +
+                                    'for TensorBoard examination, and (c) much more.'}
