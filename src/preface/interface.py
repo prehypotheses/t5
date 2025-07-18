@@ -35,7 +35,6 @@ class Interface:
 
     def __arguments(self, connector: boto3.session.Session) -> ag.Arguments:
         """
-        The storage path hosts the hyperparameter search checkpoints.
 
         :param connector:
         :return:
