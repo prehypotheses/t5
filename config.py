@@ -19,9 +19,6 @@ class Config:
         excluded for names such as warehouse, storage, depository, etc.<br><br>
         """
 
-
-
-
         # Directories
         self.data_ = os.path.join(os.getcwd(), 'data')
         self.warehouse = os.path.join(os.getcwd(), 'warehouse')
