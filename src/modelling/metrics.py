@@ -1,5 +1,5 @@
 """Module metrics"""
-import logging
+
 import typing
 
 import transformers
