@@ -55,6 +55,9 @@ class Architecture:
     # pylint: disable=R0801
     def train_func(self) -> transformers.trainer_utils.BestRun:
         """
+        The storage_path variable of hyperparameter_search is the
+        <a href="https://docs.ray.io/en/latest/train/user-guides/persistent-storage.html">
+        persistent storage point of the hyperparameter search checkpoints</a>.<br><br>
 
         :return:
         """
