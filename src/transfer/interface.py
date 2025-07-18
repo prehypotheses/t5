@@ -3,11 +3,12 @@ import glob
 import os
 
 import config
-import src.transfer.dictionary
+import src.elements.arguments as ag
 import src.elements.s3_parameters as s3p
 import src.elements.service as sr
 import src.functions.directories
 import src.s3.ingress
+import src.transfer.dictionary
 
 
 class Interface:
@@ -16,22 +17,22 @@ class Interface:
 
     """
 
-    def __init__(self, service: sr.Service,  s3_parameters: s3p, architecture: str):
+    def __init__(self, service: sr.Service,  s3_parameters: s3p, arguments: ag.Arguments):
         """
 
         :param service: A suite of services for interacting with Amazon Web Services.
         :param s3_parameters: The overarching S3 parameters settings of this
                               project, e.g., region code name, buckets, etc.
-        :param architecture: The pre-trained model architecture in focus.
+        :param arguments: Refer to src.elements.arguments
         """
 
         self.__service: sr.Service = service
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
-        self.__architecture: str = architecture
+        self.__arguments: ag.Arguments = arguments
 
         # Instances
         self.__configurations = config.Config()
-        self.__dictionary = src.transfer.dictionary.Dictionary(architecture=architecture)
+        self.__dictionary = src.transfer.dictionary.Dictionary(architecture=self.__arguments.architecture)
         self.__directories = src.functions.directories.Directories()
 
     @staticmethod
@@ -57,12 +58,12 @@ class Interface:
         """
 
         # Runs
-        runs_: str = os.path.join(self.__configurations.artefacts_, self.__architecture, 'hyperparameters', 'run*')
+        runs_: str = os.path.join(self.__arguments.model_output_directory, 'hyperparameters', 'run*')
         runs = glob.glob(pathname=runs_, recursive=True)
 
         # Checkpoints
         checkpoints_: str = os.path.join(
-            self.__configurations.artefacts_, self.__architecture, 'hyperparameters', 'compute', '**', 'checkpoint_*')
+            self.__arguments.model_output_directory, 'hyperparameters', 'compute', '**', 'checkpoint_*')
         checkpoints = glob.glob(pathname=checkpoints_, recursive=True)
 
         # Hence, altogether
