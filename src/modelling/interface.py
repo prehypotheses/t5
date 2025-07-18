@@ -29,9 +29,6 @@ class Interface:
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
-        # Storage Section
-        self.__initial = self.__arguments.model_output_directory
-
     def exc(self, master: mr.Master):
         """
 
@@ -43,8 +40,6 @@ class Interface:
         master = src.modelling.tokenization.Tokenization(arguments=self.__arguments).exc(master=master)
 
         # Best: Hyperparameters
-        self.__arguments = self.__arguments._replace(
-            model_output_directory=os.path.join(self.__initial, 'hyperparameters'))
         best = src.modelling.architecture.Architecture(
             arguments=self.__arguments, hyperspace=self.__hyperspace, master=master).train_func()
         logging.info(best)
@@ -58,7 +53,6 @@ class Interface:
         # Additionally, prepare the artefacts storage area for the best model, vis-à-vis best hyperparameters
         # set, and save a checkpoint at the optimal training point only by setting save_total_limit = 1.
         self.__arguments = self.__arguments._replace(
-            model_output_directory=os.path.join(self.__initial, 'optimal'),
             EPOCHS=2*self.__arguments.EPOCHS, save_total_limit=1)
 
         # Model
