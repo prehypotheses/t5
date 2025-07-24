@@ -44,9 +44,10 @@ class Convergence:
 
     # noinspection DuplicatedCode
     # pylint: disable=R0801
-    def __call__(self):
+    def __call__(self, branch: str):
         """
 
+        :param branch:
         :return:
         """
 
@@ -55,7 +56,7 @@ class Convergence:
 
         # Training Arguments
         args = src.modelling.args.Args(
-            arguments=self.__arguments, n_instances=self.__data['train'].num_rows).__call__(branch='optimal')
+            arguments=self.__arguments, n_instances=self.__data['train'].num_rows).__call__(branch=branch)
 
         # Data Collator
         data_collator: transformers.DataCollatorForTokenClassification = (

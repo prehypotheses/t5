@@ -1,4 +1,5 @@
 """Module interface.py"""
+import os
 import logging
 import warnings
 
@@ -65,10 +66,16 @@ class Interface:
         :return:
         """
 
-        dataset_dict_path = 's3://' + self.__s3_parameters.internal + '/' + self.__configurations.destination + '/data'
+        # The model output directory includes the [temporary] local storage area, which is
+        # encoded by self.__configurations.warehouse; this statement removes this local path
+        difference = self.__arguments.model_output_directory.replace(self.__configurations.warehouse, '')
+        difference = difference.replace(os.sep, '/')
+
+        # Hence, construct the simple storage service string
+        dataset_dict_path = 's3://' + self.__s3_parameters.internal + difference + '/data'
         excerpt.save_to_disk(dataset_dict_path=dataset_dict_path)
 
-        logging.info('The data tokens for T5 have been written to prefix: %s', self.__configurations.destination + '/data')
+        logging.info('The data tokens for T5 have been written to prefix: %s', difference + '/data')
 
     def exc(self) -> mr.Master:
         """

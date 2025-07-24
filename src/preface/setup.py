@@ -19,17 +19,19 @@ class Setup:
     Sets up local & cloud environments
     """
 
-    def __init__(self, service: sr.Service, s3_parameters: s3p.S3Parameters):
+    def __init__(self, service: sr.Service, s3_parameters: s3p.S3Parameters, prefix: str):
         """
 
         :param service: A suite of services for interacting with Amazon Web Services.
         :param s3_parameters: The overarching S3 parameters settings of this project, e.g., region code
                               name, buckets, etc.
+        :param prefix: The cloud storage area prefix that hosts the artefacts of a model development instance
         """
 
         self.__service: sr.Service = service
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
         self.__bucket_name = self.__s3_parameters.internal
+        self.__prefix = prefix
 
         # Configurations, etc.
         self.__configurations = config.Config()
@@ -44,7 +46,7 @@ class Setup:
         instance = src.s3.prefix.Prefix(service=self.__service, bucket_name=self.__bucket_name)
 
         # Get the keys therein
-        keys: list[str] = instance.objects(prefix=self.__configurations.destination)
+        keys: list[str] = instance.objects(prefix=self.__prefix)
 
         if len(keys) > 0:
             objects = [{'Key' : key} for key in keys]

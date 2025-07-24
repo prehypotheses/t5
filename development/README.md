@@ -198,7 +198,6 @@ append = (['overall'] + frame[['tp', 'fn', 'fp']].sum().tolist() +
 frame.loc[len(frame)] = append
 ```
 
-
 <br>
 <br>
 

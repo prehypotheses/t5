@@ -24,9 +24,6 @@ class Config:
         self.warehouse = os.path.join(os.getcwd(), 'warehouse')
         self.artefacts_ = os.path.join(self.warehouse, 'artefacts')
 
-        # Prefixes
-        self.destination = f'artefacts/T5'
-
         # Keys, etc
         self.s3_parameters_key = 's3_parameters.yaml'
         self.arguments_key = 'architecture/t5/arguments.json'
