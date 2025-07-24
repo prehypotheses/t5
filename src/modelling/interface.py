@@ -55,18 +55,17 @@ class Interface:
         self.__arguments = self.__arguments._replace(
             EPOCHS=2*self.__arguments.EPOCHS, save_total_limit=1)
 
-        # Model
+        # Optimal Model
+        branch = 'optimal'
         model: transformers.Trainer = src.modelling.convergence.Convergence(
-            arguments=self.__arguments, master=master).__call__()
+            arguments=self.__arguments, master=master).__call__(branch=branch)
 
-        # Save
-        model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, 'model'))
+        model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, branch, 'model'))
 
-        # Evaluating
         interface = src.valuate.interface.Interface(model=model, id2label=master.id2label)
         interface.exc(
             blob=master.data['validation'],
-            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'validation'))
+            path=os.path.join(self.__arguments.model_output_directory, branch, 'metrics', 'validation'))
         interface.exc(
             blob=master.data['test'],
-            path=os.path.join(self.__arguments.model_output_directory, 'metrics', 'test'))
+            path=os.path.join(self.__arguments.model_output_directory, branch, 'metrics', 'test'))
