@@ -43,6 +43,8 @@ class Interface:
         best = src.modelling.architecture.Architecture(
             arguments=self.__arguments, hyperspace=self.__hyperspace, master=master).train_func()
         logging.info(best)
+        logging.info(best.run_summary)
+        logging.info(best.hyperparameters)
 
         # Hence, update the modelling variables
         self.__arguments = self.__arguments._replace(
