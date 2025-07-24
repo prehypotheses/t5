@@ -80,8 +80,13 @@ class Interface:
         service: sr.Service = src.functions.service.Service(
             connector=connector, region_name=s3_parameters.region_name).exc()
 
-        # Setting up the cloud storage area
-        src.preface.setup.Setup(service=service, s3_parameters=s3_parameters).exc()
+        # Arguments
+        arguments = self.__arguments(connector=connector)
 
-        return (connector, s3_parameters, service, self.__arguments(connector=connector),
+        # Setting up the cloud storage area
+        prefix = arguments.model_output_directory.replace(self.__configurations.warehouse, '')
+        prefix = prefix.replace(os.sep, '/')
+        src.preface.setup.Setup(service=service, s3_parameters=s3_parameters, prefix=prefix).exc()
+
+        return (connector, s3_parameters, service, arguments,
                 self.__hyperspace(connector=connector))
