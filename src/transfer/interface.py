@@ -43,10 +43,8 @@ class Interface:
         :return:
         """
 
-        left = pathstr.split('_', maxsplit=4)
-        right = pathstr.rsplit('_', maxsplit=2)
-        strings = left[1:3] + right[-2:]
-        name = '_'.join(strings)
+        left = pathstr.split('_learning_rate', 1)
+        name = left[0]
 
         return name
 
