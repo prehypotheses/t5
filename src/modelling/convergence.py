@@ -1,5 +1,5 @@
 """Module convergence.py"""
-
+import typing
 import transformers
 
 import src.elements.arguments as ag
@@ -44,7 +44,7 @@ class Convergence:
 
     # noinspection DuplicatedCode
     # pylint: disable=R0801
-    def __call__(self, branch: str):
+    def __call__(self, branch: typing.Literal['hyperparameters', 'optimal']):
         """
 
         :param branch:
