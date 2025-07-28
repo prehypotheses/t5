@@ -30,8 +30,8 @@ class Interface:
         self.__experiment_name = 'FEW'
         self.__experiment_tags = {
             'project': 'custom token classification', 'type': 'natural language processing',
-            'task': 'token classification', 'team': 'data science core',
-            'description': 'Token classification via the fine tuning of pre-trained large language model architectures'}
+            'task': 'token classification',
+            'description': 'The fine-tuning of pre-trained large language model architectures for token classification tasks.'}
 
     def __parts(self):
 
