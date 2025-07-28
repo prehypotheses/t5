@@ -1,10 +1,13 @@
 import logging
-
+import os
 import numpy as np
 import pandas as pd
 import sklearn.metrics as sm
+import datetime
+import time
 
 import src.modelling.derivations
+import mlflow
 
 
 class Lineage:
@@ -19,6 +22,9 @@ class Lineage:
         self.__labels = list(id2label.values())
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
 
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
+        self.__seconds = int(time.mktime(pattern.timetuple()))
 
     def __cases(self, originals: list[str], predictions: list[str]):
         """
@@ -62,15 +68,30 @@ class Lineage:
 
         return dictionary
 
-    def exc(self, originals: list[str], predictions: list[str]) -> dict:
+    def exc(self, originals: list[str], predictions: list[str], name: str, tags: dict, stage: str, artefacts_: str):
         """
 
         :param originals: The true values, a simple, i.e., un-nested, list.<br>
         :param predictions: The predictions, a simple list, i.e., un-nested, list.<br>
+        :param name: MlFlow experiment name
+        :param tags: MlFlow overarching/common experiment tags
+        :param stage: Either training, testing, or validation
+        :param artefacts_: The location for the artefacts
         """
 
+        client = mlflow.MlflowClient()
+        register = client.create_experiment(name=name, artifact_location='', tags=tags)
+
+        mlflow.set_experiment(experiment_name=name)
+        mlflow.set_experiment_tag(key='stage', value=stage)
+
+        # Calculate
         cases = self.__cases(originals=originals, predictions=predictions)
         derivations = src.modelling.derivations.Derivations(cases=cases).exc()
         elements = self.__structure(derivations=derivations)
 
-        return elements
+        # Log
+        with mlflow.start_run(run_name=str(self.__seconds)) as run:
+            mlflow.log_metrics(elements)
+
+
