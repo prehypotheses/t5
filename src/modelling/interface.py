@@ -1,6 +1,7 @@
 """Module interface.py"""
 import logging
 import os
+import typing
 
 import transformers
 
@@ -41,7 +42,7 @@ class Interface:
 
         # Best: Hyperparameters
         best = src.modelling.architecture.Architecture(
-            arguments=self.__arguments, hyperspace=self.__hyperspace, master=master).train_func()
+            arguments=self.__arguments, hyperspace=self.__hyperspace, master=master).train_func(branch='hyperparameters')
         logging.info(best)
         logging.info(best.run_summary)
         logging.info(best.hyperparameters)
@@ -60,14 +61,10 @@ class Interface:
         # Optimal Model
         branch = 'optimal'
         model: transformers.Trainer = src.modelling.convergence.Convergence(
-            arguments=self.__arguments, master=master).__call__(branch=branch)
+            arguments=self.__arguments, master=master).__call__(branch=eval(branch))
 
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, branch, 'model'))
 
-        interface = src.valuate.interface.Interface(model=model, id2label=master.id2label)
-        interface.exc(
-            blob=master.data['validation'],
-            path=os.path.join(self.__arguments.model_output_directory, branch, 'metrics', 'validation'))
-        interface.exc(
-            blob=master.data['test'],
-            path=os.path.join(self.__arguments.model_output_directory, branch, 'metrics', 'test'))
+        interface = src.valuate.interface.Interface(model=model, id2label=master.id2label, arguments=self.__arguments)
+        interface.exc(blob=master.data['validation'], branch=branch, stage='validation')
+        interface.exc(blob=master.data['test'], branch=branch, stage='test')
