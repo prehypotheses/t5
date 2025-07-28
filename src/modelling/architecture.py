@@ -1,6 +1,7 @@
 """Module architecture.py"""
 import os
 import transformers
+import typing
 
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
@@ -53,12 +54,14 @@ class Architecture:
 
     # noinspection DuplicatedCode
     # pylint: disable=R0801
-    def train_func(self) -> transformers.trainer_utils.BestRun:
+    def train_func(self, branch: typing.Literal['hyperparameters', 'optimal']) -> transformers.trainer_utils.BestRun:
         """
         The storage_path variable of hyperparameter_search is the
         <a href="https://docs.ray.io/en/latest/train/user-guides/persistent-storage.html">
         persistent storage point of the hyperparameter search checkpoints</a>.<br><br>
 
+        :param branch: Per model development experiment, artefacts are stored within the experiment's
+                       `hyperparameters` or `optimal` directory branch.
         :return:
         """
 
@@ -67,7 +70,6 @@ class Architecture:
         tokenizer = src.modelling.tokenizer.Tokenizer(arguments=self.__arguments).__call__()
 
         # Training Arguments
-        branch = 'hyperparameters'
         args = src.modelling.args.Args(
             arguments=self.__arguments, n_instances=self.__data['train'].num_rows).__call__(branch=branch)
 
