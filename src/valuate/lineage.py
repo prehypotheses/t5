@@ -85,6 +85,8 @@ class Lineage:
         :param artefacts_: The location for the artefacts
         """
 
+        logging.info(artefacts_)
+
         client = mlflow.MlflowClient()
         register = client.create_experiment(
             name=self.__configurations.experiment_name, artifact_location='',)
