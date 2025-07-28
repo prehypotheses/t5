@@ -42,7 +42,7 @@ class Lineage:
 
         return frame
 
-    def __publish(self, derivations: pd.DataFrame) -> dict:
+    def __structure(self, derivations: pd.DataFrame) -> dict:
         """
 
         :param derivations: A data frame of error measures & metrics
@@ -71,6 +71,6 @@ class Lineage:
 
         cases = self.__cases(originals=originals, predictions=predictions)
         derivations = src.modelling.derivations.Derivations(cases=cases).exc()
-        elements = self.__publish(derivations=derivations)
+        elements = self.__structure(derivations=derivations)
 
         return elements
