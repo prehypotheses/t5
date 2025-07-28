@@ -1,13 +1,13 @@
+import datetime
 import logging
-import os
+import time
+
+import mlflow
 import numpy as np
 import pandas as pd
 import sklearn.metrics as sm
-import datetime
-import time
 
 import src.modelling.derivations
-import mlflow
 
 
 class Lineage:
@@ -22,6 +22,7 @@ class Lineage:
         self.__labels = list(id2label.values())
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
 
+        # A unique run identification code
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
         self.__seconds = int(time.mktime(pattern.timetuple()))
@@ -91,7 +92,5 @@ class Lineage:
         elements = self.__structure(derivations=derivations)
 
         # Log
-        with mlflow.start_run(run_name=str(self.__seconds)) as run:
+        with mlflow.start_run(run_name=str(self.__seconds)):
             mlflow.log_metrics(elements)
-
-
