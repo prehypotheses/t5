@@ -30,28 +30,25 @@ class Interface:
         self.__id2label = id2label
         self.__arguments = arguments
 
-        self.__parts = self.__get_parts(connector=connector)
+        # Instances
+        self.__secret = src.functions.secret.Secret(connector=connector)
 
-    def __get_parts(self, connector: boto3.session.Session):
+        # Tracking Resource
+        self.__tracking_uri = self.__get_tracking_uri()
 
-        self.__experiment_name = 'FEW'
-        self.__experiment_tags = {
-            'project': 'custom token classification', 'type': 'natural language processing',
-            'task': 'token classification',
-            'description': 'The fine-tuning of pre-trained large language model architectures for token classification tasks.'}
+    def __get_tracking_uri(self) -> str:
 
-        secret = src.functions.secret.Secret(connector=connector)
+        t_secret  = self.__secret.exc(secret_id='FNTC', node='tracking-secret')
+        t_endpoint = self.__secret.exc(secret_id='FNTC', node='tracking-endpoint')
+        t_database = self.__secret.exc(secret_id='FNTC', node='tracking-database')
+        t_port = self.__secret.exc(secret_id='FNTC', node='tracking-port')
 
-        t_bucket = secret.exc(secret_id='FNTC', node='tracking-bucket')
-        t_secret  = secret.exc(secret_id='FNTC', node='tracking-secret')
-        t_endpoint = secret.exc(secret_id='FNTC', node='tracking-endpoint')
-        t_database = secret.exc(secret_id='FNTC', node='tracking-database')
+        username = self.__secret.exc(secret_id=t_secret, node='username')
+        password = self.__secret.exc(secret_id=t_secret, node='password')
 
-        secret.exc(secret_id=t_secret, node='username')
-        secret.exc(secret_id=t_secret, node='password')
+        uri = f"postgresql://{username}:{password}@{t_endpoint}:{t_port}/{t_database}"
 
-        return ''
-
+        return uri
 
     def exc(self, blob: datasets.Dataset, branch: str, stage: str):
         """
@@ -61,6 +58,15 @@ class Interface:
         :param stage:
         :return:
         """
+
+        '''
+        https://mlflow.org/docs/latest/ml/tracking/backend-stores/#supported-store-types
+        https://mlflow.org/docs/latest/ml/getting-started/logging-first-model/step6-logging-a-run/#using-mlflow-tracking-to-keep-track-of-training
+        mlflow.set_tracking_uri()
+        
+        t_bucket = self.__secret.exc(secret_id='FNTC', node='tracking-bucket')
+        
+        '''
 
         path = os.path.join(self.__arguments.model_output_directory, branch, 'metrics', stage)
 
