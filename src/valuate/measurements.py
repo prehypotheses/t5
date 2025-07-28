@@ -27,11 +27,6 @@ class Measurements:
         # Instances
         self.__objects = src.functions.objects.Objects()
 
-        # Logging
-        logging.basicConfig(level=logging.INFO, format='\n\n%(message)s\n%(asctime)s.%(msecs)03d',
-                            datefmt='%Y-%m-%d %H:%M:%S')
-        self.__logger = logging.getLogger(__name__)
-
     def __sci(self, path: str):
         """
 
@@ -44,7 +39,7 @@ class Measurements:
             disk.write(report)
 
         # Preview
-        self.__logger.info('scikit-learn:\n%s', report)
+        logging.info('scikit-learn:\n%s', report)
 
     def __numerics(self, path: str) -> None:
         """
@@ -58,7 +53,7 @@ class Measurements:
         self.__objects.write(nodes=values, path=os.path.join(path, 'fundamental.json'))
 
         # Preview
-        self.__logger.info('numerics:\n%s', values)
+        logging.info('numerics:\n%s', values)
 
     def exc(self, path: str):
         """
