@@ -1,8 +1,7 @@
 """Module interface.py"""
 import logging
 import os
-import typing
-
+import boto3
 import transformers
 
 import src.elements.arguments as ag
@@ -20,13 +19,16 @@ class Interface:
     Layer
     """
 
-    def __init__(self, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
+    def __init__(self, connector: boto3.session.Session, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
         """
 
+        :param connector: A boto3 session instance, it retrieves the developer's <default> Amazon
+                          Web Services (AWS) profile details, which allows for programmatic interaction with AWS.
         :param arguments:
         :param hyperspace:
         """
 
+        self.__connector = connector
         self.__arguments = arguments
         self.__hyperspace = hyperspace
 
@@ -65,6 +67,7 @@ class Interface:
 
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, branch, 'model'))
 
-        interface = src.valuate.interface.Interface(model=model, id2label=master.id2label, arguments=self.__arguments)
+        interface = src.valuate.interface.Interface(
+            connector=self.__connector, model=model, id2label=master.id2label, arguments=self.__arguments)
         interface.exc(blob=master.data['validation'], branch=branch, stage='validation')
         interface.exc(blob=master.data['test'], branch=branch, stage='test')
