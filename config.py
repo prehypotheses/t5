@@ -1,8 +1,5 @@
 """config.py"""
-import datetime
-import logging
 import os
-import time
 
 
 class Config:
