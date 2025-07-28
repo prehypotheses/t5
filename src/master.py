@@ -33,7 +33,7 @@ def main():
     logger.info(master.data)
 
     # Best, etc
-    src.modelling.interface.Interface(arguments=arguments, hyperspace=hyperspace).exc(master=master)
+    src.modelling.interface.Interface(connector=connector, arguments=arguments, hyperspace=hyperspace).exc(master=master)
 
     # Transfer
     messages = src.transfer.interface.Interface(
