@@ -6,6 +6,7 @@ import src.valuate.estimates
 import src.valuate.measurements
 
 
+
 class Interface:
     """
     Interface
@@ -20,6 +21,12 @@ class Interface:
 
         self.__model = model
         self.__id2label = id2label
+
+        self.__experiment_name = 'FEW'
+        self.__experiment_tags = {
+            'project': 'custom token classification', 'type': 'natural language processing',
+            'task': 'token classification', 'team': 'data science core',
+            'description': 'Token classification via the fine tuning of pre-trained large language model architectures'}
 
     def exc(self, blob: datasets.Dataset, path: str):
         """
