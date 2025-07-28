@@ -62,7 +62,7 @@ class Lineage:
 
         return dictionary
 
-    def exc(self, originals: list[str], predictions: list[str]):
+    def exc(self, originals: list[str], predictions: list[str]) -> dict:
         """
 
         :param originals: The true values, a simple, i.e., un-nested, list.<br>
