@@ -66,9 +66,6 @@ jobs:
           printf "\n src/transfer "
           flake8 --count --select=E9,F63,F7,F82 --show-source --statistics src/transfer
           
-          printf "\n src/valuate "
-          flake8 --count --select=E9,F63,F7,F82 --show-source --statistics src/valuate
-          
           
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           printf "\n\n"
@@ -93,10 +90,7 @@ jobs:
           flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/s3
           
           printf "\n src/transfer "
-          flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/transfer
-          
-          printf "\n src/valuate "
-          flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/valuate         
+          flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics src/transfer       
 
 
       - name: Lint with pylint
@@ -124,9 +118,6 @@ jobs:
           
           printf "\n Package src/transfer"
           pylint --rcfile .pylintrc src/transfer
-          
-          printf "\n Package src/valuate"
-          pylint --rcfile .pylintrc src/valuate
 
 
       - name: Test with pytest
