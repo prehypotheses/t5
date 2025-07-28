@@ -1,10 +1,10 @@
 """Module interface.py"""
 import os
-import boto3
 
+import boto3
 import datasets
-import transformers
 import mlflow
+import transformers
 
 import config
 import src.elements.arguments as ag
@@ -53,7 +53,7 @@ class Interface:
         username = self.__secret.exc(secret_id=t_secret, node='username')
         password = self.__secret.exc(secret_id=t_secret, node='password')
 
-        uri = f"postgresql://{username}:{password}@{t_endpoint}:{t_port}/{t_database}"
+        uri: str = f"postgresql://{username}:{password}@{t_endpoint}:{t_port}/{t_database}"
 
         return uri
 
