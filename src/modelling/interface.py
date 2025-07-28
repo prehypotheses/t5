@@ -1,6 +1,8 @@
 """Module interface.py"""
+import ast
 import logging
 import os
+
 import boto3
 import transformers
 
@@ -63,7 +65,7 @@ class Interface:
         # Optimal Model
         branch = 'optimal'
         model: transformers.Trainer = src.modelling.convergence.Convergence(
-            arguments=self.__arguments, master=master).__call__(branch=eval(branch))
+            arguments=self.__arguments, master=master).__call__(branch=ast.literal_eval(branch))
 
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, branch, 'model'))
 
