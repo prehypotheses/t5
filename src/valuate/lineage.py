@@ -1,3 +1,4 @@
+"""Module lineage.py"""
 import datetime
 import logging
 import time
@@ -12,6 +13,9 @@ import src.modelling.derivations
 
 
 class Lineage:
+    """
+    Lineage
+    """
 
     def __init__(self, id2label: dict):
         """
