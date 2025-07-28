@@ -48,7 +48,8 @@ class Convergence:
     def __call__(self, branch: typing.Literal['hyperparameters', 'optimal']):
         """
 
-        :param branch:
+        :param branch: Per model development experiment, artefacts are stored within the experiment's
+                       `hyperparameters` or `optimal` directory branch.
         :return:
         """
 
