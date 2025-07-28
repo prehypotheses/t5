@@ -70,23 +70,17 @@ class Interface:
 
     def exc(self, blob: datasets.Dataset, branch: str, stage: str):
         """
+        https://mlflow.org/docs/latest/ml/tracking/backend-stores/#supported-store-types
+        https://mlflow.org/docs/latest/ml/getting-started/logging-first-model/step6-logging-a-run/#using-mlflow-tracking-to-keep-track-of-training
+        mlflow.set_tracking_uri()
+
+        t_bucket = self.__secret.exc(secret_id='FNTC', node='tracking-bucket')
 
         :param blob:
         :param branch:
         :param stage:
         :return:
         """
-
-        '''
-        Back
-        https://mlflow.org/docs/latest/ml/tracking/backend-stores/#supported-store-types
-        https://mlflow.org/docs/latest/ml/getting-started/logging-first-model/step6-logging-a-run/#using-mlflow-tracking-to-keep-track-of-training
-        mlflow.set_tracking_uri()
-        
-        Artefacts
-        t_bucket = self.__secret.exc(secret_id='FNTC', node='tracking-bucket')
-        
-        '''
 
         path = os.path.join(self.__arguments.model_output_directory, branch, 'metrics', stage)
 
