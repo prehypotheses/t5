@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import sklearn.metrics as sm
 
+import config
 import src.modelling.derivations
 
 
@@ -21,6 +22,9 @@ class Lineage:
         self.__id2label = id2label
         self.__labels = list(id2label.values())
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
+
+        # Configurations
+        self.__configurations = config.Config()
 
         # A unique run identification code
         today = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -69,22 +73,21 @@ class Lineage:
 
         return dictionary
 
-    def exc(self, originals: list[str], predictions: list[str], name: str, tags: dict, stage: str, artefacts_: str):
+    def exc(self, originals: list[str], predictions: list[str], stage: str, artefacts_: str):
         """
+        https://mlflow.org/docs/latest/ml/tracking/artifact-stores
+        https://mlflow.org/docs/latest/ml/deep-learning/transformers/guide/#logging-a-components-based-model
+        https://mlflow.org/docs/latest/api_reference/python_api/mlflow.html#mlflow.start_run
 
         :param originals: The true values, a simple, i.e., un-nested, list.<br>
         :param predictions: The predictions, a simple list, i.e., un-nested, list.<br>
-        :param name: MlFlow experiment name
-        :param tags: MlFlow overarching/common experiment tags
         :param stage: Either training, testing, or validation
         :param artefacts_: The location for the artefacts
         """
 
         client = mlflow.MlflowClient()
-        register = client.create_experiment(name=name, artifact_location='', tags=tags)
-
-        mlflow.set_experiment(experiment_name=name)
-        mlflow.set_experiment_tag(key='stage', value=stage)
+        register = client.create_experiment(
+            name=self.__configurations.experiment_name, artifact_location='',)
 
         # Calculate
         cases = self.__cases(originals=originals, predictions=predictions)
@@ -92,5 +95,6 @@ class Lineage:
         elements = self.__structure(derivations=derivations)
 
         # Log
-        with mlflow.start_run(run_name=str(self.__seconds)):
+        with mlflow.start_run(run_name=str(self.__seconds), experiment_id=register):
+            mlflow.set_experiment_tags(tags={'stage': stage})
             mlflow.log_metrics(elements)
