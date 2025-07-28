@@ -1,7 +1,8 @@
 """Module architecture.py"""
 import os
-import transformers
 import typing
+
+import transformers
 
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
