@@ -21,6 +21,8 @@ class Config:
 
         '''
         Experiment
+        experiment_name: MlFlow experiment name
+        experiment_tags: MlFlow overarching/common experiment tags
         '''
         self.experiment_name = 'FEW'
         self.experiment_tags = {
