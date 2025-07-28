@@ -4,7 +4,9 @@ import boto3
 
 import datasets
 import transformers
+import mlflow
 
+import config
 import src.elements.arguments as ag
 import src.functions.secret
 import src.valuate.estimates
@@ -31,12 +33,17 @@ class Interface:
         self.__arguments = arguments
 
         # Instances
+        self.__configurations = config.Config()
         self.__secret = src.functions.secret.Secret(connector=connector)
 
         # Tracking Resource
         self.__tracking_uri = self.__get_tracking_uri()
 
     def __get_tracking_uri(self) -> str:
+        """
+
+        :return:
+        """
 
         t_secret  = self.__secret.exc(secret_id='FNTC', node='tracking-secret')
         t_endpoint = self.__secret.exc(secret_id='FNTC', node='tracking-endpoint')
@@ -50,6 +57,17 @@ class Interface:
 
         return uri
 
+    def __experiment(self):
+        """
+        if it does not exist ... in progress
+
+        :return:
+        """
+
+        client = mlflow.MlflowClient()
+        client.create_experiment(name=self.__configurations.experiment_name,
+                                 tags=self.__configurations.experiment_tags)
+
     def exc(self, blob: datasets.Dataset, branch: str, stage: str):
         """
 
@@ -60,10 +78,12 @@ class Interface:
         """
 
         '''
+        Back
         https://mlflow.org/docs/latest/ml/tracking/backend-stores/#supported-store-types
         https://mlflow.org/docs/latest/ml/getting-started/logging-first-model/step6-logging-a-run/#using-mlflow-tracking-to-keep-track-of-training
         mlflow.set_tracking_uri()
         
+        Artefacts
         t_bucket = self.__secret.exc(secret_id='FNTC', node='tracking-bucket')
         
         '''
