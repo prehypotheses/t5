@@ -20,7 +20,8 @@ class Lineage:
     def __init__(self, id2label: dict, experiment: dict):
         """
 
-        :param id2label: A dictionary wherein (a) the keys are the identification codes of text labels, and (b) the values are the labels.
+        :param id2label: A dictionary wherein (a) the keys are the identification codes of text labels,
+                         and (b) the values are the labels.
         :param experiment:
         """
 
