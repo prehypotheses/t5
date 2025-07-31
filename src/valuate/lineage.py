@@ -1,5 +1,7 @@
 """Module lineage.py"""
 import logging
+import datetime
+import time
 
 import mlflow
 import numpy as np
@@ -23,6 +25,10 @@ class Lineage:
         self.__id2label = id2label
         self.__labels = list(id2label.values())
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
+
+        # Experiment
+        mlflow.set_tracking_uri('')
+        mlflow.set_experiment('')
 
     def __cases(self, originals: list[str], predictions: list[str]):
         """
@@ -77,15 +83,18 @@ class Lineage:
         :param stage: Either training, testing, or validation
         """
 
+        # A unique run identification code
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
+
+
         # Calculate
         cases = self.__cases(originals=originals, predictions=predictions)
         derivations = src.modelling.derivations.Derivations(cases=cases).exc()
         elements = self.__structure(derivations=derivations)
 
-        # Set Experiment
-
-        # Log
-        with mlflow.start_run(run_name='', experiment_id=''):
+        # Log: artifact_path == artifact_location + stage
+        with mlflow.start_run(run_name=str(int(time.mktime(pattern.timetuple()))), experiment_id=''):
             mlflow.set_experiment_tags(tags={'stage': stage})
             mlflow.log_metrics(elements)
             mlflow.log_artifact(local_path='', artifact_path='')
