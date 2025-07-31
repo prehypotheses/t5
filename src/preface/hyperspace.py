@@ -1,4 +1,4 @@
-
+"""Module hyperspace.py"""
 import boto3
 
 import src.s3.configurations
@@ -8,8 +8,14 @@ import src.elements.hyperspace as hp
 
 
 class Hyperspace:
+    """
+    The [initial] search spaces of the hyperparameters.
+    """
 
     def __init__(self):
+        """
+        Constructor
+        """
 
         self.__configurations = config.Config()
 
