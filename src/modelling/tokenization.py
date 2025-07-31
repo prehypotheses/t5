@@ -15,7 +15,7 @@ class Tokenization:
     def __init__(self, arguments: ag.Arguments):
         """
 
-        :param arguments:
+        :param arguments: A suite of values/arguments for machine learning model development.<br>
         """
 
         self.__arguments = arguments
