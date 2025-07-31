@@ -33,9 +33,6 @@ class Experiment:
         # Secrets
         self.__secret = src.functions.secret.Secret(connector=connector)
 
-        # Tracking Resource
-        self.__tracking_uri = self.__get_tracking_uri()
-
     def __get_tracking_uri(self) -> str:
         """
 
