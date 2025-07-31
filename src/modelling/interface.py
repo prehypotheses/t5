@@ -21,18 +21,21 @@ class Interface:
     Layer
     """
 
-    def __init__(self, connector: boto3.session.Session, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
+    def __init__(self, connector: boto3.session.Session, arguments: ag.Arguments,
+                 hyperspace: hp.Hyperspace, experiment: dict):
         """
 
         :param connector: A boto3 session instance, it retrieves the developer's <default> Amazon
                           Web Services (AWS) profile details, which allows for programmatic interaction with AWS.
         :param arguments:
         :param hyperspace:
+        :param experiment:
         """
 
         self.__connector = connector
         self.__arguments = arguments
         self.__hyperspace = hyperspace
+        self.__experiment = experiment
 
     def exc(self, master: mr.Master):
         """
@@ -70,6 +73,6 @@ class Interface:
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, branch, 'model'))
 
         interface = src.valuate.interface.Interface(
-            model=model, id2label=master.id2label, arguments=self.__arguments)
+            model=model, id2label=master.id2label, arguments=self.__arguments, experiment=self.__experiment)
         interface.exc(blob=master.data['validation'], branch=branch, stage='validation')
         interface.exc(blob=master.data['test'], branch=branch, stage='test')
