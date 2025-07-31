@@ -1,10 +1,9 @@
 """Module hyperspace.py"""
 import boto3
 
-import src.s3.configurations
-
 import config
 import src.elements.hyperspace as hp
+import src.s3.configurations
 
 
 class Hyperspace:
