@@ -77,7 +77,7 @@ class Lineage:
 
         return dictionary
 
-    def exc(self, originals: list[str], predictions: list[str], stage: str, artefacts_: str):
+    def exc(self, originals: list[str], predictions: list[str], stage: str):
         """
         https://mlflow.org/docs/latest/ml/tracking/artifact-stores
         https://mlflow.org/docs/latest/ml/deep-learning/transformers/guide/#logging-a-components-based-model
@@ -86,10 +86,7 @@ class Lineage:
         :param originals: The true values, a simple, i.e., un-nested, list.<br>
         :param predictions: The predictions, a simple list, i.e., un-nested, list.<br>
         :param stage: Either training, testing, or validation
-        :param artefacts_: The location for the artefacts
         """
-
-        logging.info(artefacts_)
 
         client = mlflow.MlflowClient()
         register = client.create_experiment(
