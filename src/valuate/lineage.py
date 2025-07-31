@@ -1,14 +1,11 @@
 """Module lineage.py"""
-import datetime
 import logging
-import time
 
 import mlflow
 import numpy as np
 import pandas as pd
 import sklearn.metrics as sm
 
-import config
 import src.modelling.derivations
 
 
@@ -26,14 +23,6 @@ class Lineage:
         self.__id2label = id2label
         self.__labels = list(id2label.values())
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
-
-        # Configurations
-        self.__configurations = config.Config()
-
-        # A unique run identification code
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
-        pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
-        self.__seconds = int(time.mktime(pattern.timetuple()))
 
     def __cases(self, originals: list[str], predictions: list[str]):
         """
@@ -88,16 +77,12 @@ class Lineage:
         :param stage: Either training, testing, or validation
         """
 
-        client = mlflow.MlflowClient()
-        register = client.create_experiment(
-            name=self.__configurations.experiment_name, artifact_location='',)
-
         # Calculate
         cases = self.__cases(originals=originals, predictions=predictions)
         derivations = src.modelling.derivations.Derivations(cases=cases).exc()
         elements = self.__structure(derivations=derivations)
 
         # Log
-        with mlflow.start_run(run_name=str(self.__seconds), experiment_id=register):
+        with mlflow.start_run(run_name='', experiment_id=''):
             mlflow.set_experiment_tags(tags={'stage': stage})
             mlflow.log_metrics(elements)
