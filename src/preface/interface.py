@@ -30,7 +30,7 @@ class Interface:
         self.__configurations = config.Config()
 
         today = datetime.datetime.now().strftime('%Y-%m-%d')
-        pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
+        pattern = datetime.datetime.strptime(today, '%Y-%m-%d %H:%M:%S')
         self.__seconds = int(time.mktime(pattern.timetuple()))
 
     def __arguments(self, connector: boto3.session.Session) -> ag.Arguments:
