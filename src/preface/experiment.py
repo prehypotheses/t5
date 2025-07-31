@@ -9,6 +9,10 @@ import src.functions.secret
 class Experiment:
     """
 
+    <a href="https://mlflow.org/docs/latest/ml/tracking/tracking-api/#setup--configuration" target="_blank">
+        set-up configurations</a><br>
+    <a href="https://mlflow.org/docs/latest/genai/getting-started/connect-environment" target="_blank">
+        connecting</a><br>
     <a href="https://mlflow.org/docs/latest/ml/tracking/artifact-stores" target="_blank">
         artefact stores</a><br>
     <a href="https://mlflow.org/docs/latest/ml/deep-learning/transformers/guide/#logging-a-components-based-model"
