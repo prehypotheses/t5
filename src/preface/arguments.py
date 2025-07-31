@@ -11,6 +11,9 @@ import src.s3.configurations
 
 
 class Arguments:
+    """
+    Returns a suite of values/arguments for machine learning model development.<br>
+    """
 
     def __init__(self):
 
@@ -23,7 +26,8 @@ class Arguments:
     def __get_arguments(self, connector: boto3.session.Session) -> ag.Arguments:
         """
 
-        :param connector:
+        :param connector: A boto3 session instance, it retrieves the developer's <default> Amazon
+                          Web Services (AWS) profile details, which allows for programmatic interaction with AWS.
         :return:
         """
 
