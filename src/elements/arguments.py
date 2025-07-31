@@ -51,9 +51,10 @@ class Arguments(typing.NamedTuple):
     fraction: <b>float</b>  The fraction of the train, validation, and test data sets that an experiment should use.<br>
     raw_: <b>str</b> The S3 (Simple Storage Service) prefix of the raw data.<br>
     tokens_: <b>str</b> The S3 (Simple Storage Service) prefix of the tokenized data.<br>
-    experiment_name: The name of the machine learning experiment in question.<br>
-    experiment_tags: The tags associated with the experiment, including project name.<br>
-    experiment_name: <br>
+    experiment_name: <b>str</b> The name of the machine learning experiment in question.<br>
+    experiment_tags: <b>dict</b> The tags associated with the experiment, including project name.<br>
+    experiment_segment: <b>str</b> The segment of the `artifacts_location` location within which the
+                        experiment's artefacts should be stored.<br>
     model_output_directory: <b>str</b> The
         <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer
         #transformers.TrainingArguments.output_dir">local parent directory for</a> predictions, checkpoints,
