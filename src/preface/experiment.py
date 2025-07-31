@@ -7,6 +7,15 @@ import src.functions.secret
 
 
 class Experiment:
+    """
+
+    https://mlflow.org/docs/latest/ml/tracking/artifact-stores
+    https://mlflow.org/docs/latest/ml/deep-learning/transformers/guide/#logging-a-components-based-model
+    https://mlflow.org/docs/latest/api_reference/python_api/mlflow.html#mlflow.start_run
+    https://mlflow.org/docs/latest/ml/tracking/backend-stores/#supported-store-types
+    (https://mlflow.org/docs/latest/ml/getting-started/logging-first-model/step6-logging-a-run/
+    #using-mlflow-tracking-to-keep-track-of-training)
+    """
 
     def __init__(self, connector: boto3.session.Session, arguments: ag.Arguments):
         """
@@ -50,11 +59,6 @@ class Experiment:
 
     def __get_experiment_id(self) -> str:
         """
-        https://mlflow.org/docs/latest/ml/tracking/backend-stores/#supported-store-types
-        https://mlflow.org/docs/latest/ml/getting-started/logging-first-model/step6-logging-a-run/#using-mlflow-tracking-to-keep-track-of-training
-        mlflow.set_tracking_uri()
-
-
 
         :return:
         """
@@ -72,6 +76,7 @@ class Experiment:
         :return:
         """
 
-        return {'experiment_id': self.__get_experiment_id(),
+        return {'experiment_name': config.Config().experiment_name,
+                'experiment_id': self.__get_experiment_id(),
                 'artifact_location': self.__get_backend_details(),
                 'tracking_uri': self.__get_tracking_uri()}
