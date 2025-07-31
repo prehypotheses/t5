@@ -18,8 +18,8 @@ class Convergence:
     def __init__(self, arguments: ag.Arguments, master: mr.Master):
         """
 
-        :param arguments:
-        :param master:
+        :param arguments: A suite of values/arguments for machine learning model development.<br>
+        :param master: Refer to src/elements/master.py<br>
         """
 
         self.__arguments = arguments
