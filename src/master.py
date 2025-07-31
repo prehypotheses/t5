@@ -33,7 +33,8 @@ def main():
     logger.info(master.data)
 
     # Best, etc
-    src.modelling.interface.Interface(connector=connector, arguments=arguments, hyperspace=hyperspace).exc(master=master)
+    src.modelling.interface.Interface(
+        connector=connector, arguments=arguments, hyperspace=hyperspace, experiment=experiment).exc(master=master)
 
     # Transfer
     messages = src.transfer.interface.Interface(
@@ -78,6 +79,7 @@ if __name__ == '__main__':
     service: sr.Service
     arguments: ag.Arguments
     hyperspace: hp.Hyperspace
-    connector, s3_parameters, service, arguments, hyperspace = src.preface.interface.Interface().exc()
+    experiment: dict
+    connector, s3_parameters, service, arguments, hyperspace, experiment = src.preface.interface.Interface().exc()
 
     main()
