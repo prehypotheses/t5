@@ -66,9 +66,9 @@ if __name__ == '__main__':
     import src.data.interface
     import src.elements.arguments as ag
     import src.elements.hyperspace as hp
+    import src.elements.master as mr
     import src.elements.s3_parameters as s3p
     import src.elements.service as sr
-    import src.elements.master as mr
     import src.functions.cache
     import src.modelling.interface
     import src.preface.interface
