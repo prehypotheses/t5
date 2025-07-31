@@ -70,6 +70,6 @@ class Interface:
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, branch, 'model'))
 
         interface = src.valuate.interface.Interface(
-            connector=self.__connector, model=model, id2label=master.id2label, arguments=self.__arguments)
+            model=model, id2label=master.id2label, arguments=self.__arguments)
         interface.exc(blob=master.data['validation'], branch=branch, stage='validation')
         interface.exc(blob=master.data['test'], branch=branch, stage='test')
