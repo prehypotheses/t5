@@ -17,18 +17,6 @@ class Config:
         """
 
         '''
-        Experiment
-        experiment_name: MlFlow experiment name
-        experiment_tags: MlFlow overarching/common experiment tags
-        '''
-        self.experiment_name = 'FEW'
-        self.experiment_tags = {
-            'project': 'custom token classification',
-            'type': 'natural language processing',
-            'task': 'token classification',
-            'description': 'The fine-tuning of pre-trained large language model architectures for token classification tasks.'}
-
-        '''
         Directories
         '''
         self.data_ = os.path.join(os.getcwd(), 'data')
