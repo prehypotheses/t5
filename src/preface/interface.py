@@ -44,9 +44,9 @@ class Interface:
             key_name=self.__configurations.arguments_key)
 
         # Set up the model output directory parameter
-        model_output_directory = os.path.join(
-            self.__configurations.artefacts_, dictionary['architecture'].upper(), str(self.__seconds))
-        dictionary['model_output_directory'] = model_output_directory
+        dictionary['experiment_segment'] = str(self.__seconds)
+        dictionary['model_output_directory'] = os.path.join(
+            self.__configurations.artefacts_, dictionary['architecture'].upper(), dictionary['experiment_segment'])
 
         return ag.Arguments(**dictionary)
 
