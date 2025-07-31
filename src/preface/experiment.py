@@ -64,11 +64,11 @@ class Experiment:
         """
 
         try:
-            experiment = mlflow.get_experiment_by_name(config.Config().experiment_name)
+            experiment = mlflow.get_experiment_by_name(self.__arguments.experiment_name)
             return experiment.experiment_id
         except AttributeError:
             return mlflow.create_experiment(
-                name=config.Config().experiment_name, artifact_location=self.__get_backend_details())
+                name=self.__arguments.experiment_name, artifact_location=self.__get_backend_details())
 
     def exc(self):
         """
@@ -76,7 +76,7 @@ class Experiment:
         :return:
         """
 
-        return {'experiment_name': config.Config().experiment_name,
+        return {'experiment_name': self.__arguments.experiment_name,
                 'experiment_id': self.__get_experiment_id(),
                 'artifact_location': self.__get_backend_details(),
                 'tracking_uri': self.__get_tracking_uri()}
