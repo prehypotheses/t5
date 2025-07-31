@@ -4,18 +4,22 @@ import time
 import boto3
 
 import config
+import src.elements.arguments as ag
 import src.functions.secret
 
 
 class Experiment:
 
-    def __init__(self, connector: boto3.session.Session):
+    def __init__(self, connector: boto3.session.Session, arguments: ag.Arguments):
         """
         :param connector: A boto3 session instance, it retrieves the developer's <default> Amazon
                           Web Services (AWS) profile details, which allows for programmatic interaction with AWS.
+        :param arguments: A set of arguments for the model development classes/modules.
         """
 
-        self.__configurations = config.Config()
+        self.__arguments = arguments
+
+        # Secrets
         self.__secret = src.functions.secret.Secret(connector=connector)
 
         # Tracking Resource
@@ -44,22 +48,31 @@ class Experiment:
 
         return uri
 
-    def __client(self):
+    def __get_backend_details(self):
+
+        bucket = self.__secret.exc(secret_id='FNTC', node='tracking-bucket')
+        architecture = self.__arguments.architecture.upper()
+
+        return f's3://{bucket}/{architecture}/{self.__seconds}/'
+
+    def __get_experiment_id(self) -> str:
         """
         https://mlflow.org/docs/latest/ml/tracking/backend-stores/#supported-store-types
         https://mlflow.org/docs/latest/ml/getting-started/logging-first-model/step6-logging-a-run/#using-mlflow-tracking-to-keep-track-of-training
         mlflow.set_tracking_uri()
 
-        t_bucket = self.__secret.exc(secret_id='FNTC', node='tracking-bucket')
+
 
         :return:
         """
 
+        try:
+            experiment = mlflow.get_experiment_by_name(config.Config().experiment_name)
+            return experiment.experiment_id
+        except AttributeError:
+            return mlflow.create_experiment(
+                name=config.Config().experiment_name, artifact_location=self.__get_backend_details())
 
+    def exc(self):
 
-        client = mlflow.MlflowClient()
-        experiment_id = client.create_experiment(
-            name=self.__configurations.experiment_name, artifact_location='',)
-
-
-        dictionary = {'run_name': self.__seconds, 'experiment_id': ''}
+        return {'run_name': self.__seconds, 'experiment_id': self.__get_experiment_id()}
