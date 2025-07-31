@@ -23,7 +23,7 @@ class Tokenization:
     def __tokenization(self, master: mr.Master):
         """
 
-        :param master:
+        :param master: Refer to src/elements/master.py<br>
         :return:
         """
 
@@ -43,7 +43,7 @@ class Tokenization:
     def exc(self, master: mr.Master) -> mr.Master:
         """
 
-        :param master:
+        :param master: Refer to src/elements/master.py<br>
         :return:
         """
 
