@@ -1,7 +1,6 @@
 import boto3
 import mlflow
 
-import config
 import src.elements.arguments as ag
 import src.functions.secret
 
@@ -50,7 +49,11 @@ class Experiment:
 
         return uri
 
-    def __get_backend_details(self):
+    def __get_backend_details(self) -> str:
+        """
+        
+        :return:
+        """
 
         bucket = self.__secret.exc(secret_id='FNTC', node='tracking-bucket')
         architecture = self.__arguments.architecture.upper()
@@ -70,7 +73,7 @@ class Experiment:
             return mlflow.create_experiment(
                 name=self.__arguments.experiment_name, artifact_location=self.__get_backend_details())
 
-    def exc(self):
+    def exc(self) -> dict:
         """
 
         :return:
