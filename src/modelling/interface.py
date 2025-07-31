@@ -27,8 +27,8 @@ class Interface:
 
         :param connector: A boto3 session instance, it retrieves the developer's <default> Amazon
                           Web Services (AWS) profile details, which allows for programmatic interaction with AWS.
-        :param arguments:
-        :param hyperspace:
+        :param arguments: A suite of values/arguments for machine learning model development.<br>
+        :param hyperspace: The search space definitions per hyperparameter.
         :param experiment:
         """
 
