@@ -9,7 +9,7 @@ import src.elements.hyperspace as hp
 
 class Hyperspace:
     """
-    The [initial] search spaces of the hyperparameters.
+    The search space definitions per hyperparameter.
     """
 
     def __init__(self):
@@ -22,7 +22,8 @@ class Hyperspace:
     def __get_hyperspace(self, connector: boto3.session.Session) -> hp.Hyperspace:
         """
 
-        :param connector:
+        :param connector: A boto3 session instance, it retrieves the developer's <default> Amazon
+                          Web Services (AWS) profile details, which allows for programmatic interaction with AWS.
         :return:
         """
 
