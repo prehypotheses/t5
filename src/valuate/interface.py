@@ -7,6 +7,7 @@ import transformers
 import src.elements.arguments as ag
 import src.valuate.estimates
 import src.valuate.measurements
+import src.valuate.lineage
 
 
 class Interface:
@@ -14,17 +15,19 @@ class Interface:
     Interface
     """
 
-    def __init__(self, model: transformers.Trainer, id2label: dict, arguments: ag.Arguments):
+    def __init__(self, model: transformers.Trainer, id2label: dict, arguments: ag.Arguments, experiment: dict):
         """
 
         :param model:
         :param id2label:
         :param arguments:
+        :param experiment:
         """
 
         self.__model = model
         self.__id2label = id2label
         self.__arguments = arguments
+        self.__experiment = experiment
 
     def exc(self, blob: datasets.Dataset, branch: str, stage: str):
         """
@@ -42,3 +45,6 @@ class Interface:
 
         src.valuate.measurements.Measurements(
             originals=originals, predictions=predictions).exc(path=path)
+
+        src.valuate.lineage.Lineage(id2label=self.__id2label, experiment=self.__experiment).exc(
+            originals=originals, predictions=predictions, stage=stage)
