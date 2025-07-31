@@ -19,8 +19,9 @@ class Interface:
         """
 
         :param model:
-        :param id2label:
-        :param arguments:
+        :param id2label: A dictionary wherein (a) the keys are the identification codes of text labels,
+                         and (b) the values are the labels.
+        :param arguments: A suite of values/arguments for machine learning model development.<br>
         :param experiment:
         """
 
