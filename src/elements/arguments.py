@@ -52,7 +52,7 @@ class Arguments(typing.NamedTuple):
     raw_: <b>str</b> The S3 (Simple Storage Service) prefix of the raw data.<br>
     tokens_: <b>str</b> The S3 (Simple Storage Service) prefix of the tokenized data.<br>
     experiment_name: The name of the machine learning experiment in question.<br>
-    experiment_tags: <br>
+    experiment_tags: The tags associated with the experiment, including project name.<br>
     experiment_name: <br>
     model_output_directory: <b>str</b> The
         <a href="https://huggingface.co/docs/transformers/v4.53.1/en/main_classes/trainer
