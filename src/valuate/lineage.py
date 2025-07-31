@@ -25,7 +25,6 @@ class Lineage:
         :param experiment:
         """
 
-        self.__id2label = id2label
         self.__labels = list(id2label.values())
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
 
@@ -95,9 +94,11 @@ class Lineage:
         elements = self.__structure(derivations=derivations)
 
         # Log: artifact_path == artifact_location + stage ... model_output_directory optimal client
-        with mlflow.start_run(run_name=str(int(time.mktime(pattern.timetuple()))), experiment_id=self.__experiment.get('experiment_id')):
+        with mlflow.start_run(run_name=str(int(time.mktime(pattern.timetuple()))),
+                              experiment_id=self.__experiment.get('experiment_id')):
 
             mlflow.set_experiment_tags(tags={'stage': stage})
             mlflow.log_metrics(elements)
-            mlflow.log_artifact(local_path=os.path.join(self.__experiment.get('model_output_directory'), 'optimal', 'store', stage),
-                                artifact_path=self.__experiment.get('artifact_location') + '/' + stage)
+            mlflow.log_artifact(
+                local_path=os.path.join(self.__experiment.get('model_output_directory'), 'optimal', 'store', stage),
+                artifact_path=self.__experiment.get('artifact_location') + '/' + stage)
