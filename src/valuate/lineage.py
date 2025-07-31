@@ -82,7 +82,10 @@ class Lineage:
         derivations = src.modelling.derivations.Derivations(cases=cases).exc()
         elements = self.__structure(derivations=derivations)
 
+        # Set Experiment
+
         # Log
         with mlflow.start_run(run_name='', experiment_id=''):
             mlflow.set_experiment_tags(tags={'stage': stage})
             mlflow.log_metrics(elements)
+            mlflow.log_artifact(local_path='', artifact_path='')
