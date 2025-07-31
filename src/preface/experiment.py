@@ -1,7 +1,5 @@
-import mlflow
-import datetime
-import time
 import boto3
+import mlflow
 
 import config
 import src.elements.arguments as ag
@@ -24,11 +22,6 @@ class Experiment:
 
         # Tracking Resource
         self.__tracking_uri = self.__get_tracking_uri()
-
-        # A unique run identification code
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
-        pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
-        self.__seconds = int(time.mktime(pattern.timetuple()))
 
     def __get_tracking_uri(self) -> str:
         """
@@ -53,7 +46,7 @@ class Experiment:
         bucket = self.__secret.exc(secret_id='FNTC', node='tracking-bucket')
         architecture = self.__arguments.architecture.upper()
 
-        return f's3://{bucket}/{architecture}/{self.__seconds}/'
+        return f's3://{bucket}/{architecture}/{self.__arguments.experiment_segment}/'
 
     def __get_experiment_id(self) -> str:
         """
@@ -74,5 +67,11 @@ class Experiment:
                 name=config.Config().experiment_name, artifact_location=self.__get_backend_details())
 
     def exc(self):
+        """
 
-        return {'run_name': self.__seconds, 'experiment_id': self.__get_experiment_id()}
+        :return:
+        """
+
+        return {'experiment_id': self.__get_experiment_id(),
+                'artifact_location': self.__get_backend_details(),
+                'tracking_uri': self.__get_tracking_uri()}
