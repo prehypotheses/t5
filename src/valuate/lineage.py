@@ -1,6 +1,7 @@
 """Module lineage.py"""
-import logging
 import datetime
+import logging
+import os
 import time
 
 import mlflow
@@ -16,10 +17,11 @@ class Lineage:
     Lineage
     """
 
-    def __init__(self, id2label: dict):
+    def __init__(self, id2label: dict, experiment: dict):
         """
 
-        :param id2label:
+        :param id2label: A dictionary wherein (a) the keys are the identification codes of text labels, and (b) the values are the labels.
+        :param experiment:
         """
 
         self.__id2label = id2label
@@ -27,14 +29,15 @@ class Lineage:
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
 
         # Experiment
-        mlflow.set_tracking_uri('')
-        mlflow.set_experiment('')
+        self.__experiment = experiment
+        mlflow.set_tracking_uri(uri=self.__experiment.get('uri'))
+        mlflow.set_experiment(experiment_name=self.__experiment.get('experiment_name'))
 
     def __cases(self, originals: list[str], predictions: list[str]):
         """
 
-        :param originals:
-        :param predictions:
+        :param originals: The true values; a simple, un-nested, list.<br>
+        :param predictions: The predictions; a simple, un-nested, list.<br>
         :return:
         """
 
@@ -74,12 +77,10 @@ class Lineage:
 
     def exc(self, originals: list[str], predictions: list[str], stage: str):
         """
-        https://mlflow.org/docs/latest/ml/tracking/artifact-stores
-        https://mlflow.org/docs/latest/ml/deep-learning/transformers/guide/#logging-a-components-based-model
-        https://mlflow.org/docs/latest/api_reference/python_api/mlflow.html#mlflow.start_run
 
-        :param originals: The true values, a simple, i.e., un-nested, list.<br>
-        :param predictions: The predictions, a simple list, i.e., un-nested, list.<br>
+
+        :param originals: The true values; a simple, un-nested, list.<br>
+        :param predictions: The predictions; a simple, un-nested, list.<br>
         :param stage: Either training, testing, or validation
         """
 
@@ -87,14 +88,15 @@ class Lineage:
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
 
-
         # Calculate
         cases = self.__cases(originals=originals, predictions=predictions)
         derivations = src.modelling.derivations.Derivations(cases=cases).exc()
         elements = self.__structure(derivations=derivations)
 
-        # Log: artifact_path == artifact_location + stage
-        with mlflow.start_run(run_name=str(int(time.mktime(pattern.timetuple()))), experiment_id=''):
+        # Log: artifact_path == artifact_location + stage ... model_output_directory optimal client
+        with mlflow.start_run(run_name=str(int(time.mktime(pattern.timetuple()))), experiment_id=self.__experiment.get('experiment_id')):
+
             mlflow.set_experiment_tags(tags={'stage': stage})
             mlflow.log_metrics(elements)
-            mlflow.log_artifact(local_path='', artifact_path='')
+            mlflow.log_artifact(local_path=os.path.join(self.__experiment.get('model_output_directory'), 'optimal', 'store', stage),
+                                artifact_path=self.__experiment.get('artifact_location') + '/' + stage)
