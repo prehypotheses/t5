@@ -19,7 +19,7 @@ class Hyperspace:
 
         self.__configurations = config.Config()
 
-    def __hyperspace(self, connector: boto3.session.Session) -> hp.Hyperspace:
+    def __get_hyperspace(self, connector: boto3.session.Session) -> hp.Hyperspace:
         """
 
         :param connector:
@@ -44,4 +44,4 @@ class Hyperspace:
         :return:
         """
 
-        return self.__hyperspace(connector=connector)
+        return self.__get_hyperspace(connector=connector)
