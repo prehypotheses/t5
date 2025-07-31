@@ -23,9 +23,9 @@ class Architecture:
                  master:  mr.Master):
         """
 
-        :param arguments:
-        :param hyperspace:
-        :param master:
+        :param arguments: A suite of values/arguments for machine learning model development.<br>
+        :param hyperspace: The search space definitions per hyperparameter.
+        :param master: Refer to src/elements/master.py
         """
 
         self.__arguments = arguments
