@@ -51,7 +51,7 @@ class Arguments(typing.NamedTuple):
     fraction: <b>float</b>  The fraction of the train, validation, and test data sets that an experiment should use.<br>
     raw_: <b>str</b> The S3 (Simple Storage Service) prefix of the raw data.<br>
     tokens_: <b>str</b> The S3 (Simple Storage Service) prefix of the tokenized data.<br>
-    experiment_name: <br>
+    experiment_name: The name of the machine learning experiment in question.<br>
     experiment_tags: <br>
     experiment_name: <br>
     model_output_directory: <b>str</b> The
