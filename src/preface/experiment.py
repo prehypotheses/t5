@@ -9,12 +9,16 @@ import src.functions.secret
 class Experiment:
     """
 
-    https://mlflow.org/docs/latest/ml/tracking/artifact-stores
-    https://mlflow.org/docs/latest/ml/deep-learning/transformers/guide/#logging-a-components-based-model
-    https://mlflow.org/docs/latest/api_reference/python_api/mlflow.html#mlflow.start_run
-    https://mlflow.org/docs/latest/ml/tracking/backend-stores/#supported-store-types
-    (https://mlflow.org/docs/latest/ml/getting-started/logging-first-model/step6-logging-a-run/
-    #using-mlflow-tracking-to-keep-track-of-training)
+    <a href="https://mlflow.org/docs/latest/ml/tracking/artifact-stores" target="_blank">
+        artefact stores</a><br>
+    <a href="https://mlflow.org/docs/latest/ml/deep-learning/transformers/guide/#logging-a-components-based-model"
+        target="_blank">logging a components based model</a><br>
+    <a href="https://mlflow.org/docs/latest/api_reference/python_api/mlflow.html#mlflow.start_run" target="_blank">
+        mlflow.start_run()</a><br>
+    <a href="https://mlflow.org/docs/latest/ml/tracking/backend-stores/#supported-store-types" target="_blank">
+        store types</a><br>
+    <a href="https://mlflow.org/docs/latest/ml/getting-started/logging-first-model/step6-logging-a-run/
+        #using-mlflow-tracking-to-keep-track-of-training">tracking</a>
     """
 
     def __init__(self, connector: boto3.session.Session, arguments: ag.Arguments):
@@ -83,4 +87,5 @@ class Experiment:
         return {'experiment_name': self.__arguments.experiment_name,
                 'experiment_id': self.__get_experiment_id(),
                 'artifact_location': self.__get_backend_details(),
-                'tracking_uri': self.__get_tracking_uri()}
+                'uri': self.__get_tracking_uri(),
+                'model_output_directory': self.__arguments.model_output_directory}
