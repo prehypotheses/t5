@@ -1,3 +1,4 @@
+"""Module experiment.py"""
 import boto3
 import mlflow
 
@@ -51,7 +52,7 @@ class Experiment:
 
     def __get_backend_details(self) -> str:
         """
-        
+
         :return:
         """
 
