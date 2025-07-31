@@ -12,6 +12,7 @@ import src.elements.service as sr
 import src.functions.service
 import src.preface.arguments
 import src.preface.hyperspace
+import src.preface.experiment
 import src.preface.setup
 import src.s3.configurations
 import src.s3.s3_parameters
@@ -33,7 +34,7 @@ class Interface:
         self.__arguments = src.preface.arguments.Arguments()
         self.__hyperspace = src.preface.hyperspace.Hyperspace()
 
-    def exc(self) -> typing.Tuple[boto3.session.Session, s3p.S3Parameters, sr.Service, ag.Arguments, hp.Hyperspace]:
+    def exc(self) -> typing.Tuple[boto3.session.Session, s3p.S3Parameters, sr.Service, ag.Arguments, hp.Hyperspace, dict]:
         """
 
         :return:
@@ -53,5 +54,9 @@ class Interface:
         prefix = prefix.replace(os.sep, '/')
         src.preface.setup.Setup(service=service, s3_parameters=s3_parameters, prefix=prefix).exc()
 
+        # Experiment
+        experiment = src.preface.experiment.Experiment(
+            connector=connector, arguments=arguments).exc()
+
         return (connector, s3_parameters, service, arguments,
-                self.__hyperspace(connector=connector))
+                self.__hyperspace(connector=connector), experiment)
