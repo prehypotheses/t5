@@ -1,12 +1,13 @@
-import os
+"""Module arguments.py"""
 import datetime
+import os
 import time
 
 import boto3
 
 import config
-import src.s3.configurations
 import src.elements.arguments as ag
+import src.s3.configurations
 
 
 class Arguments:
