@@ -19,9 +19,9 @@ class Arguments:
 
         self.__configurations = config.Config()
 
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
-        pattern = datetime.datetime.strptime(today, '%Y-%m-%d %H:%M:%S')
-        self.__seconds = int(time.mktime(pattern.timetuple()))
+        # Stamp
+        today: datetime.datetime = datetime.datetime.now()
+        self.__seconds = int(time.mktime(today.timetuple()))
 
     def __get_arguments(self, connector: boto3.session.Session) -> ag.Arguments:
         """
