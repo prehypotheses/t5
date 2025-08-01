@@ -61,9 +61,9 @@ class Interface:
             EPOCHS=2*self.__arguments.EPOCHS, save_total_limit=1)
 
         # Optimal Model
-        branch = 'optimal'
+        branch: str = 'optimal'
         model: transformers.Trainer = src.modelling.convergence.Convergence(
-            arguments=self.__arguments, master=master).__call__(branch=ast.literal_eval(branch))
+            arguments=self.__arguments, master=master).__call__(branch='optimal')
 
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, branch, 'model'))
 
