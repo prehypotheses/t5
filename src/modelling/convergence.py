@@ -1,4 +1,5 @@
 """Module convergence.py"""
+import typing
 
 import transformers
 
@@ -17,8 +18,8 @@ class Convergence:
     def __init__(self, arguments: ag.Arguments, master: mr.Master):
         """
 
-        :param arguments:
-        :param master:
+        :param arguments: A suite of values/arguments for machine learning model development.<br>
+        :param master: Refer to src/elements/master.py<br>
         """
 
         self.__arguments = arguments
@@ -44,10 +45,11 @@ class Convergence:
 
     # noinspection DuplicatedCode
     # pylint: disable=R0801
-    def __call__(self, branch: str):
+    def __call__(self, branch: typing.Literal['hyperparameters', 'optimal']):
         """
 
-        :param branch:
+        :param branch: Per model development experiment, artefacts are stored within the experiment's
+                       `hyperparameters` or `optimal` directory branch.
         :return:
         """
 

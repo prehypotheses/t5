@@ -19,15 +19,17 @@ class Interface:
     Layer
     """
 
-    def __init__(self, arguments: ag.Arguments, hyperspace: hp.Hyperspace):
+    def __init__(self, arguments: ag.Arguments, hyperspace: hp.Hyperspace, experiment: dict):
         """
 
-        :param arguments:
-        :param hyperspace:
+        :param arguments: A suite of values/arguments for machine learning model development.<br>
+        :param hyperspace: The search space definitions per hyperparameter.
+        :param experiment:
         """
 
         self.__arguments = arguments
         self.__hyperspace = hyperspace
+        self.__experiment = experiment
 
     def exc(self, master: mr.Master):
         """
@@ -41,8 +43,10 @@ class Interface:
 
         # Best: Hyperparameters
         best = src.modelling.architecture.Architecture(
-            arguments=self.__arguments, hyperspace=self.__hyperspace, master=master).train_func()
+            arguments=self.__arguments, hyperspace=self.__hyperspace, master=master).train_func(branch='hyperparameters')
         logging.info(best)
+        logging.info(best.run_summary)
+        logging.info(best.hyperparameters)
 
         # Hence, update the modelling variables
         self.__arguments = self.__arguments._replace(
@@ -56,16 +60,13 @@ class Interface:
             EPOCHS=2*self.__arguments.EPOCHS, save_total_limit=1)
 
         # Optimal Model
-        branch = 'optimal'
+        branch: str = 'optimal'
         model: transformers.Trainer = src.modelling.convergence.Convergence(
-            arguments=self.__arguments, master=master).__call__(branch=branch)
+            arguments=self.__arguments, master=master).__call__(branch='optimal')
 
         model.save_model(output_dir=os.path.join(self.__arguments.model_output_directory, branch, 'model'))
 
-        interface = src.valuate.interface.Interface(model=model, id2label=master.id2label)
-        interface.exc(
-            blob=master.data['validation'],
-            path=os.path.join(self.__arguments.model_output_directory, branch, 'metrics', 'validation'))
-        interface.exc(
-            blob=master.data['test'],
-            path=os.path.join(self.__arguments.model_output_directory, branch, 'metrics', 'test'))
+        interface = src.valuate.interface.Interface(
+            model=model, id2label=master.id2label, arguments=self.__arguments, experiment=self.__experiment)
+        interface.exc(blob=master.data['validation'], branch=branch, stage='validation')
+        interface.exc(blob=master.data['test'], branch=branch, stage='test')

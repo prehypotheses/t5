@@ -1,8 +1,6 @@
 """Module interface.py"""
 import os
 import typing
-import datetime
-import time
 
 import boto3
 
@@ -12,6 +10,9 @@ import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
 import src.elements.service as sr
 import src.functions.service
+import src.preface.arguments
+import src.preface.experiment
+import src.preface.hyperspace
 import src.preface.setup
 import src.s3.configurations
 import src.s3.s3_parameters
@@ -29,46 +30,11 @@ class Interface:
 
         self.__configurations = config.Config()
 
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
-        pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
-        self.__seconds = int(time.mktime(pattern.timetuple()))
+        # Instances
+        self.__arguments = src.preface.arguments.Arguments()
+        self.__hyperspace = src.preface.hyperspace.Hyperspace()
 
-    def __arguments(self, connector: boto3.session.Session) -> ag.Arguments:
-        """
-
-        :param connector:
-        :return:
-        """
-
-        dictionary = src.s3.configurations.Configurations(connector=connector).objects(
-            key_name=self.__configurations.arguments_key)
-
-        # Set up the model output directory parameter
-        model_output_directory = os.path.join(
-            self.__configurations.artefacts_, dictionary['architecture'].upper(), str(self.__seconds))
-        dictionary['model_output_directory'] = model_output_directory
-
-        return ag.Arguments(**dictionary)
-
-    def __hyperspace(self, connector: boto3.session.Session) -> hp.Hyperspace:
-        """
-
-        :param connector:
-        :return:
-        """
-
-        dictionary = src.s3.configurations.Configurations(connector=connector).objects(
-            key_name=self.__configurations.hyperspace_key)
-
-        items = {'learning_rate_distribution': dictionary['continuous']['learning_rate'],
-                 'weight_decay_distribution': dictionary['continuous']['weight_decay'],
-                 'weight_decay_choice': dictionary['choice']['weight_decay'],
-                 'per_device_train_batch_size': dictionary['choice']['per_device_train_batch_size']}
-
-        # Hence
-        return hp.Hyperspace(**items)
-
-    def exc(self) -> typing.Tuple[boto3.session.Session, s3p.S3Parameters, sr.Service, ag.Arguments, hp.Hyperspace]:
+    def exc(self) -> typing.Tuple[boto3.session.Session, s3p.S3Parameters, sr.Service, ag.Arguments, hp.Hyperspace, dict]:
         """
 
         :return:
@@ -88,5 +54,9 @@ class Interface:
         prefix = prefix.replace(os.sep, '/')
         src.preface.setup.Setup(service=service, s3_parameters=s3_parameters, prefix=prefix).exc()
 
+        # Experiment
+        experiment = src.preface.experiment.Experiment(
+            connector=connector, arguments=arguments).exc()
+
         return (connector, s3_parameters, service, arguments,
-                self.__hyperspace(connector=connector))
+                self.__hyperspace(connector=connector), experiment)

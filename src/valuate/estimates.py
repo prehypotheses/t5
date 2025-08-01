@@ -16,6 +16,8 @@ class Estimates:
         """
 
         :param blob:
+        :param id2label: A dictionary wherein (a) the keys are the identification codes of text labels,
+                         and (b) the values are the labels.
         """
 
         self.__blob = blob

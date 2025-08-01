@@ -5,6 +5,7 @@ import os
 import sys
 
 import boto3
+import mlflow
 import ray
 import torch
 
@@ -18,7 +19,10 @@ def main():
 
     logger: logging.Logger = logging.getLogger(__name__)
     logger.info('Starting: %s', datetime.datetime.now().isoformat(timespec='microseconds'))
-    logger.info(arguments)
+
+    # Set tracking
+    mlflow.set_tracking_uri(uri=experiment.get('uri'))
+    mlflow.set_experiment(experiment_name=experiment.get('experiment_name'))
 
     # Device Selection: Setting a graphics processing unit as the default device
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -33,7 +37,8 @@ def main():
     logger.info(master.data)
 
     # Best, etc
-    src.modelling.interface.Interface(arguments=arguments, hyperspace=hyperspace).exc(master=master)
+    src.modelling.interface.Interface(
+        arguments=arguments, hyperspace=hyperspace, experiment=experiment).exc(master=master)
 
     # Transfer
     messages = src.transfer.interface.Interface(
@@ -65,9 +70,9 @@ if __name__ == '__main__':
     import src.data.interface
     import src.elements.arguments as ag
     import src.elements.hyperspace as hp
+    import src.elements.master as mr
     import src.elements.s3_parameters as s3p
     import src.elements.service as sr
-    import src.elements.master as mr
     import src.functions.cache
     import src.modelling.interface
     import src.preface.interface
@@ -78,6 +83,7 @@ if __name__ == '__main__':
     service: sr.Service
     arguments: ag.Arguments
     hyperspace: hp.Hyperspace
-    connector, s3_parameters, service, arguments, hyperspace = src.preface.interface.Interface().exc()
+    experiment: dict
+    connector, s3_parameters, service, arguments, hyperspace, experiment = src.preface.interface.Interface().exc()
 
     main()
