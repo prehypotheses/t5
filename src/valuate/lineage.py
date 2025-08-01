@@ -85,8 +85,7 @@ class Lineage:
         """
 
         # A unique run identification code
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
-        pattern = datetime.datetime.strptime(f'{today} 00:00:00', '%Y-%m-%d %H:%M:%S')
+        today: datetime.datetime = datetime.datetime.now()
 
         # Calculate
         cases = self.__cases(originals=originals, predictions=predictions)
@@ -94,7 +93,7 @@ class Lineage:
         elements = self.__structure(derivations=derivations)
 
         # Log: artifact_path == artifact_location + stage ... model_output_directory optimal client
-        with mlflow.start_run(run_name=str(int(time.mktime(pattern.timetuple()))),
+        with mlflow.start_run(run_name=str(int(time.mktime(today.timetuple()))),
                               experiment_id=self.__experiment.get('experiment_id')):
 
             mlflow.set_experiment_tags(tags={'stage': stage})
