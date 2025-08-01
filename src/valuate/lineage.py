@@ -30,8 +30,8 @@ class Lineage:
 
         # Experiment
         self.__experiment = experiment
-        mlflow.set_tracking_uri(uri=self.__experiment.get('uri'))
-        mlflow.set_experiment(experiment_name=self.__experiment.get('experiment_name'))
+        # mlflow.set_tracking_uri(uri=self.__experiment.get('uri'))
+        # mlflow.set_experiment(experiment_name=self.__experiment.get('experiment_name'))
 
     def __cases(self, originals: list[str], predictions: list[str]):
         """
