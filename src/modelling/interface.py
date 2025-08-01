@@ -1,5 +1,4 @@
 """Module interface.py"""
-import ast
 import logging
 import os
 
