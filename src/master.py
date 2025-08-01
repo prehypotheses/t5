@@ -34,7 +34,7 @@ def main():
 
     # Best, etc
     src.modelling.interface.Interface(
-        connector=connector, arguments=arguments, hyperspace=hyperspace, experiment=experiment).exc(master=master)
+        arguments=arguments, hyperspace=hyperspace, experiment=experiment).exc(master=master)
 
     # Transfer
     messages = src.transfer.interface.Interface(
