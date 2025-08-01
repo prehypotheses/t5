@@ -1,4 +1,5 @@
 """Module experiment.py"""
+import logging
 import boto3
 import mlflow
 
@@ -74,10 +75,14 @@ class Experiment:
 
         try:
             experiment = mlflow.get_experiment_by_name(self.__arguments.experiment_name)
+            logging.info('Existing Experiment: %s', experiment)
             return experiment.experiment_id
         except AttributeError:
+            logging.info('Creating Experiment: %s', self.__arguments.experiment_name)
             return mlflow.create_experiment(
-                name=self.__arguments.experiment_name, artifact_location=self.__get_backend_details())
+                name=self.__arguments.experiment_name,
+                artifact_location=self.__get_backend_details(),
+                tags=self.__arguments.experiment_tags)
 
     def exc(self) -> dict:
         """
