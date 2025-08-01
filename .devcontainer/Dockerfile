@@ -12,11 +12,16 @@ COPY /.devcontainer/requirements.txt /app
 SHELL [ "/bin/bash", "-c" ]
 
 
+# Geographic Area
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ="Europe/London"
+
+
 # NLTK
 # installation: https://www.nltk.org/install.html
 # data: https://www.nltk.org/data.html
 RUN apt update && apt -q -y upgrade && apt -y install sudo && \
-    apt -y install graphviz && apt -y install vim && \
+    apt -y install tzdata && apt -y install graphviz && apt -y install vim && \
     sudo apt -y install wget && sudo apt -y install curl && sudo apt -y install unzip && \
     sudo apt -y install build-essential && sudo apt -y install software-properties-common &&  \
     sudo add-apt-repository ppa:git-core/ppa && apt update && apt -y install git-all &&  \
