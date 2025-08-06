@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import sklearn.metrics as sm
 
-import src.functions.directories
 import src.modelling.derivations
 
 
@@ -32,9 +31,6 @@ class Lineage:
         self.__experiment = experiment
         mlflow.set_tracking_uri(uri=self.__experiment.get('uri'))
         self.__experiment_id = self.__get_experiment_id()
-
-        # Instances
-        self.__directories = src.functions.directories.Directories()
 
     def __cases(self, originals: list[str], predictions: list[str]):
         """
