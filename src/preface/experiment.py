@@ -67,23 +67,6 @@ class Experiment:
 
         return f's3://{bucket}/{architecture}/{self.__arguments.experiment_segment}/'
 
-    def __get_experiment_id(self) -> str:
-        """
-
-        :return:
-        """
-
-        try:
-            experiment = mlflow.get_experiment_by_name(self.__arguments.experiment_name)
-            logging.info('Existing Experiment: %s', experiment)
-            return experiment.experiment_id
-        except AttributeError:
-            logging.info('Creating Experiment: %s', self.__arguments.experiment_name)
-            return mlflow.create_experiment(
-                name=self.__arguments.experiment_name,
-                artifact_location=self.__get_backend_details(),
-                tags=self.__arguments.experiment_tags)
-
     def exc(self) -> dict:
         """
 
@@ -91,7 +74,7 @@ class Experiment:
         """
 
         return {'experiment_name': self.__arguments.experiment_name,
-                'experiment_id': self.__get_experiment_id(),
+                'experiment_tags': self.__arguments.experiment_tags,
                 'artifact_location': self.__get_backend_details(),
                 'uri': self.__get_tracking_uri(),
                 'model_output_directory': self.__arguments.model_output_directory}
