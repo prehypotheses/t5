@@ -29,6 +29,9 @@ class Lineage:
 
         # Experiment
         self.__experiment = experiment
+        mlflow.set_tracking_uri(uri=self.__experiment.get('uri'))
+        self.__get_experiment_id()
+        mlflow.set_experiment(experiment_name=self.__experiment.get('experiment_name'))
 
         # Instances
         self.__directories = src.functions.directories.Directories()
@@ -97,10 +100,6 @@ class Lineage:
         :param predictions: The predictions; a simple, un-nested, list.<br>
         :param stage: Either training, testing, or validation
         """
-
-        mlflow.set_tracking_uri(uri=self.__experiment.get('uri'))
-        self.__get_experiment_id()
-        mlflow.set_experiment(experiment_name=self.__experiment.get('experiment_name'))
 
         # A unique run identification code
         today: datetime.datetime = datetime.datetime.now()
