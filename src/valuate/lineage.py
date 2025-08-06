@@ -1,4 +1,5 @@
 """Module lineage.py"""
+import logging
 import datetime
 import time
 
@@ -30,8 +31,7 @@ class Lineage:
         # Experiment
         self.__experiment = experiment
         mlflow.set_tracking_uri(uri=self.__experiment.get('uri'))
-        self.__get_experiment_id()
-        mlflow.set_experiment(experiment_name=self.__experiment.get('experiment_name'))
+        self.__experiment_id = self.__get_experiment_id()
 
         # Instances
         self.__directories = src.functions.directories.Directories()
@@ -101,6 +101,10 @@ class Lineage:
         :param stage: Either training, testing, or validation
         """
 
+        # settings = mlflow.set_experiment(experiment_id=self.__experiment_id)
+        logging.info('Experiment: %s', self.__experiment_id)
+        # mlflow.set_experiment(experiment_name=self.__experiment.get('experiment_name'))
+
         # A unique run identification code
         today: datetime.datetime = datetime.datetime.now()
 
@@ -110,7 +114,9 @@ class Lineage:
         elements = self.__structure(derivations=derivations)
 
         # Logging
-        with mlflow.start_run(run_name=str(int(time.mktime(today.timetuple())))):
+        with mlflow.start_run(experiment_id=self.__experiment_id, run_name=str(int(time.mktime(today.timetuple())))):
 
             mlflow.set_experiment_tags(tags={'stage': stage})
             mlflow.log_metrics(elements)
+            snippet = mlflow.search_experiments(filter_string="tags.`project` = 'custom token classification'")
+            logging.info(snippet)
