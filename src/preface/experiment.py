@@ -77,4 +77,5 @@ class Experiment:
                 'experiment_tags': self.__arguments.experiment_tags,
                 'artifact_location': self.__get_backend_details(),
                 'uri': self.__get_tracking_uri(),
-                'model_output_directory': self.__arguments.model_output_directory}
+                'model_output_directory': self.__arguments.model_output_directory,
+                'stage': ''}
