@@ -7,6 +7,7 @@
 > [!IMPORTANT] 
 > [Hugging Face Training Containers](https://github.com/aws/deep-learning-containers/blob/master/available_images.md#huggingface-training-containers)<br>
 > [Hugging Face Inference Containers](https://github.com/aws/deep-learning-containers/blob/master/available_images.md#huggingface-inference-containers)
+> [Amazon & TensorBoard](https://aws.amazon.com/blogs/machine-learning/visualizing-tensorflow-training-jobs-with-tensorboard)
 
 <br>
 
