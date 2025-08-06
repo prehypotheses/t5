@@ -25,7 +25,8 @@ class Lineage:
         """
 
         self.__labels = list(id2label.values())
-        self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
+        self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy',
+                         'tp', 'fn', 'fp', 'tn']
 
         # Experiment
         self.__experiment = experiment
