@@ -1,7 +1,5 @@
 """Module lineage.py"""
 import datetime
-import logging
-import os
 import time
 
 import mlflow
@@ -26,12 +24,13 @@ class Lineage:
         """
 
         self.__labels = list(id2label.values())
-        self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
+        self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy',
+                         'tp', 'fn', 'fp', 'tn']
 
         # Experiment
         self.__experiment = experiment
-        # mlflow.set_tracking_uri(uri=self.__experiment.get('uri'))
-        # mlflow.set_experiment(experiment_name=self.__experiment.get('experiment_name'))
+        mlflow.set_tracking_uri(uri=self.__experiment.get('uri'))
+        self.__experiment_id = self.__get_experiment_id()
 
     def __cases(self, originals: list[str], predictions: list[str]):
         """
@@ -42,11 +41,9 @@ class Lineage:
         """
 
         measures = sm.confusion_matrix(y_true=originals, y_pred=predictions, labels=self.__labels)
-
         tp = np.diag(measures, k=0)
         fp = np.sum(measures, axis=0) - tp
         fn = np.sum(measures, axis=1) - tp
-
         tn = [int(measures.sum() - measures[:,k].sum() - measures[k,:].sum() + measures[k,k])
               for k in range(measures.shape[0])]
 
@@ -62,8 +59,6 @@ class Lineage:
         :return:
         """
 
-        logging.info(derivations)
-
         frame = derivations.copy().loc[derivations['label'].isin(self.__labels), self.__fields]
 
         elements = frame.melt(id_vars='label', var_name='metric', value_name='score')
@@ -75,8 +70,26 @@ class Lineage:
 
         return dictionary
 
+    def __get_experiment_id(self) -> str:
+        """
+
+        :return:
+        """
+
+        try:
+            experiment = mlflow.get_experiment_by_name(self.__experiment.get('experiment_name'))
+            return experiment.experiment_id
+        except AttributeError:
+            return mlflow.create_experiment(
+                name=self.__experiment.get('experiment_name'),
+                artifact_location=self.__experiment.get('artifact_location'),
+                tags=self.__experiment.get('experiment_tags'))
+
     def exc(self, originals: list[str], predictions: list[str], stage: str):
         """
+        local_path = os.path.join(self.__experiment.get('model_output_directory'), 'optimal', 'store', stage)
+        self.__directories.create(local_path)
+        mlflow.log_artifact(local_path=local_path, artifact_path=stage)
 
 
         :param originals: The true values; a simple, un-nested, list.<br>
@@ -92,12 +105,8 @@ class Lineage:
         derivations = src.modelling.derivations.Derivations(cases=cases).exc()
         elements = self.__structure(derivations=derivations)
 
-        # Log: artifact_path == artifact_location + stage ... model_output_directory optimal client
-        with mlflow.start_run(run_name=str(int(time.mktime(today.timetuple()))),
-                              experiment_id=self.__experiment.get('experiment_id')):
-
-            mlflow.set_experiment_tags(tags={'stage': stage})
+        # Logging
+        mlflow.set_experiment(experiment_id=self.__experiment_id)
+        with mlflow.start_run(experiment_id=self.__experiment_id, run_name=str(int(time.mktime(today.timetuple())))):
+            mlflow.set_experiment_tag(key='stage', value=stage)
             mlflow.log_metrics(elements)
-            mlflow.log_artifact(
-                local_path=os.path.join(self.__experiment.get('model_output_directory'), 'optimal', 'store', stage),
-                artifact_path=self.__experiment.get('artifact_location') + '/' + stage)

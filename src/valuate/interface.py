@@ -18,7 +18,7 @@ class Interface:
     def __init__(self, model: transformers.Trainer, id2label: dict, arguments: ag.Arguments, experiment: dict):
         """
 
-        :param model:
+        :param model: The developed model.
         :param id2label: A dictionary wherein (a) the keys are the identification codes of text labels,
                          and (b) the values are the labels.
         :param arguments: A suite of values/arguments for machine learning model development.<br>
@@ -30,12 +30,15 @@ class Interface:
         self.__arguments = arguments
         self.__experiment = experiment
 
+        # Lineage
+        self.__lineage = src.valuate.lineage.Lineage(id2label=self.__id2label, experiment=self.__experiment)
+
     def exc(self, blob: datasets.Dataset, branch: str, stage: str):
         """
 
-        :param blob:
-        :param branch:
-        :param stage:
+        :param blob: The data
+        :param branch: hyperparameters or optimal
+        :param stage: train, validation, or test
         :return:
         """
 
@@ -47,5 +50,4 @@ class Interface:
         src.valuate.measurements.Measurements(
             originals=originals, predictions=predictions).exc(path=path)
 
-        src.valuate.lineage.Lineage(id2label=self.__id2label, experiment=self.__experiment).exc(
-            originals=originals, predictions=predictions, stage=stage)
+        self.__lineage.exc(originals=originals, predictions=predictions, stage=stage)

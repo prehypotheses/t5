@@ -25,7 +25,8 @@ class Metrics:
 
         self.__id2label = id2label
         self.__labels = list(id2label.values())
-        self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy']
+        self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy',
+                         'tp', 'fn', 'fp', 'tn']
 
     def __active(self, predictions: np.ndarray, labels: np.ndarray) -> typing.Tuple[list[list], list[list]]:
         """
