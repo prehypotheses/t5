@@ -1,7 +1,5 @@
 """Module experiment.py"""
-import logging
 import boto3
-import mlflow
 
 import src.elements.arguments as ag
 import src.functions.secret
