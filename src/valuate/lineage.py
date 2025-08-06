@@ -1,5 +1,4 @@
 """Module lineage.py"""
-import logging
 import datetime
 import time
 
@@ -112,8 +111,5 @@ class Lineage:
         # Logging
         mlflow.set_experiment(experiment_id=self.__experiment_id)
         with mlflow.start_run(experiment_id=self.__experiment_id, run_name=str(int(time.mktime(today.timetuple())))):
-
             mlflow.set_experiment_tag(key='stage', value=stage)
             mlflow.log_metrics(elements)
-            snippet = mlflow.search_experiments(filter_string="tags.`project` = 'custom token classification'")
-            logging.info(snippet)
