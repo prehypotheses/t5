@@ -101,10 +101,6 @@ class Lineage:
         :param stage: Either training, testing, or validation
         """
 
-        # settings = mlflow.set_experiment(experiment_id=self.__experiment_id)
-        logging.info('Experiment: %s', self.__experiment_id)
-        # mlflow.set_experiment(experiment_name=self.__experiment.get('experiment_name'))
-
         # A unique run identification code
         today: datetime.datetime = datetime.datetime.now()
 
@@ -114,9 +110,10 @@ class Lineage:
         elements = self.__structure(derivations=derivations)
 
         # Logging
+        mlflow.set_experiment(experiment_id=self.__experiment_id)
         with mlflow.start_run(experiment_id=self.__experiment_id, run_name=str(int(time.mktime(today.timetuple())))):
 
-            mlflow.set_experiment_tags(tags={'stage': stage})
+            mlflow.set_experiment_tag(key='stage', value=stage)
             mlflow.log_metrics(elements)
             snippet = mlflow.search_experiments(filter_string="tags.`project` = 'custom token classification'")
             logging.info(snippet)
