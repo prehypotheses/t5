@@ -18,7 +18,7 @@ class Interface:
     def __init__(self, model: transformers.Trainer, id2label: dict, arguments: ag.Arguments, experiment: dict):
         """
 
-        :param model:
+        :param model: The developed model.
         :param id2label: A dictionary wherein (a) the keys are the identification codes of text labels,
                          and (b) the values are the labels.
         :param arguments: A suite of values/arguments for machine learning model development.<br>
