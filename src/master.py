@@ -20,10 +20,6 @@ def main():
     logger: logging.Logger = logging.getLogger(__name__)
     logger.info('Starting: %s', datetime.datetime.now().isoformat(timespec='microseconds'))
 
-    # Set tracking
-    mlflow.set_tracking_uri(uri=experiment.get('uri'))
-    mlflow.set_experiment(experiment_name=experiment.get('experiment_name'))
-
     # Device Selection: Setting a graphics processing unit as the default device
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     logger.info('device: %s', device)
