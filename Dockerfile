@@ -26,7 +26,8 @@ RUN groupadd --system automata --gid $GID && \
     pip install --upgrade pip && \
     pip install --requirement /app/requirements.txt --no-cache-dir && \
     python -m nltk.downloader -d /opt/conda/nltk_data all && \
-    mkdir /app/warehouse
+    mkdir /app/warehouse && chown -R automaton:automata /app/warehouse && \
+	mkdir /app/mlruns && chown -R automaton:automata /app/mlruns
 
 
 # Specific COPY
@@ -39,7 +40,6 @@ EXPOSE 6007 6006 8265 6379
 
 
 # Create mountpoint
-RUN chown -R automaton:automata /app/warehouse
 VOLUME /app/warehouse
 
 
