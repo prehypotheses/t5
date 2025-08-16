@@ -1,7 +1,6 @@
 """Module setup.py"""
 import sys
 
-import config
 import src.elements.s3_parameters as s3p
 import src.elements.service as sr
 import src.functions.cache
@@ -31,9 +30,6 @@ class Cloud:
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
         self.__bucket_name = self.__s3_parameters.internal
         self.__prefix = prefix
-
-        # Configurations, etc.
-        self.__configurations = config.Config()
 
     def __clear_prefix(self) -> bool:
         """
