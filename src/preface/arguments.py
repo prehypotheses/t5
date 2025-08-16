@@ -37,7 +37,7 @@ class Arguments:
         # Set up the model output directory parameter
         dictionary['experiment_segment'] = str(self.__seconds)
         dictionary['model_output_directory'] = os.path.join(
-            self.__configurations.artefacts_, dictionary['architecture'].upper(), dictionary['experiment_segment'])
+            self.__configurations.artefacts_, dictionary['architecture'].upper())
 
         return ag.Arguments(**dictionary)
 
