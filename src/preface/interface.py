@@ -49,10 +49,8 @@ class Interface:
         # Arguments
         arguments = self.__arguments(connector=connector)
 
-        # Setting up the cloud storage area
-        prefix = arguments.model_output_directory.replace(self.__configurations.warehouse, '')
-        prefix = prefix.replace(os.sep, '/')
-        src.preface.setup.Setup(service=service, s3_parameters=s3_parameters, prefix=prefix).exc()
+        # Setting up a temporary local storage area
+        src.preface.setup.Setup().exc()
 
         # Experiment
         experiment = src.preface.experiment.Experiment(
