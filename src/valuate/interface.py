@@ -31,7 +31,8 @@ class Interface:
         self.__experiment = experiment
 
         # Lineage
-        self.__lineage = src.valuate.lineage.Lineage(id2label=self.__id2label, experiment=self.__experiment)
+        self.__lineage = src.valuate.lineage.Lineage(
+            id2label=self.__id2label, experiment=self.__experiment, arguments=self.__arguments)
 
     def exc(self, blob: datasets.Dataset, branch: str, stage: str):
         """
@@ -48,6 +49,7 @@ class Interface:
             blob=blob, id2label=self.__id2label).exc(model=self.__model)
 
         src.valuate.measurements.Measurements(
-            originals=originals, predictions=predictions).exc(path=path)
+            originals=originals, predictions=predictions).exc(
+            path=path, experiment_segment=self.__arguments.experiment_segment)
 
         self.__lineage.exc(originals=originals, predictions=predictions, stage=stage)
