@@ -1,10 +1,8 @@
 """Module interface.py"""
-import os
 import typing
 
 import boto3
 
-import config
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
@@ -27,8 +25,6 @@ class Interface:
         """
         Constructor
         """
-
-        self.__configurations = config.Config()
 
         # Instances
         self.__arguments = src.preface.arguments.Arguments()
