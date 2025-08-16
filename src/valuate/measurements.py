@@ -55,10 +55,25 @@ class Measurements:
         # Preview
         logging.info('numerics:\n%s', values)
 
-    def exc(self, path: str):
+    @staticmethod
+    def __segment(path: str, experiment_segment: str):
+        """
+
+        :param path:
+        :param experiment_segment:
+        :return:
+        """
+
+        with open(file=os.path.join(path, 'segment.txt'), mode='w', encoding='utf-8') as disk:
+            disk.write(f'segment: {experiment_segment}')
+
+        logging.info('The mlflow identifier is: %s', experiment_segment)
+
+    def exc(self, path: str, experiment_segment: str):
         """
 
         :param path: path segment
+        :param experiment_segment: This is the ...
         :return:
         """
 
@@ -66,3 +81,4 @@ class Measurements:
 
         self.__sci(path=path)
         self.__numerics(path=path)
+        self.__segment(path=path, experiment_segment=experiment_segment)
