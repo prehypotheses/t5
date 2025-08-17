@@ -8,6 +8,7 @@ import pandas as pd
 import sklearn.metrics as sm
 
 import src.modelling.derivations
+import src.elements.arguments as ag
 
 
 class Lineage:
@@ -15,15 +16,17 @@ class Lineage:
     Lineage
     """
 
-    def __init__(self, id2label: dict, experiment: dict):
+    def __init__(self, id2label: dict, experiment: dict, arguments: ag.Arguments):
         """
 
         :param id2label: A dictionary wherein (a) the keys are the identification codes of text labels,
                          and (b) the values are the labels.
         :param experiment:
+        :param arguments:
         """
 
         self.__labels = list(id2label.values())
+        self.__arguments = arguments
         self.__fields = ['label', 'N', 'precision', 'sensitivity', 'fnr', 'f-score', 'matthews', 'b-accuracy',
                          'tp', 'fn', 'fp', 'tn']
 
@@ -87,10 +90,8 @@ class Lineage:
 
     def exc(self, originals: list[str], predictions: list[str], stage: str):
         """
-        local_path = os.path.join(self.__experiment.get('model_output_directory'), 'optimal', 'store', stage)
-        self.__directories.create(local_path)
-        mlflow.log_artifact(local_path=local_path, artifact_path=stage)
-
+        uri -> mlflow.get_artifact_uri(), or self.__experiment.get('artifact_location')
+        mlflow.log_artifact(uri, artifact_path=stage)
 
         :param originals: The true values; a simple, un-nested, list.<br>
         :param predictions: The predictions; a simple, un-nested, list.<br>
@@ -108,5 +109,7 @@ class Lineage:
         # Logging
         mlflow.set_experiment(experiment_id=self.__experiment_id)
         with mlflow.start_run(experiment_id=self.__experiment_id, run_name=str(int(time.mktime(today.timetuple())))):
-            mlflow.set_experiment_tag(key='stage', value=stage)
+            self.__experiment['stage'] = stage
+            mlflow.set_experiment_tags(tags=self.__experiment)
             mlflow.log_metrics(elements)
+            mlflow.log_params(params=self.__arguments._asdict())

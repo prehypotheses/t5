@@ -1,10 +1,8 @@
 """Module interface.py"""
-import os
 import typing
 
 import boto3
 
-import config
 import src.elements.arguments as ag
 import src.elements.hyperspace as hp
 import src.elements.s3_parameters as s3p
@@ -28,8 +26,6 @@ class Interface:
         Constructor
         """
 
-        self.__configurations = config.Config()
-
         # Instances
         self.__arguments = src.preface.arguments.Arguments()
         self.__hyperspace = src.preface.hyperspace.Hyperspace()
@@ -49,10 +45,8 @@ class Interface:
         # Arguments
         arguments = self.__arguments(connector=connector)
 
-        # Setting up the cloud storage area
-        prefix = arguments.model_output_directory.replace(self.__configurations.warehouse, '')
-        prefix = prefix.replace(os.sep, '/')
-        src.preface.setup.Setup(service=service, s3_parameters=s3_parameters, prefix=prefix).exc()
+        # Setting up a temporary local storage area
+        src.preface.setup.Setup().exc()
 
         # Experiment
         experiment = src.preface.experiment.Experiment(
