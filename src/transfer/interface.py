@@ -8,8 +8,8 @@ import src.elements.s3_parameters as s3p
 import src.elements.service as sr
 import src.functions.directories
 import src.s3.ingress
-import src.transfer.dictionary
 import src.transfer.cloud
+import src.transfer.dictionary
 
 
 class Interface:
@@ -108,11 +108,12 @@ class Interface:
         strings = self.__dictionary.exc(
             path=self.__configurations.artefacts_, extension='*', prefix=self.__s3_parameters.path_internal_artefacts)
 
-        # Transfer
         # Setting up the cloud storage area
-        prefix = self.__arguments.model_output_directory.replace(self.__configurations.warehouse, '')
-        prefix = prefix.replace(os.sep, '/')
-        src.transfer.cloud.Cloud(service=self.__service, s3_parameters=self.__s3_parameters, prefix=prefix).exc()
+        src.transfer.cloud.Cloud(
+            service=self.__service, s3_parameters=self.__s3_parameters,
+            architecture=self.__arguments.architecture.upper()).exc()
+
+        # Transfer
         messages = src.s3.ingress.Ingress(
             service=self.__service, bucket_name=self.__s3_parameters.internal).exc(strings=strings, tagging='project=few')
 
