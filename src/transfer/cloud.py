@@ -41,7 +41,8 @@ class Cloud:
         instance = src.s3.prefix.Prefix(service=self.__service, bucket_name=self.__bucket_name)
 
         # Get the keys therein
-        keys: list[str] = instance.objects(prefix=self.__prefix)
+        keys: list[str] = (instance.objects(prefix=self.__prefix + 'hyperparameters/') +
+                           instance.objects(prefix=self.__prefix + 'optimal/'))
 
         if len(keys) > 0:
             objects = [{'Key' : key} for key in keys]
