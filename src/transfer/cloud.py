@@ -17,19 +17,19 @@ class Cloud:
     Sets up local & cloud environments
     """
 
-    def __init__(self, service: sr.Service, s3_parameters: s3p.S3Parameters, prefix: str):
+    def __init__(self, service: sr.Service, s3_parameters: s3p.S3Parameters, architecture: str):
         """
 
         :param service: A suite of services for interacting with Amazon Web Services.
         :param s3_parameters: The overarching S3 parameters settings of this project, e.g., region code
                               name, buckets, etc.
-        :param prefix: The cloud storage area prefix that hosts the artefacts of a model development instance
+        :param architecture: The deep learning architecture
         """
 
         self.__service: sr.Service = service
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
         self.__bucket_name = self.__s3_parameters.internal
-        self.__prefix = prefix
+        self.__prefix = self.__s3_parameters.path_internal_artefacts + architecture + '/'
 
     def __clear_prefix(self) -> bool:
         """
