@@ -2,6 +2,8 @@
 import glob
 import os
 
+import datasets
+
 import config
 import src.elements.arguments as ag
 import src.elements.s3_parameters as s3p
@@ -10,12 +12,13 @@ import src.functions.directories
 import src.s3.ingress
 import src.transfer.cloud
 import src.transfer.dictionary
+import src.transfer.structure
+import src.transfer.persist
 
 
 class Interface:
     """
     Transfers data files to an Amazon S3 (Simple Storage Service) prefix.
-
     """
 
     def __init__(self, service: sr.Service,  s3_parameters: s3p.S3Parameters, arguments: ag.Arguments):
@@ -36,73 +39,16 @@ class Interface:
         self.__dictionary = src.transfer.dictionary.Dictionary(architecture=self.__arguments.architecture)
         self.__directories = src.functions.directories.Directories()
 
-    @staticmethod
-    def __name(pathstr: str):
+    def exc(self, data: datasets.DatasetDict):
         """
 
-        :param pathstr:
-        :return:
-        """
-
-        left = pathstr.split('_learning_rate', 1)
-        name = left[0]
-
-        return name
-
-    def __stores(self):
-        """
-        Deletes the runs & checkpoints directories of the hyperparameter search stage.
-
-        :return:
-        """
-
-        # Runs
-        runs_: str = os.path.join(self.__arguments.model_output_directory, 'hyperparameters', 'run*')
-        runs = glob.glob(pathname=runs_, recursive=True)
-
-        # Checkpoints
-        checkpoints_: str = os.path.join(
-            self.__arguments.model_output_directory, 'hyperparameters', 'compute', '**', 'checkpoint_*')
-        checkpoints = glob.glob(pathname=checkpoints_, recursive=True)
-
-        # Hence, altogether
-        directories = runs + checkpoints
-
-        # Delete
-        for directory in directories:
-            self.__directories.cleanup(directory)
-
-    def __renaming(self):
-        """
-        Renames the objective directories because their default names are too long.
-
-        :return:
-        """
-
-        # The directories that start with _objective; add a directory check
-        elements = glob.glob(pathname=os.path.join(self.__configurations.artefacts_, '**', '_objective*'), recursive=True)
-        directories = [element for element in elements if os.path.isdir(element)]
-
-        # Bases
-        bases = [os.path.basename(directory) for directory in directories]
-        bases = [self.__name(base) for base in bases]
-
-        # Endpoints
-        endpoints = [os.path.dirname(directory) for directory in directories]
-
-        # Rename
-        for directory, base, endpoint in zip(directories, bases, endpoints):
-            os.rename(src=directory, dst=os.path.join(endpoint, base))
-
-    def exc(self):
-        """
-
+        :param data:
         :return:
         """
 
         # Foremost (a) delete runs & checkpoints data, and (b) rename the <_objective*> directories.
-        self.__stores()
-        self.__renaming()
+        structure = src.transfer.structure.Structure(arguments=self.__arguments)
+        structure.exc()
 
         # The details of the data being transferred to Amazon S3 (Simple Storage Service)
         strings = self.__dictionary.exc(
@@ -114,6 +60,8 @@ class Interface:
             architecture=self.__arguments.architecture.upper()).exc()
 
         # Transfer
+        src.transfer.persist.Persist(
+            s3_parameters=self.__s3_parameters, arguments=self.__arguments).exc(data=data)
         messages = src.s3.ingress.Ingress(
             service=self.__service, bucket_name=self.__s3_parameters.internal).exc(strings=strings, tagging='project=few')
 
