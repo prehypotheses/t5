@@ -37,7 +37,7 @@ def main():
 
     # Transfer
     messages = src.transfer.interface.Interface(
-        service=service, s3_parameters=s3_parameters, arguments=arguments).exc()
+        service=service, s3_parameters=s3_parameters, arguments=arguments).exc(data=master.data)
     logger.info(messages)
 
     # Cache
