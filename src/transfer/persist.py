@@ -13,7 +13,7 @@ class Persist:
     """
     Persist
     """
-    
+
     def __init__(self, s3_parameters: s3p.S3Parameters, arguments: ag.Arguments):
         """
         
@@ -24,7 +24,7 @@ class Persist:
 
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
         self.__arguments = arguments
-        
+
         # Configurations
         self.__configurations = config.Config()
 
