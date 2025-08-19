@@ -88,7 +88,7 @@ class Interface:
         excerpt = self.__filter(data=data) if self.__arguments.fraction < 1 else data
 
         # Persist
-        self.__persist(excerpt=excerpt)
+        # self.__persist(excerpt=excerpt)
 
         # Tags
         id2label, label2id = src.data.tags.Tags().exc(feed=excerpt['train'])
