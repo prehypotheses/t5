@@ -1,19 +1,15 @@
 """Module transfer.py"""
-import glob
-import os
-
 import datasets
 
 import config
 import src.elements.arguments as ag
 import src.elements.s3_parameters as s3p
 import src.elements.service as sr
-import src.functions.directories
 import src.s3.ingress
 import src.transfer.cloud
 import src.transfer.dictionary
-import src.transfer.structure
 import src.transfer.persist
+import src.transfer.structure
 
 
 class Interface:
@@ -37,7 +33,6 @@ class Interface:
         # Instances
         self.__configurations = config.Config()
         self.__dictionary = src.transfer.dictionary.Dictionary(architecture=self.__arguments.architecture)
-        self.__directories = src.functions.directories.Directories()
 
     def exc(self, data: datasets.DatasetDict):
         """
