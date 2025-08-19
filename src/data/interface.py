@@ -1,10 +1,8 @@
 """Module interface.py"""
-import os
 import warnings
 
 import datasets
 
-import config
 import src.data.tags
 import src.elements.arguments as ag
 import src.elements.master as mr
@@ -26,9 +24,6 @@ class Interface:
 
         self.__s3_parameters: s3p.S3Parameters = s3_parameters
         self.__arguments = arguments
-
-        # Configurations
-        self.__configurations = config.Config()
 
     def __get_data(self) -> datasets.DatasetDict:
         """
