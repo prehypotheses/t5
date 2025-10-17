@@ -38,19 +38,23 @@ class Experiment:
 
     def __get_tracking_uri(self) -> str:
         """
+        The set-up for auto-managed credentials; unfortunately this will sometimes generate credentials that
+        include invalid MLflow characters, hence ``Invalid IPv6'' URL errors.
+
+            t_secret  = self.__secret.exc(secret_id='FNTC', node='tracking-secret')
+            username = self.__secret.exc(secret_id=t_secret, node='username')
+            password = self.__secret.exc(secret_id=t_secret, node='password')
 
         :return:
         """
 
-        t_secret  = self.__secret.exc(secret_id='FNTC', node='tracking-secret')
         t_endpoint = self.__secret.exc(secret_id='FNTC', node='tracking-endpoint')
         t_database = self.__secret.exc(secret_id='FNTC', node='tracking-database')
         t_port = self.__secret.exc(secret_id='FNTC', node='tracking-port')
+        t_username = self.__secret.exc(secret_id='FNTC', node='tracking-username')
+        t_password = self.__secret.exc(secret_id='FNTC', node='tracking-password')
 
-        username = self.__secret.exc(secret_id=t_secret, node='username')
-        password = self.__secret.exc(secret_id=t_secret, node='password')
-
-        uri: str = f"postgresql://{username}:{password}@{t_endpoint}:{t_port}/{t_database}"
+        uri: str = f"postgresql://{t_username}:{t_password}@{t_endpoint}:{t_port}/{t_database}"
 
         return uri
 
