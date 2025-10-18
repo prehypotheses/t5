@@ -187,7 +187,7 @@ jobs:
   ecr:
     name: Amazon Elastic Container Registry
     needs: build
-    if: github.ref == 'refs/heads/master'
+    if: ${{ false }}
     runs-on: ubuntu-latest
 
     permissions:
